@@ -16,11 +16,14 @@ namespace Reindeer_Hunter
 
         protected static bool dataFileExists = false;
 
+        // This is what other threads must have to access the sensitive code.
+        static object key = new object();
+
         public DataFileIO()
         {
             // Determine if the data file exists.
             string directory = Directory.GetCurrentDirectory();
-            if (!File.Exists(directory + dataFileLocation))
+            if (!File.Exists(Path.Combine(directory, dataFileLocation)))
             {
                 Create();
 
@@ -46,15 +49,18 @@ namespace Reindeer_Hunter
         /// <param name="data_to_write"> The unserialized data to be written to the file</param>
         public void Write(Hashtable data_to_write)
         {
-            // Open the data file for writing
-            StreamWriter dataFileWrite = new StreamWriter(dataFileLocation);
+            lock(key)
+            {
+                // Open the data file for writing
+                StreamWriter dataFileWrite = new StreamWriter(dataFileLocation);
 
-            // Serialize the grades dictionary with Json and then write it
-            string writable = JsonConvert.SerializeObject(data_to_write);
-            dataFileWrite.WriteLine(writable);
+                // Serialize the grades dictionary with Json and then write it
+                string writable = JsonConvert.SerializeObject(data_to_write);
+                dataFileWrite.WriteLine(writable);
 
-            // Close the data file
-            dataFileWrite.Close();
+                // Close the data file
+                dataFileWrite.Close();
+            }
         }
 
         /// <summary>
@@ -63,44 +69,56 @@ namespace Reindeer_Hunter
         /// <returns>The first line in the data file deserialized as a dictionary</returns>
         public Hashtable Read()
         {
-            if (!dataFileExists)
+            string readData;
+            lock (key)
             {
-                dataFileExists = true;
-                throw new ProgramNotSetup();
+                if (!dataFileExists)
+                {
+                    dataFileExists = true;
+                    throw new ProgramNotSetup();
+                }
+
+                // Open the data file for reading
+                StreamReader dataFileRead = new StreamReader(dataFileLocation);
+
+                // Get the serialized json dictionary. Close the dataFile.
+                readData = dataFileRead.ReadLine();
+                dataFileRead.Close();
             }
+                // Deserialize and return the json dictionary
+                Hashtable data_hashtable =
+                    (Hashtable)JsonConvert.DeserializeObject<Hashtable>(readData);
 
-            // Open the data file for reading
-            StreamReader dataFileRead = new StreamReader(dataFileLocation);
+                /* 
+                 * Begin the reconstruction process of the data Hashtable
+                 */
 
-            // Get the serialized json dictionary. Close the dataFile.
-            string readData = dataFileRead.ReadLine();
-            dataFileRead.Close();
+                // Load up the sub-collectives as JObjects
+                Newtonsoft.Json.Linq.JObject studentsJarray =
+                    (Newtonsoft.Json.Linq.JObject)data_hashtable["students"];
 
-            // Deserialize and return the json dictionary
-            Hashtable data_hashtable = 
-                (Hashtable) JsonConvert.DeserializeObject<Hashtable>(readData);
+                Newtonsoft.Json.Linq.JObject matchesJarray =
+                    (Newtonsoft.Json.Linq.JObject)data_hashtable["matches"];
 
-            // Begin the reconstruction process of the data Hashtable
+                Newtonsoft.Json.Linq.JObject variousJarray =
+                    (Newtonsoft.Json.Linq.JObject)data_hashtable["misc"];
 
-            // Load up the sub-collectives as JObjects
-            Newtonsoft.Json.Linq.JObject gradesJarray =
-                (Newtonsoft.Json.Linq.JObject)data_hashtable["grades"];
+                // Convert them to their proper type
+                Dictionary<int, Student> students =
+                   studentsJarray.ToObject<Dictionary<int, Student>>();
 
-            Newtonsoft.Json.Linq.JArray matchesJarray =
-                (Newtonsoft.Json.Linq.JArray)data_hashtable["matches"];
+                Dictionary<string, Match> matches =
+                   matchesJarray.ToObject<Dictionary<string, Match>>();
 
-            // Convert them to their proper type
-            Dictionary<int, List<Student>> grades =
-               gradesJarray.ToObject<Dictionary<int, List<Student>>>();
+                Hashtable various_data =
+                   variousJarray.ToObject<Hashtable>();
 
-            List<Match> matches =
-               matchesJarray.ToObject<List<Match>>();
-
-            // Re-create the hashtable
-            Hashtable data = new Hashtable {
-                {"grades", grades },
-                {"matches", matches }
-            };
+                // Re-create the hashtable
+                Hashtable data = new Hashtable {
+                {"students", students },
+                {"matches", matches },
+                {"misc", various_data }
+                };
 
             return data;
         }

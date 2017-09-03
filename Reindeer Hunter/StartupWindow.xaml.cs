@@ -12,8 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using System.Windows.Forms;
 using FileHelpers;
+using System.Windows.Forms;
 
 namespace Reindeer_Hunter
 {
@@ -23,18 +23,40 @@ namespace Reindeer_Hunter
     public partial class StartupWindow : Window
     {
         public static School school;
+        public static HomePage home;
 
         public StartupWindow()
         {
+            InitializeComponent();
             school = new School();
+            home = new HomePage(this);
             if (school.IsData())
             {
                 // TODO Figure out how to change screens.
+                SetPage(home);
             }
-            InitializeComponent();
+
+            else
+            {
+                // TODO switch to setup user control.
+                SetPage(new SetupPage(this));
+            }
         }
 
-        private void Import_button_Click(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Sets the page to the main home page.
+        /// </summary>
+        public void SetPageToHome()
+        {
+            SetPage(home);
+        }
+
+        public void SetPage(System.Windows.Controls.UserControl page)
+        {
+            this.Content = page;
+        }
+
+        public bool ImportStudents()
         {
             OpenFileDialog csvopenDialog = new OpenFileDialog
             {
@@ -50,7 +72,9 @@ namespace Reindeer_Hunter
 
             csvopenDialog.ShowDialog();
             string path = csvopenDialog.FileName;
-            Console.WriteLine(path); // TODO remove print
+
+            // In case the user presses the cancel button
+            if (path == "") return false;
 
             // Begin processing the data
 
@@ -59,17 +83,41 @@ namespace Reindeer_Hunter
             // Make result into an array of Student
             var result = engine.ReadFile(path);
 
-            int grade = result[0].GetGrade();
+            // If the user imports a csv with no students in it, error message.
+            if (result.Count() <= 0)
+            {
+                System.Windows.Forms.MessageBox.Show("The file you " +
+                    "attempted to import students with contains " +
+                    "no students in it.", "Error - No Students Imported",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            int grade = result[0].Grade;
 
             List<Student> students_to_add = new List<Student>();
+            long round = school.GetCurrRoundNo();
 
             foreach (Student student in result)
             {
+                // Set the student's round number and add them to the new list
+                student.LastRoundParticipated = round;
+                student.In = true;
                 students_to_add.Add(student);
             }
 
-            school.AddStudents(grade, students_to_add);
+            school.AddStudents(students_to_add);
 
+            return true;
+        }
+
+        /// <summary>
+        /// Returns the current school object.
+        /// </summary>
+        /// <returns>The school object.</returns>
+        public School GetSchool()
+        {
+            return school;
         }
     }
 
@@ -80,21 +128,35 @@ namespace Reindeer_Hunter
     [IgnoreFirst(1)]
     public class Student
     {
-        public string name;
+        public string First;
 
-        public int id;
+        public string Last;
 
-        public int grade;
+        public int Id;
 
-        public int homeroom;
+        public int Grade;
+
+        public int Homeroom;
+
+        [FieldHidden]
+        // The last round the student participated in
+        public long LastRoundParticipated;
+
+        [FieldHidden]
+        public string CurrMatchID;
+
+        [FieldHidden]
+        // Indicates whether or not the student is in the hunt still
+        // True until not true.
+        public bool In;
 
         /// <summary>
-        /// Gets the grade that the student belongs to 
+        /// Returns the name of the student as a tuple
         /// </summary>
-        /// <returns>An integer representing the student's grade.</returns>
-        public int GetGrade()
+        /// <returns>The student's (FIRSTNAME, LASTNAME)</returns>
+        public Tuple<string, string> GetName ()
         {
-            return grade;
+            return new Tuple<string, string>(First, Last);
         }
     }
 }

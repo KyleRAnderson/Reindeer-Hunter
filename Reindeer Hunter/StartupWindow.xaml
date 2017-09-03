@@ -5,9 +5,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Reindeer_Hunter"
         mc:Ignorable="d"
-        Title="Reindeer Hunter - Setup" Height="350" Width="525">
-    <Grid>
-		<Button x:Name="import_button" Content="Import .csv file" HorizontalAlignment="Left" Margin="206.5,149,0,0" VerticalAlignment="Top" Width="112" Height="52" FontSize="14" FontWeight="Bold" Click="Import_button_Click"/>
-
-	</Grid>
+        Title="Reindeer Hunter" Height="350" Width="525" ResizeMode="CanResizeWithGrip" Icon="Reindeer.ico">
+    <Grid/>
 </Window>
