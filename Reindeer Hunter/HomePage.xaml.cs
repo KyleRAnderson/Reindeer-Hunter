@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,7 +25,7 @@ namespace Reindeer_Hunter
     public partial class HomePage : System.Windows.Controls.UserControl
     {
         // The thread used to create the matches.
-        protected static System.Threading.Thread matchmaking_thread;
+        protected static System.Threading.Thread printing_thread;
 
         // The master window upon which this content will be displayed.
         protected static StartupWindow MasterWindow;
@@ -33,6 +34,11 @@ namespace Reindeer_Hunter
          * and the match creator thread
          */
         protected static System.Collections.Generic.Queue<Reindeer_Hunter.Message> comms;
+
+        /* Used to communicate between the main thread (this thread)
+         * and the instant printer thread
+         */
+        protected static System.Collections.Generic.Queue<Reindeer_Hunter.PrintMessage> comms_print;
 
         /* True when matches were just made so that we know when 
          * to add matches vs when to save changes
@@ -65,7 +71,6 @@ namespace Reindeer_Hunter
             ReloadItemsSource();
             bool ReadyForNextRound = MasterWindow.GetSchool().IsReadyForNextRound();
             EnableDisableMatcmakeButton(ReadyForNextRound);
-            UpdateMatchmakeButton();
         }
 
         /// <summary>
@@ -83,7 +88,11 @@ namespace Reindeer_Hunter
         /// <param name="enable">Boolean representing what to do</param>
         private void EnableDisableMatcmakeButton(bool enable)
         {
-            process_button.IsEnabled = enable;
+            if (enable) UpdateMatchmakeButton();
+            else
+            {
+                process_button.Content = "Instant Print";
+            }
         }
 
         /// <summary>
@@ -124,11 +133,11 @@ namespace Reindeer_Hunter
             Matcher matcher = new Matcher(school.GetCurrRoundNo() + 1, school.GetCurrMatchNo(), 
                 comms, studentsDic : school.GetStudentsByGrade());
 
-            matchmaking_thread = new System.Threading.Thread(matcher.Generate)
+            printing_thread = new System.Threading.Thread(matcher.Generate)
             {
                 Name = "Matchmaker"
             };
-            matchmaking_thread.Start();
+            printing_thread.Start();
 
             // Put the execute function into the mainloop to be executed
             CompositionTarget.Rendering += Execute_Matchmaking;
@@ -141,12 +150,101 @@ namespace Reindeer_Hunter
         /// <param name="e"></param>
         private void Process_Button_Click(object sender, RoutedEventArgs e)
         {
-            Matchmake();
+            if ((string)process_button.Content != "Instant Print") Matchmake();
+            else InstantPrint();
         }
 
-        private void ListView_SelectionChanged(object sender, RoutedEventArgs e)
+        private void InstantPrint()
         {
+            // Create the queue for communications purposes.
+            comms_print = new Queue<PrintMessage>();
 
+            // Instantiate school object for simplicity
+            School school = MasterWindow.GetSchool();
+
+            // Create the matchmaker and then assign the thread target to it
+            // +1 to current round because we want next round's matches.
+            InstantPrinter printer;
+            try
+            {
+                printer = new InstantPrinter(school.GetCurrRoundMatches(),
+                school.GetCurrRoundNo(), comms_print);
+            }
+            catch (IOException)
+            {
+                return;
+            }
+            
+
+            printing_thread = new System.Threading.Thread(printer.Print)
+            {
+                Name = "Instant Printer"
+            };
+            printing_thread.Start();
+
+            // Put the execute function into the mainloop to be executed
+            CompositionTarget.Rendering += Execute_Printing;
+        }
+
+        private void Execute_Printing(object sender, EventArgs e)
+        {
+            if (comms_print.Count() <= 0) return;
+
+            // Convert queue to list and retrieve last value
+            List<PrintMessage> returnList = comms_print.ToList<PrintMessage>();
+            PrintMessage returnValue = returnList[returnList.Count() - 1];
+
+            // Clear queue
+            comms_print.Clear();
+
+            // Update progress text
+            progressDisplayBox.Text = returnValue.Message;
+
+            // Update the progressbar
+            progressBar.Value = returnValue.Progress;
+
+            // Progress is 100 % when complete
+            if (returnValue.Progress == 1)
+            {
+                // Give the second thread the info it needs to move the file
+                string path;
+                SaveFileDialog fileDialog = new SaveFileDialog
+                {
+                    // Open the file dialog to the user's directory
+                    InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+
+                    // Filter only for comma-seperated value files. 
+                    Filter = "pdf files (*.pdf)|*.pdf",
+                    FilterIndex = 2,
+                    RestoreDirectory = true
+                };
+
+                fileDialog.ShowDialog();
+
+                if (fileDialog.FileName == "")
+                {
+                    path = System.IO.Path.Combine(Environment.GetFolderPath(
+                        Environment.SpecialFolder.Desktop), "FilledLicenses.pdf");
+
+                    System.Windows.Forms.MessageBox.Show("Export location Error. File was outputted to "
+                        + path, "Export Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else path = fileDialog.FileName;
+
+                // Join the thread
+                printing_thread.Join();
+
+                // Unsubscribe from event.
+                CompositionTarget.Rendering -= Execute_Printing;
+                
+                // In case the user tries to overwrite another file
+                if (File.Exists(path)) File.Delete(path);
+
+                // Move the temporary file out of the code's folder.
+                File.Move(returnValue.Path, path);
+
+            }
         }
 
         /// <summary>
@@ -174,9 +272,8 @@ namespace Reindeer_Hunter
             if (returnValue.Matches != null)
             {
                 //  Terminate the thread
-                matchmaking_thread.Join();
+                printing_thread.Join();
 
-                // TODO figure out if the queue needs to be killed.
                 CompositionTarget.Rendering -= Execute_Matchmaking;
                 MainDisplay.ItemsSource = returnValue.Matches;
                 OnMatchesCreate();

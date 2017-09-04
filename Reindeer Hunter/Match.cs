@@ -14,7 +14,12 @@ namespace Reindeer_Hunter
         public long MatchNumber { get; set; }
         public bool Closed { get; set; }
 
+        // Students' homeroom
+        public int Home1 { get; set; }
+        public int Home2 { get; set; }
+
         // To be displayed on the MainDisplay DataGrid
+
         public bool Pass1 { get; set; }
         public string First1 { get; set; }
         public string Last1 { get; set; }
@@ -50,16 +55,18 @@ namespace Reindeer_Hunter
             {
                 Pass1 = Pass1,
                 Pass2 = Pass2,
-                First1 = First1,
-                First2 = First2,
-                Last1 = Last1,
-                Last2 = Last2,
+                First1 = String.Copy(First1),
+                First2 = String.Copy(First2),
+                Last1 = String.Copy(Last1),
+                Last2 = String.Copy(Last2),
                 Id1 = Id1,
                 Id2 = Id2,
-                MatchId = MatchId,
+                MatchId = String.Copy(MatchId),
                 MatchNumber = MatchNumber,
                 Round = Round,
-                Closed = Closed
+                Closed = Closed,
+                Home1 = Home1,
+                Home2 = Home2
             };
         }
     }

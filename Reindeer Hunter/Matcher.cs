@@ -199,7 +199,9 @@ namespace Reindeer_Hunter
                     Last2 = "Pass",
                     Id2 = 0,
                     Round = round,
-                    Closed = true
+                    Closed = true,
+                    Home1 = lucky_guy.Homeroom,
+                    Home2 = 0
                 };
 
                 topMatchNo += 1;
@@ -240,9 +242,11 @@ namespace Reindeer_Hunter
                     First1 = student1.First,
                     Last1 = student1.Last,
                     Id1 = student1.Id,
+                    Home1 = student1.Homeroom,
                     First2 = student2.First,
                     Last2 = student2.Last,
                     Id2 = student2.Id,
+                    Home2 = student2.Homeroom,
                     Round = round,
                     Closed = false
                 };

@@ -139,6 +139,26 @@ namespace Reindeer_Hunter
         }
 
         /// <summary>
+        /// Get a list of all matches in the current round, open or not
+        /// </summary>
+        /// <returns>List of matches of the currrent round.</returns>
+        public List<Match> GetCurrRoundMatches()
+        {
+            // Get a clone of the list of matches
+            List<Match> matchList = GetMatchList();
+            long currRound = GetCurrRoundNo();
+
+            // Make new list for the open ones.
+            List<Match> roundMatchList = new List<Match>();
+
+            foreach (Match match in matchList)
+            {
+                if (match.Round == currRound) roundMatchList.Add(match);
+            }
+            return roundMatchList;
+        }
+
+        /// <summary>
         /// Returns a copy of the list of all currently closed matches
         /// The Match objects have been cloned.
         /// </summary>
