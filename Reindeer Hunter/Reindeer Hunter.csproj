@@ -105,6 +105,8 @@
     <Compile Include="Matcher.cs" />
     <Compile Include="MatchGuiResult.cs" />
     <Compile Include="PrintMessage.cs" />
+    <Compile Include="Importer.cs" />
+    <Compile Include="ResultStudent.cs" />
     <Compile Include="School.cs" />
     <Compile Include="SetupPage.xaml.cs">
       <DependentUpon>SetupPage.xaml</DependentUpon>

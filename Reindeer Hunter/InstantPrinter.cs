@@ -34,6 +34,8 @@ namespace Reindeer_Hunter
         // Queue used for communication
         protected static Queue<PrintMessage> Print_Comms;
 
+        protected readonly object Key;
+
         protected int StuffDone;
         protected int StuffToDo;
 
@@ -52,8 +54,9 @@ namespace Reindeer_Hunter
         public int PageNo = 0;
 
         public InstantPrinter(List<Match> matches,  
-            long roundNo, Queue<PrintMessage> comms)
+            long roundNo, object key, Queue<PrintMessage> comms)
         {
+            Key = key;
             MatchList = matches;
             RoundNo = roundNo;
             Print_Comms = comms;
@@ -266,7 +269,10 @@ namespace Reindeer_Hunter
                 Path = path
             };
 
-            Print_Comms.Enqueue(message);
+            lock(Key)
+            {
+                Print_Comms.Enqueue(message);
+            }
         }
     }
 }

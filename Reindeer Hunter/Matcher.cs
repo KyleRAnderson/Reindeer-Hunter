@@ -35,6 +35,8 @@ namespace Reindeer_Hunter
         // For anything after the matches have been created.
         protected readonly int COMPLETED = 2;
 
+        protected readonly object Key;
+
         /// <summary>
         /// Generates the matches composing of two students against each other.
         /// </summary>
@@ -46,7 +48,7 @@ namespace Reindeer_Hunter
         /// leave it null and provide studentList instead.</param>
         /// <param name="studentList">A list of students in this round. Provide this when 
         /// creating matches between students of possibly different grades.</param>
-        public Matcher(long roundNo, long maxMatchNo, Queue<Message> messenger,
+        public Matcher(long roundNo, long maxMatchNo, object key, Queue<Message> messenger,
             Dictionary<int, List<Student>> studentsDic = null, List<Student> studentList = null)
         {
             students_dic = studentsDic;
@@ -54,6 +56,7 @@ namespace Reindeer_Hunter
             topMatchNo = maxMatchNo;
             comms = messenger;
             students_list = studentList;
+            Key = key;
 
             if (students_dic == null && students_list == null)
             {
@@ -116,7 +119,12 @@ namespace Reindeer_Hunter
             }
 
             Message message = new Message(updateMessage, decimalPercent, matchList);
-            comms.Enqueue(message);
+
+            // Lock it so that we have synchronized access.
+            lock(Key)
+            {
+                comms.Enqueue(message);
+            }
         }
 
         /// <summary>

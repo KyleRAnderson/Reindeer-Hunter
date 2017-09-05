@@ -23,6 +23,7 @@ namespace Reindeer_Hunter
     public partial class StartupWindow : Window
     {
         public static School school;
+        public static Importer importer;
         public static HomePage home;
 
         public StartupWindow()
@@ -30,6 +31,7 @@ namespace Reindeer_Hunter
             InitializeComponent();
             school = new School();
             home = new HomePage(this);
+            importer = new Importer();
             if (school.IsData())
             {
                 // TODO Figure out how to change screens.
@@ -58,40 +60,10 @@ namespace Reindeer_Hunter
 
         public bool ImportStudents()
         {
-            OpenFileDialog csvopenDialog = new OpenFileDialog
-            {
+            Student[] result = (Student[])importer.Import(0);
 
-                // Open the file dialog to the user's directory
-                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-
-                // Filter only for comma-seperated value files. 
-                Filter = "csv files (*.csv)|*.csv",
-                FilterIndex = 2,
-                RestoreDirectory = true
-            };
-
-            csvopenDialog.ShowDialog();
-            string path = csvopenDialog.FileName;
-
-            // In case the user presses the cancel button
-            if (path == "") return false;
-
-            // Begin processing the data
-
-            var engine = new FileHelperEngine<Student>();
-
-            // Make result into an array of Student
-            var result = engine.ReadFile(path);
-
-            // If the user imports a csv with no students in it, error message.
-            if (result.Count() <= 0)
-            {
-                System.Windows.Forms.MessageBox.Show("The file you " +
-                    "attempted to import students with contains " +
-                    "no students in it.", "Error - No Students Imported",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return false;
-            }
+            // In case of any import errors.
+            if (result == null) return false;
 
             int grade = result[0].Grade;
 
@@ -119,6 +91,15 @@ namespace Reindeer_Hunter
         {
             return school;
         }
+
+        /// <summary>
+        /// Returns the importer object used for importing stuff from files
+        /// </summary>
+        /// <returns>The importer object.</returns>
+        public Importer GetImporter()
+        {
+            return importer;
+        }
     }
 
     /// <summary>
@@ -128,14 +109,15 @@ namespace Reindeer_Hunter
     [IgnoreFirst(1)]
     public class Student
     {
+        [FieldNotEmpty]
         public string First;
-
+        [FieldNotEmpty]
         public string Last;
-
+        [FieldNotEmpty]
         public int Id;
-
+        [FieldNotEmpty]
         public int Grade;
-
+        [FieldNotEmpty]
         public int Homeroom;
 
         [FieldHidden]

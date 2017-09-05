@@ -24,6 +24,10 @@ namespace Reindeer_Hunter
     /// </summary>
     public partial class HomePage : System.Windows.Controls.UserControl
     {
+        // Lock object for queues
+        protected readonly object Key = new object();
+
+
         // The thread used to create the matches.
         protected static System.Threading.Thread printing_thread;
 
@@ -111,6 +115,9 @@ namespace Reindeer_Hunter
         private void SetMatchesMade(bool matchesMade)
         {
             MatchesMade = matchesMade;
+
+            // Disable result inputting just after matches have been made.
+            Import_Match_ResultsButton.IsEnabled = !matchesMade;
             if (matchesMade)
             {
                 EnableSaveDiscardButtons();
@@ -130,8 +137,17 @@ namespace Reindeer_Hunter
 
             // Create the matchmaker and then assign the thread target to it
             // +1 to current round because we want next round's matches.
-            Matcher matcher = new Matcher(school.GetCurrRoundNo() + 1, school.GetCurrMatchNo(), 
-                comms, studentsDic : school.GetStudentsByGrade());
+            Matcher matcher;
+            if (!school.IsCombineTime())
+            {
+                matcher = new Matcher(school.GetCurrRoundNo() + 1, school.GetCurrMatchNo(), Key,
+                    comms, studentsDic: school.GetStudentsByGrade());
+            }
+            else
+            {
+                matcher = new Matcher(school.GetCurrRoundNo() + 1, school.GetCurrMatchNo(), Key,
+                    comms, studentList: school.GetAllParticipatingStudents());
+            }
 
             printing_thread = new System.Threading.Thread(matcher.Generate)
             {
@@ -168,7 +184,7 @@ namespace Reindeer_Hunter
             try
             {
                 printer = new InstantPrinter(school.GetCurrRoundMatches(),
-                school.GetCurrRoundNo(), comms_print);
+                school.GetCurrRoundNo(), Key, comms_print);
             }
             catch (IOException)
             {
@@ -188,62 +204,66 @@ namespace Reindeer_Hunter
 
         private void Execute_Printing(object sender, EventArgs e)
         {
-            if (comms_print.Count() <= 0) return;
-
-            // Convert queue to list and retrieve last value
-            List<PrintMessage> returnList = comms_print.ToList<PrintMessage>();
-            PrintMessage returnValue = returnList[returnList.Count() - 1];
-
-            // Clear queue
-            comms_print.Clear();
-
-            // Update progress text
-            progressDisplayBox.Text = returnValue.Message;
-
-            // Update the progressbar
-            progressBar.Value = returnValue.Progress;
-
-            // Progress is 100 % when complete
-            if (returnValue.Progress == 1)
+            lock(Key)
             {
-                // Give the second thread the info it needs to move the file
-                string path;
-                SaveFileDialog fileDialog = new SaveFileDialog
+                if (comms_print.Count() <= 0) return;
+
+                // Convert queue to list and retrieve last value
+                List<PrintMessage> returnList = comms_print.ToList<PrintMessage>();
+                PrintMessage returnValue = returnList[returnList.Count() - 1];
+
+                // Clear queue
+                comms_print.Clear();
+
+                // Update progress text
+                progressDisplayBox.Text = returnValue.Message;
+
+                // Update the progressbar
+                progressBar.Value = returnValue.Progress;
+
+                // Progress is 100 % when complete
+                if (returnValue.Progress == 1)
                 {
-                    // Open the file dialog to the user's directory
-                    InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                    // Give the second thread the info it needs to move the file
+                    string path;
+                    SaveFileDialog fileDialog = new SaveFileDialog
+                    {
+                        // Open the file dialog to the user's directory
+                        InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
 
-                    // Filter only for comma-seperated value files. 
-                    Filter = "pdf files (*.pdf)|*.pdf",
-                    FilterIndex = 2,
-                    RestoreDirectory = true
-                };
+                        // Filter only for comma-seperated value files. 
+                        Filter = "pdf files (*.pdf)|*.pdf",
+                        FilterIndex = 2,
+                        RestoreDirectory = true
+                    };
 
-                fileDialog.ShowDialog();
+                    fileDialog.ShowDialog();
 
-                if (fileDialog.FileName == "")
-                {
-                    path = System.IO.Path.Combine(Environment.GetFolderPath(
-                        Environment.SpecialFolder.Desktop), "FilledLicenses.pdf");
+                    if (fileDialog.FileName == "")
+                    {
+                        path = System.IO.Path.Combine(Environment.GetFolderPath(
+                            Environment.SpecialFolder.Desktop), "FilledLicenses.pdf");
 
-                    System.Windows.Forms.MessageBox.Show("Export location Error. File was outputted to "
-                        + path, "Export Error",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        System.Windows.Forms.MessageBox.Show("Export location Error. File was outputted to "
+                            + path, "Export Error",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    else path = fileDialog.FileName;
+
+                    // Join the thread
+                    printing_thread.Join();
+
+                    // Unsubscribe from event.
+                    CompositionTarget.Rendering -= Execute_Printing;
+
+                    // In case the user tries to overwrite another file
+                    if (File.Exists(path)) File.Delete(path);
+
+                    // Move the temporary file out of the code's folder.
+                    File.Move(returnValue.Path, path);
+
+                    System.Diagnostics.Process.Start("explorer.exe", System.IO.Path.GetDirectoryName(path));
                 }
-                else path = fileDialog.FileName;
-
-                // Join the thread
-                printing_thread.Join();
-
-                // Unsubscribe from event.
-                CompositionTarget.Rendering -= Execute_Printing;
-                
-                // In case the user tries to overwrite another file
-                if (File.Exists(path)) File.Delete(path);
-
-                // Move the temporary file out of the code's folder.
-                File.Move(returnValue.Path, path);
-
             }
         }
 
@@ -253,30 +273,34 @@ namespace Reindeer_Hunter
         /// </summary>
         private void Execute_Matchmaking(object sender, EventArgs e)
         {
-            // Don't do anything if no new data has been sent. 
-            if (comms.Count() <= 0) return;
-
-            // Convert queue to list and retrieve last value
-            List<Message> returnList = comms.ToList<Message>();
-            Message returnValue = returnList[returnList.Count() - 1];
-
-            // Clear queue
-            comms.Clear();
-
-            // Update the message on the text box.
-            progressDisplayBox.Text = returnValue.MessageText;
-
-            // Update the progressBar
-            progressBar.Value = returnValue.ProgressDecimal;
-
-            if (returnValue.Matches != null)
+            // Lock it so we don't get problems.
+            lock(Key)
             {
-                //  Terminate the thread
-                printing_thread.Join();
+                // Don't do anything if no new data has been sent. 
+                if (comms.Count() <= 0) return;
 
-                CompositionTarget.Rendering -= Execute_Matchmaking;
-                MainDisplay.ItemsSource = returnValue.Matches;
-                OnMatchesCreate();
+                // Convert queue to list and retrieve last value
+                List<Message> returnList = comms.ToList<Message>();
+                Message returnValue = returnList[returnList.Count() - 1];
+
+                // Clear queue
+                comms.Clear();
+
+                // Update the message on the text box.
+                progressDisplayBox.Text = returnValue.MessageText;
+
+                // Update the progressBar
+                progressBar.Value = returnValue.ProgressDecimal;
+
+                if (returnValue.Matches != null)
+                {
+                    //  Terminate the thread
+                    printing_thread.Join();
+
+                    CompositionTarget.Rendering -= Execute_Matchmaking;
+                    MainDisplay.ItemsSource = returnValue.Matches;
+                    OnMatchesCreate();
+                }
             }
         }
 
@@ -366,6 +390,10 @@ namespace Reindeer_Hunter
         {
             // Make sure it's the "pass" column. Otherwise, we don't care.
             if (MainDisplay.CurrentCell.Column.Header.ToString() != "Pass") return;
+
+            /* This function is called twice because at the end
+             * We clear the selectedobjects list of the maindisplay,
+             * which re-triggers this function */
             SelectionCounter += 1;
             if (SelectionCounter % 2 == 0) return;
 
@@ -488,6 +516,27 @@ namespace Reindeer_Hunter
             MatchResultsList.Clear();
             MatchResultButtonList.Clear();
             PassingStudentsBox.Items.Refresh();
+
+        }
+
+        private void Import_Match_ResultsButton_Click(object sender, RoutedEventArgs e)
+        {
+            List<ResultStudent> results = new List<ResultStudent>();
+            ResultStudent[] inputtedResults = (ResultStudent[])MasterWindow.GetImporter().Import(1);
+
+            // In case of any import errors.
+            if (inputtedResults == null) return;
+
+            foreach (ResultStudent student in inputtedResults)
+            {
+                results.Add(student);
+            }
+
+            MasterWindow.GetSchool().AddMatchResults(results);
+        }
+
+        private void Search_Button_Click(object sender, EventArgs e)
+        {
 
         }
     }

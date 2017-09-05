@@ -19,6 +19,13 @@ namespace Reindeer_Hunter
         // This dictionary will contain all data for the program
         protected static Hashtable data;
         protected static Dictionary<int, Student> student_directory;
+
+        // Students with keys of "Firstname + " " + Lastname"
+        protected static Hashtable studentName_directory;
+
+        // Students with keys of "homeroom#"
+        protected static Dictionary<int, List<Student>> homeroom_directory;
+
         protected static Dictionary<string, Match> match_directory;
         protected static Hashtable misc;
 
@@ -42,9 +49,63 @@ namespace Reindeer_Hunter
             }
 
             // Declare these for simplicity and ease of use.
-            student_directory = (Dictionary < int, Student> )data[StudentKey];
+            student_directory = (Dictionary<int, Student>)data[StudentKey];
+            CreateStudentDirs();
             match_directory = (Dictionary <string,  Match > )data["matches"];
             misc = (Hashtable)data["misc"];
+        }
+
+        private void CreateStudentDirs()
+        {
+            // Create necessary dictionaries
+            studentName_directory = new Hashtable();
+            homeroom_directory = new Dictionary<int, List<Student>>();
+
+            // Fill them.
+            foreach (Student student in student_directory.Values)
+            {
+                // Start with the name
+                string name = student.First + " " + student.Last;
+                try
+                {
+                    studentName_directory.Add(name, student);
+                }
+                // In case there is someone with the same name
+                catch (ArgumentException)
+                {
+                    // If a list already exists, add to it.
+                    if (studentName_directory[name] is List<Student>) ((List<Student>)
+                            studentName_directory[name]).Add(student);
+
+                    // Otherwise, make one with both students.
+                    else
+                    {
+                        Student studentThereAlready = (Student)studentName_directory[name];
+                        studentName_directory[name] = new List<Student>
+                        {
+                            {studentThereAlready },
+                            {student }
+                        };
+                    }
+                }
+
+                // Then the homerooms
+                if (homeroom_directory.ContainsKey(student.Homeroom))
+                    homeroom_directory[student.Homeroom].Add(student);
+
+                // If key doesn't exist, create list for it.
+                else
+                {
+                    // Create new list for that homeroom's students
+                    List<Student> hmrmList = new List<Student>
+                    {
+                        {student }
+                    };
+
+                    // Add this list to the directory.
+                    homeroom_directory.Add(student.Homeroom, hmrmList);
+                }
+            }
         }
 
         /// <summary>
@@ -91,11 +152,10 @@ namespace Reindeer_Hunter
 
         public void AddMatchResults(List<MatchGuiResult> matcheResults)
         {
-            // Update everything
+            // Update match and student data
             foreach (MatchGuiResult matchResult in matcheResults)
             {
                 Match match = match_directory[matchResult.MatchID];
-                match.Closed = true;
 
                 // Seems not needed, but in case two people are passed then it's needed.
                 student_directory[matchResult.StuID].In = true;
@@ -103,19 +163,158 @@ namespace Reindeer_Hunter
                 // if the victor is student 1, mark student 2 as not in and pass student 1
                 if (matchResult.StuID == match.Id1)
                 {
-                    student_directory[match.Id2].In = false;
+                    // If this match has already been closed, then the other student must have been passed too.
+                    if (!match.Closed) student_directory[match.Id2].In = false; 
                     match.Pass1 = true;
                 }
                 // Otherwise, mark student 1 as out and pass student 2
                 else
                 {
-                    student_directory[match.Id1].In = false;
+                    // If this match has already been closed, then the other student must have been passed too
+                    if (!match.Closed) student_directory[match.Id1].In = false;
                     match.Pass2 = true;
                 }
+
+                match.Closed = true;
             }
 
             Save();
             MatchChangeEvent(this, new EventArgs());
+        }
+
+        /// <summary>
+        /// Function for adding match results from the imported csv file.
+        /// </summary>
+        /// <param name="resultsStudents">List of ResultStudents containing the results.</param>
+        public void AddMatchResults(List<ResultStudent> resultsStudents)
+        {
+            // List of result students with supplied id
+            List<int> idStudents = new List<int>();
+
+
+            // Start with looking for the student numbers, since that's faster
+            foreach (ResultStudent student in resultsStudents)
+            {
+                // 0 is the null value for result student ids.
+                if (student.Id == 0)
+                {
+                    student.Id = GetStudentId(student.First, student.Last, student.Homeroom);
+
+                    // If couldn't find student, id would be 0.
+                    if (student.Id == 0)
+                    {
+                        System.Windows.Forms.MessageBox.Show("Could not find student with name " 
+                            + student.First + " " + student.Last + 
+                            ". Nothing will be saved", "Error - No Results Imported",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                }
+
+                // Add the now known id to the list
+                idStudents.Add(student.Id);
+            }
+
+            foreach (int stuNo in idStudents)
+            {
+                if (!student_directory.ContainsKey(stuNo))
+                {
+                    System.Windows.Forms.MessageBox.Show("Student with number " +
+                    stuNo.ToString() + " does not exist. Match results discarded.",
+                    "Error - Student Inexistent.",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else if (student_directory[stuNo].In == false)
+                {
+                    System.Windows.Forms.MessageBox.Show("Student with number " + 
+                        stuNo.ToString() + " is not alive still. Match results discarded.", 
+                        "Error - Student dead.",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+
+            Dictionary<int, Match> relevantMatches = GetOpenMatchesWithStudentIds(idStudents);
+
+            // Update match and student data
+            foreach (KeyValuePair<int, Match> keyValue in relevantMatches)
+            {
+                Match match = match_directory[keyValue.Value.MatchId];
+
+                // Seems not needed, but in case two people are passed then it's needed.
+                student_directory[keyValue.Key].In = true;
+
+                // if the victor is student 1, mark student 2 as not in and pass student 1
+                if (keyValue.Key == match.Id1)
+                {
+                    // If this match has already been closed, then the other student must have been passed too.
+                    if (!match.Closed) student_directory[match.Id2].In = false;
+                    match.Pass1 = true;
+                }
+                // Otherwise, mark student 1 as out and pass student 2
+                else
+                {
+                    // If this match has already been closed, then the other student must have been passed too
+                    if (!match.Closed) student_directory[match.Id1].In = false;
+                    match.Pass2 = true;
+                }
+
+                match.Closed = true;
+            }
+
+            Save();
+            MatchChangeEvent(this, new EventArgs());
+        }
+
+        /// <summary>
+        /// Gets a list of cloned open matches in which a given student id is contained within.
+        /// </summary>
+        /// <param name="studentIds"></param>
+        /// <returns></returns>
+        private Dictionary<int, Match> GetOpenMatchesWithStudentIds(List<int> studentIds)
+        {
+            List<Match> openMatches = GetOpenMatchesList();
+            Dictionary<int, Match> relevantMatches = new Dictionary<int, Match>();
+            foreach (Match match in openMatches)
+            {
+                // If student 1 passes, add him/her
+                if (studentIds.Contains(match.Id1)) 
+                {
+                    relevantMatches.Add(match.Id1, match);
+                }
+
+                /* If contains student 2 id, match is relevant
+                 * You'll notice it's not an else if. This is because
+                 * We might want to ask for both student ids for the match.
+                 */
+                if (studentIds.Contains(match.Id2))
+                {
+                    relevantMatches.Add(match.Id2, match);
+                }
+            }
+
+            return relevantMatches;
+        }
+
+        private int GetStudentId(string first, string last, int homeroom)
+        {
+            var nameEntry = studentName_directory[first + " " + last];
+            
+            // If a student with that name doesn't exist.
+            if (nameEntry == null) return 0;
+            // If there is only one entry for that name
+            else if (!(nameEntry is List<Student>)) return ((Student)nameEntry).Id;
+
+            // If there are more students with that name
+            else
+            {
+                foreach (Student student in (List<Student>)nameEntry)
+                {
+                    if (student.Homeroom == homeroom) return student.Id;
+                }
+
+                // In case we can't find one with those specifications
+                return 0;
+            }
         }
 
         /// <summary>
@@ -260,14 +459,29 @@ namespace Reindeer_Hunter
                 {11, new List<Student>() },
                 {12, new List<Student>() }
             };
-            foreach (KeyValuePair<int, Student> studentKeyValue in student_directory)
-            {
-                Student student = studentKeyValue.Value;
+            foreach (Student student in student_directory.Values)
+            {;
                 if (student.In) studentDic[student.Grade].Add(student);
 
             }
 
             return studentDic;
+        }
+
+        /// <summary>
+        /// Returns a list of all students who are still in the hunt
+        /// </summary>
+        /// <returns></returns>
+        public List<Student> GetAllParticipatingStudents()
+        {
+            List<Student> inStudentsList = new List<Student>();
+
+            foreach (Student student in student_directory.Values)
+            {
+                if (student.In) inStudentsList.Add(student);
+            }
+
+            return inStudentsList;
         }
 
         /// <summary> 
@@ -278,14 +492,60 @@ namespace Reindeer_Hunter
         {
             // So that we can rollback any changes.
             Dictionary<int, Student> safeStudent_directory = new Dictionary<int, Student>(student_directory);
+            Hashtable safeStudentName_directory = new Hashtable(studentName_directory);
+            Dictionary<int, List<Student>> safeHomeroom_directory = new Dictionary<int, List<Student>>(homeroom_directory); 
+
             int id = 0;
             try
             {
                 // Add the students to the student list
                 foreach (Student student in students)
                 {
+                    // Add to the student id dictionary
                     id = student.Id;
                     safeStudent_directory.Add(student.Id, student);
+
+
+
+                    // Start with the name
+                    string name = student.First + " " + student.Last;
+                    try
+                    {
+                        studentName_directory.Add(name, student);
+                    }
+                    // In case there is someone with the same name
+                    catch (ArgumentException)
+                    {
+                        // If a list already exists, add to it.
+                        if (studentName_directory[name] is List<Student>) ((List<Student>)
+                                studentName_directory[name]).Add(student);
+
+                        // Otherwise, make one with both students.
+                        else
+                        {
+                            Student studentThereAlready = (Student)studentName_directory[name];
+                            studentName_directory[name] = new List<Student>
+                            {
+                                {studentThereAlready },
+                                {student }
+                            };
+                        }
+                    }
+
+                    // Add to the homeroom directory
+                    // If homeroom exists, easy adding
+                    if (safeHomeroom_directory.ContainsKey(student.Homeroom))
+                        safeHomeroom_directory[student.Homeroom].Add(student);
+
+                    // Else, create homeroom for them
+                    else
+                    {
+                        List<Student> hmrmList = new List<Student>
+                        {
+                            {student }
+                        };
+                        safeHomeroom_directory.Add(student.Homeroom, hmrmList);
+                    }
                 }
             }
             catch (System.ArgumentException)
@@ -366,19 +626,23 @@ namespace Reindeer_Hunter
         }
 
         /// <summary>
+        /// Returns a true value when the rounds are officially high enough 
+        /// for students to be going against students in other grades than theirs.
+        /// </summary>
+        /// <returns>True whe nit is time for Grade vs Grade, false when it is
+        /// still StudentInGrade vs StudentInSameGrade </returns>
+        public bool IsCombineTime()
+        {
+            return (bool)(GetCurrRoundNo() + 1 == (long)misc["CombiningRoundNo"]);
+        }
+
+        /// <summary>
         /// Used to set up the file for first-time use. 
         /// </summary>
         protected void FirstTimeSetup()
         {
-
-            // Make the lists of students TODO make this into a smarter loop of somekind
-            List<Student> gr_9s = new List<Student>();
-            List<Student> gr_10s = new List<Student>();
-            List<Student> gr_11s = new List<Student>();
-            List<Student> gr_12s = new List<Student>();
-
-            // Create the grades dictionary
-            Dictionary<int, Student> student_dic = new Dictionary<int, Student>();
+            // Create the students dictionary
+            Dictionary<int, Student> student_Dic = new Dictionary<int, Student>();
 
             // Create new matches list
             Dictionary<string, Match> matches = new Dictionary<string, Match>();
@@ -390,13 +654,16 @@ namespace Reindeer_Hunter
                 {"TopMatch", 0 },
 
                 // The current round number. Starts at 0 to indicate no round is in progress.
-                {"RoundNo", 0 }
+                {"RoundNo", 0 },
+
+                // The round after which students from different grades compete against each other.
+                {"CombiningRoundNo",  5}
             };
 
             // Create the data dictionary
             Hashtable data = new Hashtable
             {
-                { "students", student_dic },
+                { "students", student_Dic },
                 { "matches", matches },
                 {"misc", various_data }
             };

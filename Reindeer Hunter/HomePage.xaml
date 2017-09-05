@@ -4,10 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Reindeer_Hunter"
-             mc:Ignorable="d" 
-             d:DesignHeight="350" d:DesignWidth="525">
+             mc:Ignorable="d" Width="643" Height="483">
     <Viewbox Stretch="Uniform">
-        <Grid Height="331" Width="493">
+        <Grid Height="455" Width="614">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="66*"/>
                 <ColumnDefinition Width="66*"/>
@@ -19,21 +18,21 @@
                 <ColumnDefinition Width="65*"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="21*"/>
-                <RowDefinition Height="28*"/>
+                <RowDefinition Height="27*"/>
+                <RowDefinition Height="37*"/>
+                <RowDefinition Height="24*"/>
+                <RowDefinition Height="84*"/>
+                <RowDefinition Height="57*"/>
+                <RowDefinition Height="78*"/>
+                <RowDefinition Height="53*"/>
                 <RowDefinition Height="39*"/>
-                <RowDefinition Height="44*"/>
-                <RowDefinition Height="44*"/>
-                <RowDefinition Height="60*"/>
-                <RowDefinition Height="41*"/>
-                <RowDefinition Height="30*"/>
-                <RowDefinition Height="43*"/>
+                <RowDefinition Height="56*"/>
             </Grid.RowDefinitions>
             <Button x:Name="process_button" Content="Matchmake" Margin="15,0,15,10" Background="Black" Foreground="White" Click="Process_Button_Click" Grid.Column="6" Grid.Row="8" Grid.ColumnSpan="2" HorizontalContentAlignment="Center"/>
-            <Button x:Name="search_button" Content="Search" Margin="0" BorderThickness="1" Grid.Column="5" VerticalContentAlignment="Top" Grid.Row="1" FontSize="16"/>
-            <TextBox x:Name="search_box" Margin="10,0,0,0" TextWrapping="Wrap" AutomationProperties.HelpText="Search for students or matches..." Text="Search for students or matches..." CharacterCasing="Upper" GotFocus="Search_Box_GotFocus" VerticalContentAlignment="Center" Grid.ColumnSpan="5" Grid.Row="1"/>
+            <Button x:Name="search_button" Content="Search" Margin="0" BorderThickness="1" Grid.Column="5" VerticalContentAlignment="Center" Grid.Row="1" FontSize="16"/>
+            <TextBox x:Name="search_box" Margin="10,0,0,0" TextWrapping="Wrap" AutomationProperties.HelpText="Search for students or matches..." Text="Search for students, homerooms or matches..." CharacterCasing="Upper" GotFocus="Search_Box_GotFocus" VerticalContentAlignment="Center" Grid.ColumnSpan="5" Grid.Row="1"/>
             <TextBox x:Name="progressDisplayBox" Margin="0" TextWrapping="Wrap" Background="Transparent" BorderBrush="#00ABADB3" IsEnabled="False" FontSize="10" Grid.ColumnSpan="2" Grid.Column="6" Grid.RowSpan="2" Grid.Row="1"/>
-            <DataGrid x:Name="MainDisplay" Margin="10,0,0,10" MouseDoubleClick="MainDisplay_MouseDoubleClick_1" AlternationCount="2" AlternatingRowBackground="#FFA8A8A8" CanUserAddRows="False" SelectionMode="Single" AutoGenerateColumns="False" Grid.ColumnSpan="6" Grid.Row="2" Grid.RowSpan="7" SelectedCellsChanged="MainDisplay_SelectedCellsChanged" SelectionUnit="Cell" IsReadOnly="True">
+            <DataGrid x:Name="MainDisplay" Margin="10,0,0,10" MouseDoubleClick="MainDisplay_MouseDoubleClick_1" AlternationCount="2" AlternatingRowBackground="#FFA8A8A8" CanUserAddRows="False" SelectionMode="Single" AutoGenerateColumns="False" Grid.ColumnSpan="6" Grid.Row="3" Grid.RowSpan="6" SelectedCellsChanged="MainDisplay_SelectedCellsChanged" SelectionUnit="Cell" IsReadOnly="True">
                 <DataGrid.DataContext>
                     <local:Match/>
                 </DataGrid.DataContext>
@@ -49,13 +48,17 @@
             </DataGrid>
             <Button x:Name="SaveButton" Content="Save" Margin="0,0,15,5" Background="#FF2EFF00" Foreground="White" IsEnabled="False" Click="SaveButton_Click" Grid.Column="7" Grid.Row="7" HorizontalContentAlignment="Center"/>
             <Button x:Name="DiscardButton" Content="Discard" IsEnabled="False" Click="DiscardButton_Click" Grid.Column="6" Grid.Row="7" Margin="15,0,0,5" HorizontalContentAlignment="Center" Background="Red"/>
-            <ComboBox Margin="0,0,0,15" Grid.ColumnSpan="2" Grid.Column="6" Grid.Row="6" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
-                <Button Content="Import Students" Click="ComboBox_ImportStudentButton" Width="123"/>
-                <Button Content="Import Match Results" Width="123"/>
+            <ComboBox Margin="5,0,0,15" Grid.ColumnSpan="2" Grid.Column="6" Grid.Row="6" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+                <Button x:Name="Import_Students_Button" Content="Import Students" Click="ComboBox_ImportStudentButton" Width="123"/>
+                <Button x:Name="Import_Match_ResultsButton" Content="Import Match Results" Width="123" Click="Import_Match_ResultsButton_Click"/>
             </ComboBox>
             <ProgressBar x:Name="progressBar" LargeChange="0" Maximum="1" Grid.ColumnSpan="8"/>
             <ListBox x:Name="PassingStudentsBox" Grid.ColumnSpan="2" Grid.RowSpan="3" Grid.Column="6" Margin="5,5,0,5" Grid.Row="3">
             </ListBox>
+            <CheckBox x:Name="Filter_Open_Matches" Content="Open" Grid.Row="2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="White" Foreground="White" Margin="5,1,5,0" BorderBrush="#00707070"/>
+            <CheckBox x:Name="Filter_Closed_Matches" Content="Closed" Grid.Row="2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="White" Foreground="White" Margin="5,1,5,0" BorderBrush="#00707070" Grid.Column="1"/>
+            <ComboBox x:Name="Filter_Round" Grid.Row="2" Grid.Column="2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+            </ComboBox>
         </Grid>
     </Viewbox>
 </UserControl>
