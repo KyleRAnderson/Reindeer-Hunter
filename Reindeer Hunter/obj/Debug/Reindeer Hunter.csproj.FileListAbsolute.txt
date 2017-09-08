@@ -24,3 +24,29 @@ E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\De
 E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\GeneratedInternalTypeHelper.g.cs
 E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\bin\Debug\itextsharp.dll
 E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\bin\Debug\itextsharp.xml
+E:\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\Reindeer Hunter.csprojResolveAssemblyReference.cache
+E:\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\HomePage.g.cs
+E:\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\SetupPage.g.cs
+E:\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\StartupWindow.g.cs
+E:\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\App.g.cs
+E:\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\GeneratedInternalTypeHelper.g.cs
+E:\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\Reindeer Hunter_MarkupCompile.cache
+E:\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\Reindeer Hunter_MarkupCompile.lref
+E:\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\Reindeer Hunter.exe
+E:\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\Reindeer Hunter.pdb
+E:\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\bin\Debug\Reindeer Hunter.exe.config
+E:\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\bin\Debug\Reindeer Hunter.exe
+E:\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\bin\Debug\Reindeer Hunter.pdb
+E:\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\bin\Debug\FileHelpers.dll
+E:\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\bin\Debug\itextsharp.dll
+E:\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\bin\Debug\Newtonsoft.Json.dll
+E:\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\bin\Debug\FileHelpers.xml
+E:\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\bin\Debug\itextsharp.xml
+E:\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\bin\Debug\Newtonsoft.Json.xml
+E:\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\HomePage.baml
+E:\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\SetupPage.baml
+E:\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\StartupWindow.baml
+E:\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\Reindeer Hunter.g.resources
+E:\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\Reindeer_Hunter.Properties.Resources.resources
+E:\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\Reindeer Hunter.csproj.GenerateResource.Cache
+E:\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\Reindeer Hunter.csproj.CoreCompileInputs.cache

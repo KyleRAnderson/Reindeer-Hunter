@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using FileHelpers;
 using System.Windows.Forms;
+using Reindeer_Hunter.Data_Classes;
 
 namespace Reindeer_Hunter
 {
@@ -22,17 +23,19 @@ namespace Reindeer_Hunter
     /// </summary>
     public partial class StartupWindow : Window
     {
-        public static School school;
-        public static Importer importer;
+
+        public School SacredHeart { get; set; }
+        public Importer ImporterSystem { get; set; }
         public static HomePage home;
 
         public StartupWindow()
         {
             InitializeComponent();
-            school = new School();
+
+            SacredHeart = new School();
             home = new HomePage(this);
-            importer = new Importer();
-            if (school.IsData())
+            ImporterSystem = new Importer();
+            if (SacredHeart.IsData())
             {
                 // TODO Figure out how to change screens.
                 SetPage(home);
@@ -60,7 +63,7 @@ namespace Reindeer_Hunter
 
         public bool ImportStudents()
         {
-            Student[] result = (Student[])importer.Import(0);
+            ImportedStudent[] result = (ImportedStudent[])ImporterSystem.Import(0);
 
             // In case of any import errors.
             if (result == null) return false;
@@ -68,77 +71,28 @@ namespace Reindeer_Hunter
             int grade = result[0].Grade;
 
             List<Student> students_to_add = new List<Student>();
-            long round = school.GetCurrRoundNo();
+            long round = SacredHeart.GetCurrRoundNo();
 
-            foreach (Student student in result)
+            foreach (ImportedStudent importedStudent in result)
             {
-                // Set the student's round number and add them to the new list
-                student.LastRoundParticipated = round;
-                student.In = true;
+                // Make new student, set the student's round number and add them to the new list
+                Student student = new Student
+                {
+                    First = importedStudent.First.ToUpper(),
+                    Last = importedStudent.Last.ToUpper(),
+                    Id = importedStudent.Id,
+                    Grade = importedStudent.Grade,
+                    Homeroom = importedStudent.Homeroom,
+                    LastRoundParticipated = round,
+                    In = true,
+                    MatchesParticipated = new List<string>()
+                };
                 students_to_add.Add(student);
             }
 
-            school.AddStudents(students_to_add);
+            if (!SacredHeart.AddStudents(students_to_add)) return false;
 
             return true;
-        }
-
-        /// <summary>
-        /// Returns the current school object.
-        /// </summary>
-        /// <returns>The school object.</returns>
-        public School GetSchool()
-        {
-            return school;
-        }
-
-        /// <summary>
-        /// Returns the importer object used for importing stuff from files
-        /// </summary>
-        /// <returns>The importer object.</returns>
-        public Importer GetImporter()
-        {
-            return importer;
-        }
-    }
-
-    /// <summary>
-    /// Class that represents each student.
-    /// </summary>
-    [DelimitedRecord(",")]
-    [IgnoreFirst(1)]
-    public class Student
-    {
-        [FieldNotEmpty]
-        public string First;
-        [FieldNotEmpty]
-        public string Last;
-        [FieldNotEmpty]
-        public int Id;
-        [FieldNotEmpty]
-        public int Grade;
-        [FieldNotEmpty]
-        public int Homeroom;
-
-        [FieldHidden]
-        // The last round the student participated in
-        public long LastRoundParticipated;
-
-        [FieldHidden]
-        public string CurrMatchID;
-
-        [FieldHidden]
-        // Indicates whether or not the student is in the hunt still
-        // True until not true.
-        public bool In;
-
-        /// <summary>
-        /// Returns the name of the student as a tuple
-        /// </summary>
-        /// <returns>The student's (FIRSTNAME, LASTNAME)</returns>
-        public Tuple<string, string> GetName ()
-        {
-            return new Tuple<string, string>(First, Last);
         }
     }
 }

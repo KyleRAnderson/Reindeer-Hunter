@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using FileHelpers;
 using System.Windows.Forms;
+using Reindeer_Hunter.Data_Classes;
 
 namespace Reindeer_Hunter
 {
@@ -39,7 +40,7 @@ namespace Reindeer_Hunter
             // Begin processing the data
             if (id == 0)
             {
-                var engine = new FileHelperEngine<Student>();
+                var engine = new FileHelperEngine<ImportedStudent>();
 
                 try
                 {

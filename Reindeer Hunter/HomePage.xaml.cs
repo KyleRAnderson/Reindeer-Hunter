@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Reindeer_Hunter.Commands;
+using Reindeer_Hunter.Data_Classes;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
@@ -27,6 +29,14 @@ namespace Reindeer_Hunter
         // Lock object for queues
         protected readonly object Key = new object();
 
+        /// <summary>
+        /// This is set to true whenever we don't want to 
+        /// fire events while we're changing checkbox values.
+        /// </summary>
+        private bool ManualFilterChange = false;
+
+        // Command for searching
+        private SearchCommand searcher = new SearchCommand();
 
         // The thread used to create the matches.
         protected static System.Threading.Thread printing_thread;
@@ -59,21 +69,57 @@ namespace Reindeer_Hunter
 
         public HomePage(StartupWindow mainWindow)
         {
-            MasterWindow = mainWindow; 
+            MasterWindow = mainWindow;
+            searcher._School = MasterWindow.SacredHeart;
+
             InitializeComponent();
+            ReloadFilters();
             ReloadItemsSource();
 
-            MasterWindow.GetSchool().MatchChangeEvent += OnMatchChangeEvent;
+            MasterWindow.SacredHeart.MatchChangeEvent += OnMatchChangeEvent;
             UpdateMatchmakeButton();
 
-            EnableDisableMatcmakeButton(MasterWindow.GetSchool().IsReadyForNextRound());
+            EnableDisableMatcmakeButton(MasterWindow.SacredHeart.IsReadyForNextRound());
             PassingStudentsBox.ItemsSource = MatchResultButtonList;
+        }
+
+        /// <summary>
+        /// Function that updates filters, specifically the round filter.
+        /// </summary>
+        private void ReloadFilters()
+        {
+            // Stop event handlers from doing stuff.
+            ManualFilterChange = true;
+            Open_Filter.IsChecked = true;
+            Closed_Filter.IsChecked = false;
+
+            List<System.Windows.Controls.CheckBox> roundCheckboxes = new List<System.Windows.Controls.CheckBox>();
+            long round = MasterWindow.SacredHeart.GetCurrRoundNo();
+            for (int a = 0; a <= round; a++)
+            {
+                System.Windows.Controls.CheckBox checkBox = new System.Windows.Controls.CheckBox
+                {
+                    Content = (a).ToString(),
+                };
+
+                // Handle events properly
+                checkBox.Checked += Filter_Change;
+                checkBox.Unchecked += Filter_Change;
+
+                if (a == round) checkBox.IsChecked = true;
+                roundCheckboxes.Add(checkBox);
+            }
+            Round_Filter.ItemsSource = roundCheckboxes;
+
+            // Re-enable the event handler code
+            ManualFilterChange = false;
         }
 
         protected virtual void OnMatchChangeEvent(object source, EventArgs e)
         {
             ReloadItemsSource();
-            bool ReadyForNextRound = MasterWindow.GetSchool().IsReadyForNextRound();
+            ReloadFilters();
+            bool ReadyForNextRound = MasterWindow.SacredHeart.IsReadyForNextRound();
             EnableDisableMatcmakeButton(ReadyForNextRound);
         }
 
@@ -82,7 +128,7 @@ namespace Reindeer_Hunter
         /// </summary>
         private void UpdateMatchmakeButton()
         {
-            string round = ((long)(MasterWindow.GetSchool().GetCurrRoundNo() + 1)).ToString();
+            string round = ((long)(MasterWindow.SacredHeart.GetCurrRoundNo() + 1)).ToString();
             process_button.Content = "Matchmake R" + round;
         }
 
@@ -117,7 +163,7 @@ namespace Reindeer_Hunter
             MatchesMade = matchesMade;
 
             // Disable result inputting just after matches have been made.
-            Import_Match_ResultsButton.IsEnabled = !matchesMade;
+            Import_Match_Results_Button.IsEnabled = !matchesMade;
             if (matchesMade)
             {
                 EnableSaveDiscardButtons();
@@ -133,7 +179,7 @@ namespace Reindeer_Hunter
             comms = new Queue<Message>();
 
             // Instantiate school object for simplicity
-            School school = MasterWindow.GetSchool();
+            School school = MasterWindow.SacredHeart;
 
             // Create the matchmaker and then assign the thread target to it
             // +1 to current round because we want next round's matches.
@@ -176,7 +222,7 @@ namespace Reindeer_Hunter
             comms_print = new Queue<PrintMessage>();
 
             // Instantiate school object for simplicity
-            School school = MasterWindow.GetSchool();
+            School school = MasterWindow.SacredHeart;
 
             // Create the matchmaker and then assign the thread target to it
             // +1 to current round because we want next round's matches.
@@ -328,7 +374,7 @@ namespace Reindeer_Hunter
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            School school = MasterWindow.GetSchool();
+            School school = MasterWindow.SacredHeart;
             if (MatchesMade)
             {
                 school.IncreaseCurrRoundNo();
@@ -338,7 +384,7 @@ namespace Reindeer_Hunter
             }
             else
             {
-                MasterWindow.GetSchool().AddMatchResults(MatchResultsList);
+                MasterWindow.SacredHeart.AddMatchResults(MatchResultsList);
                 RemoveAllResults();
             }
             DisableSaveDiscardButtons();
@@ -361,14 +407,14 @@ namespace Reindeer_Hunter
         /// </summary>
         private void ReloadItemsSource()
         {
-            MainDisplay.ItemsSource = MasterWindow.GetSchool().GetOpenMatchesList();
+            MainDisplay.ItemsSource = MasterWindow.SacredHeart.GetMatchesWithFilter(GetFilters());
         }
 
         private void MainDisplay_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
         {
             // Get the match 
             Match row = (Match)MainDisplay.SelectedItems[0];
-            bool validMatch = MasterWindow.GetSchool().MatchIsOpen(row);
+            bool validMatch = MasterWindow.SacredHeart.MatchIsOpen(row);
 
             // If the match is closed, error
             if (!validMatch)
@@ -522,7 +568,7 @@ namespace Reindeer_Hunter
         private void Import_Match_ResultsButton_Click(object sender, RoutedEventArgs e)
         {
             List<ResultStudent> results = new List<ResultStudent>();
-            ResultStudent[] inputtedResults = (ResultStudent[])MasterWindow.GetImporter().Import(1);
+            ResultStudent[] inputtedResults = (ResultStudent[])MasterWindow.ImporterSystem.Import(1);
 
             // In case of any import errors.
             if (inputtedResults == null) return;
@@ -532,12 +578,67 @@ namespace Reindeer_Hunter
                 results.Add(student);
             }
 
-            MasterWindow.GetSchool().AddMatchResults(results);
+            MasterWindow.SacredHeart.AddMatchResults(results);
         }
 
         private void Search_Button_Click(object sender, EventArgs e)
         {
+            List<Match> results = searcher.Search(search_box.Text, GetFilters());
+            if (results != null) MainDisplay.ItemsSource = results;
+        }
 
+        /// <summary>
+        /// Called whenever any of the filters are changed.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Filter_Change(object sender, EventArgs e)
+        {
+            if (ManualFilterChange) return;
+            ReloadItemsSource();
+        }
+
+        private Filter GetFilters()
+        {
+            List<long> roundFilterList = new List<long>();
+
+            foreach (System.Windows.Controls.CheckBox checkbox in (
+                List<System.Windows.Controls.CheckBox>)Round_Filter.ItemsSource)
+            {
+                if ((bool)checkbox.IsChecked) roundFilterList.Add(long.Parse(checkbox.Content.ToString()));
+            }
+
+            return new Filter
+            {
+                Closed = (bool)Closed_Filter.IsChecked,
+                Open = (bool)Open_Filter.IsChecked,
+                Rounds = roundFilterList
+            };
+        }
+
+        private void Clear_Filters_Button_Click(object sender, RoutedEventArgs e)
+        {
+            // Prevent execution of Filter_Change by setting ManualFilterChange to true
+            ManualFilterChange = true;
+
+            Open_Filter.IsChecked = true;
+            Closed_Filter.IsChecked = false;
+            string currRoundNo = MasterWindow.SacredHeart.GetCurrRoundNo().ToString();
+
+            foreach (System.Windows.Controls.CheckBox checkbox in Round_Filter.ItemsSource)
+            {
+                if (checkbox.Content.ToString() == currRoundNo) checkbox.IsChecked = true;
+                else checkbox.IsChecked = false;
+            }
+
+            ManualFilterChange = false;
+            Filter_Change(this, new EventArgs());
+
+        }
+
+        private void HelpMenuButton_Click(object sender, RoutedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://github.com/eAUE/Reindeer-Hunter/wiki");
         }
     }
 }

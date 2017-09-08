@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.IO;
 using System.Collections;
+using Reindeer_Hunter.Data_Classes;
 
 namespace Reindeer_Hunter
 {

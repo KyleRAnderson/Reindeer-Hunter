@@ -96,17 +96,25 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Commands\MatchMake.cs" />
+    <Compile Include="Commands\SearchCommand.cs" />
+    <Compile Include="Data Classes\Filter.cs" />
+    <Compile Include="Data Classes\ImportedStudent.cs" />
+    <Compile Include="Data Classes\SearchQuery.cs" />
+    <Compile Include="Data Classes\Student.cs" />
     <Compile Include="DataFileIO.cs" />
     <Compile Include="HomePage.xaml.cs">
       <DependentUpon>HomePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="InstantPrinter.cs" />
-    <Compile Include="Match.cs" />
+    <Compile Include="Data Classes\Match.cs" />
+    <Compile Include="Managers\MatchManager.cs" />
+    <Compile Include="Managers\StudentManager.cs" />
     <Compile Include="Matcher.cs" />
-    <Compile Include="MatchGuiResult.cs" />
-    <Compile Include="PrintMessage.cs" />
+    <Compile Include="Data Classes\MatchGuiResult.cs" />
+    <Compile Include="Data Classes\PrintMessage.cs" />
     <Compile Include="Importer.cs" />
-    <Compile Include="ResultStudent.cs" />
+    <Compile Include="Data Classes\ResultStudent.cs" />
     <Compile Include="School.cs" />
     <Compile Include="SetupPage.xaml.cs">
       <DependentUpon>SetupPage.xaml</DependentUpon>
@@ -144,7 +152,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Reindeer.ico" />
+    <Resource Include="Resources\Reindeer.ico" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">
@@ -157,6 +165,12 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\student.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\clipboard.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

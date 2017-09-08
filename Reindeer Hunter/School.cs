@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Reindeer_Hunter.Commands;
+using Reindeer_Hunter.Data_Classes;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -106,6 +108,111 @@ namespace Reindeer_Hunter
                     homeroom_directory.Add(student.Homeroom, hmrmList);
                 }
             }
+        }
+
+        /// <summary>
+        /// Tells you if a given match complies with the given filters.
+        /// </summary>
+        /// <param name="match">The match to test the filters against.</param>
+        /// <param name="filter">The filter</param>
+        /// <returns>True when the match complies, false otherwise.</returns>
+        private bool CompliesWithFilters(Match match, Filter filter)
+        {
+            if (((match.Closed && filter.Closed) || !match.Closed && filter.Open)
+                && filter.Rounds.Contains(match.Round)) return true;
+            else return false;
+        }
+
+        /// <summary>
+        /// Command to give a list of matches relevant to the search
+        /// </summary>
+        /// <param name="query">SearchQuery object with search parameters.</param>
+        /// <returns>List of matches relevant to the search</returns>
+        public List<Match> GetSearchResults(SearchQuery query, Filter filter)
+        {
+            List<Match> resultsList = new List<Match>();
+
+            // If match id provided, get that match's info if it exists, else error.
+            if (query.MatchId != "")
+            {
+                if (match_directory.ContainsKey(query.MatchId) 
+                    && CompliesWithFilters(match_directory[query.MatchId], filter)) resultsList.
+                        Add(match_directory[query.MatchId].Clone());
+                else return null;
+            }
+
+            // If homeroom provided, get the students in that homeroom, else error.
+            else if (query.Homeroom != 0)
+            {
+                if (!homeroom_directory.ContainsKey(query.Homeroom)) return null;
+                List<Student> homeroomList = homeroom_directory[query.Homeroom];
+
+                // Make nonexistent matches for each student to be displayed.
+                foreach (Student student in homeroomList)
+                {
+                    Match fakeMatch = new Match
+                    {
+                        MatchId = student.CurrMatchID,
+                        Id1 = student.Id,
+                        First1 = student.First,
+                        Last1 = student.Last,
+                        Round = student.LastRoundParticipated
+                    };
+
+                    resultsList.Add(fakeMatch);
+                }
+            }
+
+            // A student id was provided. Return null when it cannot be found
+            else if (query.StudentNo != 0)
+            {
+                if (!student_directory.ContainsKey(query.StudentNo)) return null;
+                Student student = student_directory[query.StudentNo];
+                foreach (string matchId in student.MatchesParticipated)
+                {
+                    // Check for filter compliance. If it complies, return it. 
+                    if (CompliesWithFilters(match_directory[matchId], filter))
+                        resultsList.Add(match_directory[matchId].Clone());
+                }
+            }
+
+            // The only remaining possibility is that a name was inputted. Find it, else error.
+            else
+            {
+                if (!studentName_directory.ContainsKey(query.StudentName)) return null;
+
+                // If there is more than one student with that name, it will be a list. Return a fake match for each student.
+                if (studentName_directory[query.StudentName] is List<Student>)
+                {
+                    foreach (Student student in (List<Student>)studentName_directory[query.StudentName])
+                    {
+                        Match fakeMatch = new Match
+                        {
+                            Id1 = student.Id,
+                            First1 = student.First,
+                            Last1 = student.Last,
+                            MatchId = student.CurrMatchID,
+                            Round = student.LastRoundParticipated
+                        };
+                        resultsList.Add(fakeMatch);
+                    }
+                }
+
+                // Otherwise it was a single student, add the matches they've participated in.
+                else
+                {
+                    Student student = (Student)studentName_directory[query.StudentName];
+                    foreach (string matchId in student.MatchesParticipated)
+                    {
+                        // Check for filter compliance. If it complies, return it. 
+                        if (CompliesWithFilters(match_directory[matchId], filter))
+                            resultsList.Add(match_directory[matchId].Clone());
+                    }
+                }
+                
+            }
+
+            return resultsList;
         }
 
         /// <summary>
@@ -293,6 +400,28 @@ namespace Reindeer_Hunter
             }
 
             return relevantMatches;
+        }
+
+        /// <summary>
+        /// Gives a copy of the match list containing only matches matching the filter.
+        /// </summary>
+        /// <param name="filter">The filter object to use to filter through the matches</param>
+        /// <returns>A lit of the matches that meet the filter's criteria.</returns>
+        public List<Match> GetMatchesWithFilter(Filter filter)
+        {
+            List<Match> matchList = GetMatchList();
+            List<Match> returnList = new List<Match>();
+
+            foreach (Match match in matchList)
+            {
+                if (((match.Closed && filter.Closed) || (!match.Closed && filter.Open)) 
+                    && filter.Rounds.Contains(match.Round))
+                {
+                    returnList.Add(match);   
+                }
+            }
+
+            return returnList;
         }
 
         private int GetStudentId(string first, string last, int homeroom)
@@ -488,7 +617,8 @@ namespace Reindeer_Hunter
         /// Adds students to the master student dictionary
         /// </summary>
         /// <param name="students">The list of students to add.</param>
-        public void AddStudents(List<Student> students)
+        /// <returns>Boolean representing if the operation completed successfully.</returns>
+        public bool AddStudents(List<Student> students)
         {
             // So that we can rollback any changes.
             Dictionary<int, Student> safeStudent_directory = new Dictionary<int, Student>(student_directory);
@@ -553,11 +683,12 @@ namespace Reindeer_Hunter
                 System.Windows.Forms.MessageBox.Show("A student with ID " + id.ToString() + 
                     " already exists, or two students with that id were just imported.",
                     "Duplicate Student ID", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+                return false;
             }
 
             ReplaceOldStuDicWithNewOne(safeStudent_directory);
             Save();
+            return true;
         }
 
         /// <summary>
