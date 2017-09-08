@@ -95,7 +95,7 @@ namespace Reindeer_Hunter
 
             List<System.Windows.Controls.CheckBox> roundCheckboxes = new List<System.Windows.Controls.CheckBox>();
             long round = MasterWindow.SacredHeart.GetCurrRoundNo();
-            for (int a = 0; a <= round; a++)
+            for (int a = 1; a <= round; a++)
             {
                 System.Windows.Controls.CheckBox checkBox = new System.Windows.Controls.CheckBox
                 {
@@ -389,6 +389,7 @@ namespace Reindeer_Hunter
             }
             DisableSaveDiscardButtons();
             MatchResultsList.Clear();
+            ReloadItemsSource();
         }
 
         private void DiscardButton_Click(object sender, RoutedEventArgs e)
