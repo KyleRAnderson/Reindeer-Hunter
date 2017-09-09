@@ -569,7 +569,7 @@ namespace Reindeer_Hunter
         private void Import_Match_ResultsButton_Click(object sender, RoutedEventArgs e)
         {
             List<ResultStudent> results = new List<ResultStudent>();
-            ResultStudent[] inputtedResults = (ResultStudent[])MasterWindow.ImporterSystem.Import(1);
+            object[] inputtedResults = MasterWindow.ImporterSystem.Import(1).ElementAt<object[]>(0);
 
             // In case of any import errors.
             if (inputtedResults == null) return;

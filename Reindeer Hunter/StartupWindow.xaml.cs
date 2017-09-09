@@ -63,31 +63,31 @@ namespace Reindeer_Hunter
 
         public bool ImportStudents()
         {
-            ImportedStudent[] result = (ImportedStudent[])ImporterSystem.Import(0);
-
-            // In case of any import errors.
-            if (result == null) return false;
-
-            int grade = result[0].Grade;
-
+            List<object[]> resultList = ImporterSystem.Import(0);
             List<Student> students_to_add = new List<Student>();
             long round = SacredHeart.GetCurrRoundNo();
 
-            foreach (ImportedStudent importedStudent in result)
+            foreach (object[] result in resultList)
             {
-                // Make new student, set the student's round number and add them to the new list
-                Student student = new Student
+                // In case of any import errors.
+                if (result == null) return false;
+
+                foreach (ImportedStudent importedStudent in result)
                 {
-                    First = importedStudent.First.ToUpper(),
-                    Last = importedStudent.Last.ToUpper(),
-                    Id = importedStudent.Id,
-                    Grade = importedStudent.Grade,
-                    Homeroom = importedStudent.Homeroom,
-                    LastRoundParticipated = round,
-                    In = true,
-                    MatchesParticipated = new List<string>()
-                };
-                students_to_add.Add(student);
+                    // Make new student, set the student's round number and add them to the new list
+                    Student student = new Student
+                    {
+                        First = importedStudent.First.ToUpper(),
+                        Last = importedStudent.Last.ToUpper(),
+                        Id = importedStudent.Id,
+                        Grade = importedStudent.Grade,
+                        Homeroom = importedStudent.Homeroom,
+                        LastRoundParticipated = round,
+                        In = true,
+                        MatchesParticipated = new List<string>()
+                    };
+                    students_to_add.Add(student);
+                }
             }
 
             if (!SacredHeart.AddStudents(students_to_add)) return false;
