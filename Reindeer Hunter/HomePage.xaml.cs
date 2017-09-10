@@ -397,6 +397,9 @@ namespace Reindeer_Hunter
 
         private void MainDisplay_MouseDoubleClick_1(object sender, MouseButtonEventArgs e)
         {
+            // Because if matches have just been made, they don't actually exist yet.
+            if (MatchesMade) return;
+
             Match match = (Match)MainDisplay.CurrentCell.Item;
             int currentColumnIndex = MainDisplay.CurrentCell.Column.DisplayIndex;
 
