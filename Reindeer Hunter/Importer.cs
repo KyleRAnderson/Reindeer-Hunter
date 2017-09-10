@@ -12,7 +12,6 @@ namespace Reindeer_Hunter
     public class Importer
     {
         private int IMPORT_STUDENTS = 0;
-        private int IMPORT_RESULTS = 1;
 
         /// <summary>
         /// Used to import data from a .csv file
@@ -98,8 +97,10 @@ namespace Reindeer_Hunter
                     }
                     else
                     {
-                        List<object[]> returnList = new List<object[]>();
-                        returnList.Add(result);
+                        List<object[]> returnList = new List<object[]>
+                        {
+                            result
+                        };
                         return returnList;
                     }
                 }

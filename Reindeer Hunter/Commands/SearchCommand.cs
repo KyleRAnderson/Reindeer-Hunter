@@ -16,6 +16,12 @@ namespace Reindeer_Hunter.Commands
     {
         public School _School { get; set; }
         private string UserInput { get; set; }
+        private SearchQuery Query;
+
+        public SearchQuery CurrentQuery
+        {
+            get { return Query; }
+        }
 
         /// <summary>
         /// Function for displaying error message when no results found.
@@ -86,14 +92,22 @@ namespace Reindeer_Hunter.Commands
             }
 
             UserInput = UserInput.Trim();
-            SearchQuery query = DecryptString();
-            if (query == null)
+            Query = DecryptString();
+            if (Query == null)
             {
                 NotFound();
                 return null;
             }
 
-            return _School.GetSearchResults(query, filter);
+            return _School.GetSearchResults(Query, filter);
+        }
+
+        /// <summary>
+        /// Function to clear the query object to effectively "clear" the search.
+        /// </summary>
+        public void ClearSearch()
+        {
+            Query = null;
         }
     }
 }

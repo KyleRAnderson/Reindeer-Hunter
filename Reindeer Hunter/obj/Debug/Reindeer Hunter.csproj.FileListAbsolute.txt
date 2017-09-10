@@ -21,7 +21,6 @@ E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\De
 E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\SetupPage.g.cs
 E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\HomePage.baml
 E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\SetupPage.baml
-E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\GeneratedInternalTypeHelper.g.cs
 E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\bin\Debug\itextsharp.dll
 E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\bin\Debug\itextsharp.xml
 E:\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\Reindeer Hunter.csprojResolveAssemblyReference.cache
@@ -50,3 +49,10 @@ E:\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\Reindee
 E:\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\Reindeer_Hunter.Properties.Resources.resources
 E:\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\Reindeer Hunter.csproj.GenerateResource.Cache
 E:\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\Reindeer Hunter.csproj.CoreCompileInputs.cache
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\DataCards\MatchCard.g.cs
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\DataCards\StudentCard.g.cs
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\DataCards\DataCardWindow.g.cs
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\DataCards\MatchCard.baml
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\DataCards\StudentCard.baml
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\DataCards\DataCardWindow.baml
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\GeneratedInternalTypeHelper.g.cs

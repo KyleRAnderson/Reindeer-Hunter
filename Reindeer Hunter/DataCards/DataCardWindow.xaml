@@ -1,0 +1,8 @@
+﻿<Window x:Class="Reindeer_Hunter.DataCardWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Reindeer_Hunter"
+        mc:Ignorable="d"
+        Title="Properties" ResizeMode="CanResizeWithGrip" Icon="/Reindeer Hunter;component/Resources/student.ico" Width="585" Height="450"/>

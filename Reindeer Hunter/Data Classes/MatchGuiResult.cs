@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace Reindeer_Hunter
+namespace Reindeer_Hunter.Data_Classes
 {
     /// <summary>
     /// A class to contain the results inputted from the datagrid MainDisplay

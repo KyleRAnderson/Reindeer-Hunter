@@ -52,7 +52,7 @@ namespace Reindeer_Hunter
         /* Used to communicate between the main thread (this thread)
          * and the instant printer thread
          */
-        protected static System.Collections.Generic.Queue<Reindeer_Hunter.PrintMessage> comms_print;
+        protected static System.Collections.Generic.Queue<Reindeer_Hunter.Data_Classes.PrintMessage> comms_print;
 
         /* True when matches were just made so that we know when 
          * to add matches vs when to save changes
@@ -73,7 +73,7 @@ namespace Reindeer_Hunter
             searcher._School = MasterWindow.SacredHeart;
 
             InitializeComponent();
-            ReloadFilters();
+            ResetFilters();
             ReloadItemsSource();
 
             MasterWindow.SacredHeart.MatchChangeEvent += OnMatchChangeEvent;
@@ -84,9 +84,9 @@ namespace Reindeer_Hunter
         }
 
         /// <summary>
-        /// Function that updates filters, specifically the round filter.
+        /// Function that resets filters to default
         /// </summary>
-        private void ReloadFilters()
+        private void ResetFilters()
         {
             // Stop event handlers from doing stuff.
             ManualFilterChange = true;
@@ -115,10 +115,38 @@ namespace Reindeer_Hunter
             ManualFilterChange = false;
         }
 
+        /// <summary>
+        /// Function that refreshes the round filter
+        /// </summary>
+        private void RefreshRoundFilter()
+        {
+            ManualFilterChange = true;
+
+            List<System.Windows.Controls.CheckBox> roundCheckboxes = new List<System.Windows.Controls.CheckBox>();
+            long round = MasterWindow.SacredHeart.GetCurrRoundNo();
+            for (int a = 1; a <= round; a++)
+            {
+                System.Windows.Controls.CheckBox checkBox = new System.Windows.Controls.CheckBox
+                {
+                    Content = (a).ToString(),
+                };
+
+                // Handle events properly
+                checkBox.Checked += Filter_Change;
+                checkBox.Unchecked += Filter_Change;
+
+                if (a == round) checkBox.IsChecked = true;
+                roundCheckboxes.Add(checkBox);
+            }
+            Round_Filter.ItemsSource = roundCheckboxes;
+
+            ManualFilterChange = false;
+        }
+
         protected virtual void OnMatchChangeEvent(object source, EventArgs e)
         {
             ReloadItemsSource();
-            ReloadFilters();
+            RefreshRoundFilter();
             bool ReadyForNextRound = MasterWindow.SacredHeart.IsReadyForNextRound();
             EnableDisableMatcmakeButton(ReadyForNextRound);
         }
@@ -369,7 +397,31 @@ namespace Reindeer_Hunter
 
         private void MainDisplay_MouseDoubleClick_1(object sender, MouseButtonEventArgs e)
         {
-            // TODO insert the code for looking at what they clicked and then search it and display it in the data popup.
+            Match match = (Match)MainDisplay.CurrentCell.Item;
+            int currentColumnIndex = MainDisplay.CurrentCell.Column.DisplayIndex;
+
+            DataCardWindow window;
+            // Indicating that the user double clicked on the first student's name
+            if (currentColumnIndex == 1 || currentColumnIndex == 2)
+            {
+                window = new DataCardWindow(MasterWindow.SacredHeart, studentId: match.Id1);
+            }
+
+            // Indicating they hit the match id
+            else if (currentColumnIndex == 3)
+            {
+                window = new DataCardWindow(MasterWindow.SacredHeart, matchId: match.MatchId);
+            }
+
+            // Indicating they hit the second student's name
+            else if (currentColumnIndex == 4 || currentColumnIndex == 5)
+            {
+                window = new DataCardWindow(MasterWindow.SacredHeart, studentId: match.Id2);
+            }
+            else return;
+
+            // If we didn't return, show the window as a dialog.
+            window.ShowDialog();
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
@@ -389,7 +441,6 @@ namespace Reindeer_Hunter
             }
             DisableSaveDiscardButtons();
             MatchResultsList.Clear();
-            ReloadItemsSource();
         }
 
         private void DiscardButton_Click(object sender, RoutedEventArgs e)
@@ -408,7 +459,8 @@ namespace Reindeer_Hunter
         /// </summary>
         private void ReloadItemsSource()
         {
-            MainDisplay.ItemsSource = MasterWindow.SacredHeart.GetMatchesWithFilter(GetFilters());
+            if (searcher.CurrentQuery != null) MainDisplay.ItemsSource = MasterWindow.SacredHeart.GetSearchResults(searcher.CurrentQuery, GetFilters());
+            else MainDisplay.ItemsSource = MasterWindow.SacredHeart.GetMatchesWithFilter(GetFilters());
         }
 
         private void MainDisplay_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
@@ -558,12 +610,9 @@ namespace Reindeer_Hunter
 
         internal void RemoveAllResults()
         {
-            // Reset the display to all open matche
-            ReloadItemsSource();
             MatchResultsList.Clear();
             MatchResultButtonList.Clear();
             PassingStudentsBox.Items.Refresh();
-
         }
 
         private void Import_Match_ResultsButton_Click(object sender, RoutedEventArgs e)
@@ -621,6 +670,8 @@ namespace Reindeer_Hunter
         {
             // Prevent execution of Filter_Change by setting ManualFilterChange to true
             ManualFilterChange = true;
+
+            searcher.ClearSearch();
 
             Open_Filter.IsChecked = true;
             Closed_Filter.IsChecked = false;

@@ -290,6 +290,24 @@ namespace Reindeer_Hunter
         }
 
         /// <summary>
+        /// Function for reopening the given match. Make sure that the match isn't a pass match!
+        /// </summary>
+        /// <param name="MatchId">The id of the match to reopen.</param>
+        public void ReopenMatch(string MatchId)
+        {
+            // Reset required match and student parameters
+            Match match = match_directory[MatchId];
+            match.Closed = false;
+            match.Pass1 = false;
+            match.Pass2 = false;
+            student_directory[match.Id1].In = true;student_directory[match.Id2].In = true;
+
+            // Save and call match change event.
+            Save();
+            MatchChangeEvent(this, new EventArgs());
+        }
+
+        /// <summary>
         /// Function for adding match results from the imported csv file.
         /// </summary>
         /// <param name="resultsStudents">List of ResultStudents containing the results.</param>
@@ -422,6 +440,16 @@ namespace Reindeer_Hunter
             }
 
             return returnList;
+        }
+
+        public Student GetStudent(int id)
+        {
+            return student_directory[id].Clone();
+        }
+
+        public Match GetMatch(string id)
+        {
+            return match_directory[id].Clone();
         }
 
         private int GetStudentId(string first, string last, int homeroom)

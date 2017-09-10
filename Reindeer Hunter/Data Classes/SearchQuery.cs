@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Reindeer_Hunter.Commands
+namespace Reindeer_Hunter.Data_Classes
 {
     /// <summary>
     /// Class for containing decrypted search results

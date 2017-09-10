@@ -1,9 +1,10 @@
-﻿<UserControl x:Class="Reindeer_Hunter.HomePage"
+﻿<UserControl
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Reindeer_Hunter"
+             xmlns:Data_Classes="clr-namespace:Reindeer_Hunter.Data_Classes" x:Class="Reindeer_Hunter.HomePage"
              mc:Ignorable="d" Foreground="White" Background="White">
     <Viewbox Stretch="Uniform">
         <Grid Height="455" Width="614">
@@ -34,9 +35,6 @@
             <TextBox x:Name="search_box" Margin="10,0,0,0" TextWrapping="Wrap" AutomationProperties.HelpText="Search for students or matches..." Text="Search for students, homerooms or matches..." GotFocus="Search_Box_GotFocus" VerticalContentAlignment="Center" Grid.ColumnSpan="5" Grid.Row="2" CharacterCasing="Upper"/>
             <TextBox x:Name="progressDisplayBox" Margin="0" TextWrapping="Wrap" Background="Transparent" BorderBrush="#00ABADB3" IsEnabled="False" FontSize="10" Grid.ColumnSpan="2" Grid.Column="6" Grid.RowSpan="2" Grid.Row="2"/>
             <DataGrid x:Name="MainDisplay" Margin="10,0,0,10" MouseDoubleClick="MainDisplay_MouseDoubleClick_1" AlternationCount="2" AlternatingRowBackground="#FFA8A8A8" CanUserAddRows="False" SelectionMode="Single" AutoGenerateColumns="False" Grid.ColumnSpan="6" Grid.Row="3" Grid.RowSpan="7" SelectedCellsChanged="MainDisplay_SelectedCellsChanged" SelectionUnit="Cell" IsReadOnly="True">
-                <DataGrid.DataContext>
-                    <local:Match/>
-                </DataGrid.DataContext>
                 <DataGrid.Columns>
                     <DataGridCheckBoxColumn Binding="{Binding Pass1}" ClipboardContentBinding="{x:Null}" Header="Pass"/>
                     <DataGridTextColumn Binding="{Binding First1}" ClipboardContentBinding="{x:Null}" Header="First" Width="*" IsReadOnly="True"/>
@@ -46,16 +44,17 @@
                     <DataGridTextColumn Binding="{Binding Last2}" ClipboardContentBinding="{x:Null}" Header="Last" Width="*" IsReadOnly="True"/>
                     <DataGridCheckBoxColumn Binding="{Binding Pass2}" ClipboardContentBinding="{Binding Pass2}" Header="Pass"/>
                 </DataGrid.Columns>
+                <DataGrid.DataContext>
+                    <Data_Classes:Match/>
+                </DataGrid.DataContext>
             </DataGrid>
             <Button x:Name="SaveButton" Content="Save" Margin="0,0,15,5" Background="#FF2EFF00" Foreground="White" IsEnabled="False" Click="SaveButton_Click" Grid.Column="7" Grid.Row="8" HorizontalContentAlignment="Center"/>
             <Button x:Name="DiscardButton" Content="Discard" IsEnabled="False" Click="DiscardButton_Click" Grid.Column="6" Grid.Row="8" Margin="15,0,0,5" HorizontalContentAlignment="Center" Background="Red"/>
             <ProgressBar x:Name="progressBar" LargeChange="0" Maximum="1" Grid.ColumnSpan="8" Grid.Row="1"/>
-            <ListBox x:Name="PassingStudentsBox" Grid.ColumnSpan="2" Grid.RowSpan="4" Grid.Column="6" Margin="5,5,0,5" Grid.Row="4" BorderBrush="#00ABADB3">
-            </ListBox>
+            <ListBox x:Name="PassingStudentsBox" Grid.ColumnSpan="2" Grid.RowSpan="4" Grid.Column="6" Margin="5,5,0,5" Grid.Row="4" BorderBrush="#00ABADB3"/>
             <DockPanel Grid.ColumnSpan="8" LastChildFill="False" Background="#FFF0F0F0">
                 <Menu x:Name="menu" VerticalAlignment="Top" HorizontalAlignment="Left" DockPanel.Dock="Top">
-                    <MenuItem Header="File">
-                    </MenuItem>
+                    <MenuItem Header="File"/>
                     <MenuItem Header="Import">
                         <MenuItem Header="Students" Click="ComboBox_ImportStudentButton">
                             <MenuItem.Icon>

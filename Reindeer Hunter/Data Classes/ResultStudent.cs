@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using FileHelpers;
 
-namespace Reindeer_Hunter
+namespace Reindeer_Hunter.Data_Classes
 {
     /// <summary>
     /// Class for recording results from a .csv file.

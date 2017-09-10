@@ -80,6 +80,24 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Data Classes\DataRow.cs" />
+    <Compile Include="DataCards\MatchCard.xaml.cs">
+      <DependentUpon>MatchCard.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DataCards\StudentCard.xaml.cs">
+      <DependentUpon>StudentCard.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DataCards\DataCardWindow.xaml.cs">
+      <DependentUpon>DataCardWindow.xaml</DependentUpon>
+    </Compile>
+    <Page Include="DataCards\MatchCard.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DataCards\StudentCard.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="HomePage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -123,6 +141,10 @@
       <DependentUpon>StartupWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="DataCards\DataCardWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

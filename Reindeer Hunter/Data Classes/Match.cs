@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Reindeer_Hunter
+namespace Reindeer_Hunter.Data_Classes
 {
     public class Match
     {

@@ -56,5 +56,21 @@ namespace Reindeer_Hunter.Data_Classes
         {
             return new Tuple<string, string>(First, Last);
         }
+
+        public Student Clone()
+        {
+            return new Student
+            {
+                First = First,
+                Last = Last,
+                LastRoundParticipated = LastRoundParticipated,
+                MatchesParticipated = MatchesParticipated,
+                CurrMatchID = CurrMatchID,
+                Homeroom = Homeroom,
+                Grade = Grade,
+                Id = Id,
+                In = In
+            };
+        }
     }
 }
