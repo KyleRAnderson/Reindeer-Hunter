@@ -47,11 +47,18 @@ namespace Reindeer_Hunter
             {
                 // Set up the program if it has no data yet.
                 FirstTimeSetup();
-                data = dataFile.Read(); // TODO Do this better?
+                data = dataFile.Read();
             }
 
             // Declare these for simplicity and ease of use.
             student_directory = (Dictionary<int, Student>)data[StudentKey];
+            foreach (Student student in student_directory.Values)
+            {
+                /* The first value is null when the student has not yet participated in any matches later. 
+                 * This is a problem later. */
+                if (student.MatchesParticipated[0] == null) student.MatchesParticipated.RemoveAt(0);
+            }
+
             CreateStudentDirs();
             match_directory = (Dictionary <string,  Match > )data["matches"];
             misc = (Hashtable)data["misc"];
@@ -67,7 +74,7 @@ namespace Reindeer_Hunter
             foreach (Student student in student_directory.Values)
             {
                 // Start with the name
-                string name = student.First + " " + student.Last;
+                string name = student.First.ToUpper() + " " + student.Last.ToUpper();
                 try
                 {
                     studentName_directory.Add(name, student);
@@ -132,7 +139,7 @@ namespace Reindeer_Hunter
         {
             List<Match> resultsList = new List<Match>();
 
-            // If match id provided, get that match's info if it exists, else error.
+            // If match id is provided, get that match's info if it exists, else error.
             if (query.MatchId != "")
             {
                 if (match_directory.ContainsKey(query.MatchId) 
@@ -186,15 +193,7 @@ namespace Reindeer_Hunter
                 {
                     foreach (Student student in (List<Student>)studentName_directory[query.StudentName])
                     {
-                        Match fakeMatch = new Match
-                        {
-                            Id1 = student.Id,
-                            First1 = student.First,
-                            Last1 = student.Last,
-                            MatchId = student.CurrMatchID,
-                            Round = student.LastRoundParticipated
-                        };
-                        resultsList.Add(fakeMatch);
+                        resultsList.Add(CreateFakeMatch(student));
                     }
                 }
 
@@ -202,17 +201,45 @@ namespace Reindeer_Hunter
                 else
                 {
                     Student student = (Student)studentName_directory[query.StudentName];
-                    foreach (string matchId in student.MatchesParticipated)
+
+                    // In case they haven't had a match yet
+                    if (student.MatchesParticipated.Count() == 0)
                     {
-                        // Check for filter compliance. If it complies, return it. 
-                        if (CompliesWithFilters(match_directory[matchId], filter))
-                            resultsList.Add(match_directory[matchId].Clone());
+                        // Make a fake match for the student if they have not yet had a match
+                        resultsList.Add(CreateFakeMatch(student));
+                    }
+                    else {
+                        foreach (string matchId in student.MatchesParticipated)
+                        {
+                            // Check for filter compliance. If it complies, return it. 
+                            if (CompliesWithFilters(match_directory[matchId], filter))
+                                resultsList.Add(match_directory[matchId].Clone());
+                        }
                     }
                 }
                 
             }
 
             return resultsList;
+        }
+
+        /// <summary>
+        /// Function to create a fake match for the given student.
+        /// Fake matches are used when we want to display a single student's info on the mainDisplay
+        /// </summary>
+        /// <param name="student">The student data to create a fake match with</param>
+        /// <returns>A fake match for the given student.</returns>
+        private Match CreateFakeMatch(Student student)
+        {
+            return new Match
+            {
+                Id1 = student.Id,
+                First1 = student.First,
+                Last1 = student.Last,
+                MatchId = "",
+                Round = student.LastRoundParticipated,
+                Id2 = 0,
+            };
         }
 
         /// <summary>

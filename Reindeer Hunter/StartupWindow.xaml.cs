@@ -61,11 +61,18 @@ namespace Reindeer_Hunter
             this.Content = page;
         }
 
+        /// <summary>
+        /// Prompts the user to import students from .csv file(s)
+        /// </summary>
+        /// <returns>A true or false value, true if the operation succeeded, false otherwise.</returns>
         public bool ImportStudents()
         {
             List<object[]> resultList = ImporterSystem.Import(0);
             List<Student> students_to_add = new List<Student>();
             long round = SacredHeart.GetCurrRoundNo();
+
+            // In case of problems.
+            if (resultList == null) return false;
 
             foreach (object[] result in resultList)
             {
@@ -77,8 +84,8 @@ namespace Reindeer_Hunter
                     // Make new student, set the student's round number and add them to the new list
                     Student student = new Student
                     {
-                        First = importedStudent.First.ToUpper(),
-                        Last = importedStudent.Last.ToUpper(),
+                        First = importedStudent.First,
+                        Last = importedStudent.Last,
                         Id = importedStudent.Id,
                         Grade = importedStudent.Grade,
                         Homeroom = importedStudent.Homeroom,

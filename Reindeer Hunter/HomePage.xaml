@@ -56,7 +56,7 @@
                 <Menu x:Name="menu" VerticalAlignment="Top" HorizontalAlignment="Left" DockPanel.Dock="Top">
                     <MenuItem Header="File"/>
                     <MenuItem Header="Import">
-                        <MenuItem Header="Students" Click="ComboBox_ImportStudentButton">
+                        <MenuItem x:Name="Import_Students_Button" Header="Students" Click="ComboBox_ImportStudentButton">
                             <MenuItem.Icon>
                                 <Image Source="Resources/student.ico"/>
                             </MenuItem.Icon>

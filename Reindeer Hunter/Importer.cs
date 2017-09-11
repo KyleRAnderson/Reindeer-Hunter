@@ -72,6 +72,13 @@ namespace Reindeer_Hunter
                             MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return null;
                     }
+                    catch (FileHelpers.FileHelpersException)
+                    {
+                        System.Windows.Forms.MessageBox.Show("The file you imported is invalid.",
+                            "Error - Nothing imported.",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return null;
+                    }
                 }
                 return returnList;
             }
@@ -91,7 +98,7 @@ namespace Reindeer_Hunter
                     {
                         System.Windows.Forms.MessageBox.Show("The file you " +
                             "attempted to import students with contains " +
-                            "no students in it.", "Error - No Students Imported",
+                            "no results in it.", "Error - No results Imported",
                             MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return null;
                     }

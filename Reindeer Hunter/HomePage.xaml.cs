@@ -73,13 +73,25 @@ namespace Reindeer_Hunter
             searcher._School = MasterWindow.SacredHeart;
 
             InitializeComponent();
+
+            // Reset filters to default
             ResetFilters();
+
+            // Load the itemssource for the main datagrid display
             ReloadItemsSource();
 
+            // Disable importing students if we are past round 0
+            Import_Students_Button.IsEnabled = MasterWindow.SacredHeart.GetCurrRoundNo() == 0;
+
+            // Add the event handler
             MasterWindow.SacredHeart.MatchChangeEvent += OnMatchChangeEvent;
+            // Update the text on the matchmake button
             UpdateMatchmakeButton();
 
+            // Enable or disable the matchmake button depending on whether or not we're ready to go to the next round
             EnableDisableMatcmakeButton(MasterWindow.SacredHeart.IsReadyForNextRound());
+
+            // Make the itemssource for the passing students box.
             PassingStudentsBox.ItemsSource = MatchResultButtonList;
         }
 
@@ -145,10 +157,20 @@ namespace Reindeer_Hunter
 
         protected virtual void OnMatchChangeEvent(object source, EventArgs e)
         {
-            ReloadItemsSource();
+            // Refresh the round filter
             RefreshRoundFilter();
+
+            // Reload the item source to match whatever changes occurred.
+            ReloadItemsSource();
+
+            // Determine if we're ready for the next round
             bool ReadyForNextRound = MasterWindow.SacredHeart.IsReadyForNextRound();
+
+            // Disable or enable matchmaking button accordingly.
             EnableDisableMatcmakeButton(ReadyForNextRound);
+
+            // Disable importing students if we are past round 0
+            Import_Students_Button.IsEnabled = MasterWindow.SacredHeart.GetCurrRoundNo() == 0;
         }
 
         /// <summary>
@@ -509,6 +531,13 @@ namespace Reindeer_Hunter
                     "and its status cannot be edited.", "Match Status error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+            // Pass matches or any other match to be ignored will have id2 of 0
+            else if (selectedMatch.Id2 == 0)
+            {
+                System.Windows.Forms.MessageBox.Show("Cannot edit status of that match, " +
+                    "it is a special match.", "Match Status error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
             else if (!MatchesMade)
             {
                 int studentId = 0;
@@ -628,6 +657,8 @@ namespace Reindeer_Hunter
 
             foreach (ResultStudent student in inputtedResults)
             {
+                student.First = student.First.ToUpper();
+                student.Last = student.Last.ToUpper();
                 results.Add(student);
             }
 
