@@ -4,12 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Reindeer_Hunter"
-             mc:Ignorable="d" 
-             d:DesignHeight="350" d:DesignWidth="525">
-    <Grid>
-        <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="350" VerticalAlignment="Top" Width="525"/>
-
-        <Button x:Name="import_button" Content="Import .csv file" HorizontalAlignment="Left" Margin="206.5,149,0,0" VerticalAlignment="Top" Width="112" Height="52" FontSize="14" FontWeight="Bold" Click="Import_button_Click"/>
-
-    </Grid>
+             mc:Ignorable="d" >
+    <Viewbox Stretch="Uniform">
+        <Grid Width="614" Height="455" >
+            <Button x:Name="import_button" Content="Import .csv file" HorizontalAlignment="Left" Margin="256,215.5,0,0" VerticalAlignment="Top" FontSize="14" FontWeight="Bold" Click="Import_button_Click"/>
+        </Grid>
+    </Viewbox>
 </UserControl>

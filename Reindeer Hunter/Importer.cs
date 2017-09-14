@@ -42,6 +42,7 @@ namespace Reindeer_Hunter
             {
                 List<object[]> returnList = new List<object[]>();
 
+                if (csvopenDialog.FileName.Count() == 0) return null;
                 foreach(string path in csvopenDialog.FileNames)
                 {
                     // In case the user presses the cancel button
