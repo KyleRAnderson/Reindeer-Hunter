@@ -84,8 +84,8 @@ namespace Reindeer_Hunter
                     // Make new student, set the student's round number and add them to the new list
                     Student student = new Student
                     {
-                        First = importedStudent.First,
-                        Last = importedStudent.Last,
+                        First = importedStudent.First.ToUpper(),
+                        Last = importedStudent.Last.ToUpper(),
                         Id = importedStudent.Id,
                         Grade = importedStudent.Grade,
                         Homeroom = importedStudent.Homeroom,

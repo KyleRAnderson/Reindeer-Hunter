@@ -99,7 +99,13 @@ namespace Reindeer_Hunter.Commands
                 return null;
             }
 
-            return _School.GetSearchResults(Query, filter);
+            List<Match> returnMatchList = _School.GetSearchResults(Query, filter);
+            if (returnMatchList == null)
+            {
+                NotFound();
+                return null;
+            }
+            else return returnMatchList;  
         }
 
         /// <summary>
