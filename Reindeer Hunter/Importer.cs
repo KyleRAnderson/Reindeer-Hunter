@@ -90,6 +90,7 @@ namespace Reindeer_Hunter
                 string path = csvopenDialog.FileName;
                 var engine = new FileHelperEngine<ResultStudent>();
 
+                if (path == "") return null;
                 try
                 {
                     // Make result into an array of Student

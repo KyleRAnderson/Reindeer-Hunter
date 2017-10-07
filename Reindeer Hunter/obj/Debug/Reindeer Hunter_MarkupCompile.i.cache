@@ -10,11 +10,11 @@ none
 false
 DEBUG;TRACE
 E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\App.xaml
-6-1273574209
+9-1984082994
 
-3279432443
+46-294439083
 18-568697465
-DataCards\MatchCard.xaml;DataCards\StudentCard.xaml;HomePage.xaml;SetupPage.xaml;StartupWindow.xaml;DataCards\DataCardWindow.xaml;
+DataCards\MatchCard.xaml;DataCards\StudentCard.xaml;FFA\AskStudentNameDialog.xaml;FFA\DataCard.xaml;FFA\FreeForAll.xaml;HomePage.xaml;SetupPage.xaml;StartupWindow.xaml;DataCards\DataCardWindow.xaml;
 
-True
+False
 

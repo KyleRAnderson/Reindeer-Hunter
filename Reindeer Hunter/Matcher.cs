@@ -148,6 +148,7 @@ namespace Reindeer_Hunter
             // Make the random class
             rndm = new Random();
 
+            // If the student directory isn't null, we're doing it by grade
             if (students_dic != null)
             {
                 // Determine how many matches we will create
@@ -168,12 +169,13 @@ namespace Reindeer_Hunter
                 }
             }
 
+            // Otherwise, we're mixing people from different grades
             else
             {
-                // TODO better way
-                double temp = students_list.Count() / 2;
-                numMatchesToCreate = (int)Math.Round(temp);
+                // Figure out how many matches we're making
+                numMatchesToCreate = (int)Math.Round((double)(students_list.Count() / 2));
 
+                // Create and add the matches.
                 matchesCreated.AddRange(MatchCreator(students_list));
             }
 
@@ -194,8 +196,15 @@ namespace Reindeer_Hunter
             // Handling for odd numbers of students
             if (student_list.Count() % 2 > 0)
             {
-                // Lucky because he gets passed with no effort.
-                Student lucky_guy = student_list[rndm.Next(0, student_list.Count())];
+                Student lucky_guy;
+                do
+                {
+                    // Lucky because he gets passed with no effort.
+                    lucky_guy = student_list[rndm.Next(0, student_list.Count())];
+                }
+                // If the student has been passed already, don't pass them again.
+                while (lucky_guy.HasBeenPassed);
+
                 student_list.Remove(lucky_guy);
 
                 // Make the lucky guy a pass match

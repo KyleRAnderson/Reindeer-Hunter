@@ -1,20 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using FileHelpers;
-using System.Windows.Forms;
 using Reindeer_Hunter.Data_Classes;
+using Reindeer_Hunter.FFA;
 
 namespace Reindeer_Hunter
 {
@@ -24,23 +11,46 @@ namespace Reindeer_Hunter
     public partial class StartupWindow : Window
     {
 
-        public School SacredHeart { get; set; }
+        public School _School { get; set; }
         public Importer ImporterSystem { get; set; }
-        public static HomePage home;
+        private HomePage home;
+        public HomePage Home
+        {
+            get
+            {
+                if (home == null) home = new HomePage(this);
+                return home;
+            }
+        }
+
+        private FreeForAll _ffaPage;
+        public FreeForAll FFAPage
+        {
+            get
+            {
+                if (_ffaPage == null) _ffaPage = new FreeForAll(_School);
+                return _ffaPage;
+            }
+        }
 
         public StartupWindow()
         {
             InitializeComponent();
 
-            SacredHeart = new School();
-            home = new HomePage(this);
+            _School = new School();
             ImporterSystem = new Importer();
-            if (SacredHeart.IsData())
+
+
+            if (_School.IsData() && !_School.IsFFARound)
             {
-                // TODO Figure out how to change screens.
-                SetPage(home);
+                GoToHome();
             }
 
+            // Basically, if it is the FFA round.
+            else if (_School.IsData() && _School.IsFFARound)
+            {
+                GoToFFA();
+            }
             else
             {
                 // TODO switch to setup user control.
@@ -51,9 +61,14 @@ namespace Reindeer_Hunter
         /// <summary>
         /// Sets the page to the main home page.
         /// </summary>
-        public void SetPageToHome()
+        public void GoToHome()
         {
-            SetPage(home);
+            SetPage(Home);
+        }
+
+        public void GoToFFA()
+        {
+            SetPage(FFAPage);
         }
 
         public void SetPage(System.Windows.Controls.UserControl page)
@@ -69,7 +84,7 @@ namespace Reindeer_Hunter
         {
             List<object[]> resultList = ImporterSystem.Import(0);
             List<Student> students_to_add = new List<Student>();
-            long round = SacredHeart.GetCurrRoundNo();
+            long round = _School.GetCurrRoundNo();
 
             // In case of problems.
             if (resultList == null) return false;
@@ -84,8 +99,8 @@ namespace Reindeer_Hunter
                     // Make new student, set the student's round number and add them to the new list
                     Student student = new Student
                     {
-                        First = importedStudent.First.ToUpper(),
-                        Last = importedStudent.Last.ToUpper(),
+                        First = importedStudent.First,
+                        Last = importedStudent.Last,
                         Id = importedStudent.Id,
                         Grade = importedStudent.Grade,
                         Homeroom = importedStudent.Homeroom,
@@ -97,7 +112,7 @@ namespace Reindeer_Hunter
                 }
             }
 
-            if (!SacredHeart.AddStudents(students_to_add)) return false;
+            if (!_School.AddStudents(students_to_add)) return false;
 
             return true;
         }

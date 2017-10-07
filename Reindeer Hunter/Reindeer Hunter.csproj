@@ -80,7 +80,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="CommandManager.cs" />
     <Compile Include="Data Classes\DataRow.cs" />
+    <Compile Include="Data Classes\NewMatches_EventArgs.cs" />
+    <Compile Include="Data Classes\Victor.cs" />
     <Compile Include="DataCards\MatchCard.xaml.cs">
       <DependentUpon>MatchCard.xaml</DependentUpon>
     </Compile>
@@ -90,11 +93,40 @@
     <Compile Include="DataCards\DataCardWindow.xaml.cs">
       <DependentUpon>DataCardWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="FFA\AskStudentNameDialog.xaml.cs">
+      <DependentUpon>AskStudentNameDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FFA\DataCard.xaml.cs">
+      <DependentUpon>DataCard.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FFA\FreeForAll.xaml.cs">
+      <DependentUpon>FreeForAll.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Subsystems\PasserSubsystem.cs" />
+    <Compile Include="Subsystems\ProcessButtonCommands\Process.cs" />
+    <Compile Include="Subsystems\FiltersAndSearch.cs" />
+    <Compile Include="Subsystems\ProcessButtonSubsystem.cs" />
+    <Compile Include="Subsystems\SaveDiscardButtonSubsystem.cs" />
+    <Compile Include="Subsystems\RelayCommand.cs" />
+    <Compile Include="Subsystems\Subsystem.cs" />
+    <Compile Include="FFA\VictorHandler.cs" />
     <Page Include="DataCards\MatchCard.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="DataCards\StudentCard.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FFA\AskStudentNameDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FFA\DataCard.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FFA\FreeForAll.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -114,8 +146,9 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Commands\MatchMake.cs" />
-    <Compile Include="Commands\SearchCommand.cs" />
+    <Compile Include="ThreadMonitors\InstantPrintHandler.cs" />
+    <Compile Include="ThreadMonitors\MatchMakeHandler.cs" />
+    <Compile Include="Subsystems\Filters and Search\SearchCommand.cs" />
     <Compile Include="Data Classes\Filter.cs" />
     <Compile Include="Data Classes\ImportedStudent.cs" />
     <Compile Include="Data Classes\SearchQuery.cs" />
@@ -126,14 +159,13 @@
     </Compile>
     <Compile Include="InstantPrinter.cs" />
     <Compile Include="Data Classes\Match.cs" />
-    <Compile Include="Managers\MatchManager.cs" />
-    <Compile Include="Managers\StudentManager.cs" />
     <Compile Include="Matcher.cs" />
     <Compile Include="Data Classes\MatchGuiResult.cs" />
     <Compile Include="Data Classes\PrintMessage.cs" />
     <Compile Include="Importer.cs" />
     <Compile Include="Data Classes\ResultStudent.cs" />
     <Compile Include="School.cs" />
+    <Compile Include="Subsystems\Filters and Search\ClearFiltersAndSearch.cs" />
     <Compile Include="SetupPage.xaml.cs">
       <DependentUpon>SetupPage.xaml</DependentUpon>
     </Compile>
@@ -193,6 +225,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\clipboard.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\clothesPin.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -155,6 +155,8 @@ namespace Reindeer_Hunter.DataCards
         // To change to a match display box.
         private void MatchesBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
+            // This happens when it's empty
+            if (MatchesBox.SelectedItem == null) return;
             MasterWindow.Display(matchId: (string)MatchesBox.SelectedItem);
         }
     }

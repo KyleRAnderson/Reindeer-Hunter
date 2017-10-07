@@ -2,21 +2,29 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace Reindeer_Hunter.Commands
+namespace Reindeer_Hunter.Subsystems.SearchAndFilters
 {
     /// <summary>
     /// Class for searching through the list of 
     /// matches and students based on user input.
     /// </summary>
-    public class SearchCommand
+    public class SearchCommand : ICommand
     {
+        // The subsystem object that is managing this command.
+        public FiltersAndSearch Filters_Subsystem;
+
         public School _School { get; set; }
         private string UserInput { get; set; }
         private SearchQuery Query;
+
+        public event EventHandler CanExecuteChanged;
+
+        public SearchCommand(FiltersAndSearch subsystem)
+        {
+            Filters_Subsystem = subsystem;
+        }
 
         public SearchQuery CurrentQuery
         {
@@ -114,6 +122,37 @@ namespace Reindeer_Hunter.Commands
         public void ClearSearch()
         {
             Query = null;
+        }
+
+        public bool CanExecute(object parameter)
+        {
+            // If matches were just made, disable search.
+            if (Filters_Subsystem.ManagerProperty._ProcessButtonSubsystem.AreMatchesMade) return false;
+            // For whatever reason, it is always null the first time, so we'll handle this.
+            // TODO figure out why and fix.
+            else if (parameter == null) return true;
+
+            // Can't execute if it's empty, or if it's the default.
+            if (parameter.ToString() == "" || parameter.ToString() ==
+                "Search for students, homerooms or matches...") return false;
+            // Otherwise, it should be enabled.
+            else return true;
+        }
+
+        public void Execute(object parameter)
+        {
+            List<Match> resultsList =
+                Search(parameter.ToString(), Filters_Subsystem.GetFilters());
+            if (resultsList == null) return;
+            Filters_Subsystem.SetSearchResults(resultsList);
+        }
+
+        /// <summary>
+        /// Function that raises the canExecuteChanged event to refresh the executability of this command.
+        /// </summary>
+        public void RaiseCanExecuteChanged()
+        {
+            CanExecuteChanged(this, new EventArgs());
         }
     }
 }

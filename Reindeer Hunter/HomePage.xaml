@@ -6,6 +6,9 @@
              xmlns:local="clr-namespace:Reindeer_Hunter"
              xmlns:Data_Classes="clr-namespace:Reindeer_Hunter.Data_Classes" x:Class="Reindeer_Hunter.HomePage"
              mc:Ignorable="d" Foreground="White" Background="White">
+    <UserControl.DataContext>
+        <local:CommandManager/>
+    </UserControl.DataContext>
     <Viewbox Stretch="Uniform">
         <Grid Height="455" Width="614">
             <Grid.ColumnDefinitions>
@@ -30,28 +33,49 @@
                 <RowDefinition Height="39*"/>
                 <RowDefinition Height="56*"/>
             </Grid.RowDefinitions>
-            <Button x:Name="process_button" Content="Matchmake" Margin="15,0,15,10" Background="Black" Foreground="White" Click="Process_Button_Click" Grid.Column="6" Grid.Row="9" Grid.ColumnSpan="2" HorizontalContentAlignment="Center"/>
-            <Button x:Name="search_button" Content="Search" Margin="0" BorderThickness="1" Grid.Column="5" VerticalContentAlignment="Center" Grid.Row="2" FontSize="16" Click="Search_Button_Click"/>
-            <TextBox x:Name="search_box" Margin="10,0,0,0" TextWrapping="Wrap" AutomationProperties.HelpText="Search for students or matches..." Text="Search for students, homerooms or matches..." GotFocus="Search_Box_GotFocus" VerticalContentAlignment="Center" Grid.ColumnSpan="5" Grid.Row="2" CharacterCasing="Upper"/>
+            <Button x:Name="process_button" Content="Matchmake" Margin="15,0,15,10" Background="Black" Foreground="White" Grid.Column="6" Grid.Row="9" Grid.ColumnSpan="2" HorizontalContentAlignment="Center" Command="{Binding _ProcessButtonSubsystem.ProcessCommand, Mode=OneWay}" CommandParameter="{Binding _ProcessButtonSubsystem.Status}"/>
+            <Button x:Name="search_button" Content="Search" Margin="0" BorderThickness="1" Grid.Column="5" VerticalContentAlignment="Center" Grid.Row="2" FontSize="16" Command="{Binding _FiltersAndSearch.Searcher}" CommandParameter="{Binding Text, ElementName=search_box}"/>
+            <TextBox x:Name="search_box" Margin="10,0,0,0" TextWrapping="Wrap" AutomationProperties.HelpText="Search for students or matches..." Text="Search for students, homerooms or matches..." VerticalContentAlignment="Center" Grid.ColumnSpan="5" Grid.Row="2" CharacterCasing="Upper"/>
             <TextBox x:Name="progressDisplayBox" Margin="0" TextWrapping="Wrap" Background="Transparent" BorderBrush="#00ABADB3" IsEnabled="False" FontSize="10" Grid.ColumnSpan="2" Grid.Column="6" Grid.RowSpan="2" Grid.Row="2"/>
-            <DataGrid x:Name="MainDisplay" Margin="10,0,0,10" MouseDoubleClick="MainDisplay_MouseDoubleClick_1" AlternationCount="2" AlternatingRowBackground="#FFA8A8A8" CanUserAddRows="False" SelectionMode="Single" AutoGenerateColumns="False" Grid.ColumnSpan="6" Grid.Row="3" Grid.RowSpan="7" SelectedCellsChanged="MainDisplay_SelectedCellsChanged" SelectionUnit="Cell" IsReadOnly="True">
+            <DataGrid x:Name="MainDisplay" Margin="10,0,0,10" AlternationCount="2" AlternatingRowBackground="#FFA8A8A8" CanUserAddRows="False" SelectionMode="Single" AutoGenerateColumns="False" Grid.ColumnSpan="6" Grid.Row="3" Grid.RowSpan="7" SelectionUnit="Cell" IsReadOnly="True" ItemsSource="{Binding _FiltersAndSearch.MainDisplay_Display_List}" IsSynchronizedWithCurrentItem="True">
                 <DataGrid.Columns>
                     <DataGridCheckBoxColumn Binding="{Binding Pass1}" ClipboardContentBinding="{x:Null}" Header="Pass"/>
-                    <DataGridTextColumn Binding="{Binding First1}" ClipboardContentBinding="{x:Null}" Header="First" Width="*" IsReadOnly="True"/>
-                    <DataGridTextColumn Binding="{Binding Last1}" ClipboardContentBinding="{x:Null}" Header="Last" Width="*" IsReadOnly="True"/>
-                    <DataGridTextColumn Binding="{Binding MatchId}" ClipboardContentBinding="{x:Null}" Header="Match ID" Width="*" IsReadOnly="True"/>
-                    <DataGridTextColumn Binding="{Binding First2}" ClipboardContentBinding="{x:Null}" Header="First" Width="*" IsReadOnly="True"/>
-                    <DataGridTextColumn Binding="{Binding Last2}" ClipboardContentBinding="{x:Null}" Header="Last" Width="*" IsReadOnly="True"/>
+                    <DataGridTextColumn Binding="{Binding First1}" ClipboardContentBinding="{x:Null}" Header="First" Width="*" IsReadOnly="True">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="TextWrapping" Value="WrapWithOverflow"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Binding="{Binding Last1}" ClipboardContentBinding="{x:Null}" Header="Last" Width="*" IsReadOnly="True">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="TextWrapping" Value="WrapWithOverflow"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Binding="{Binding MatchId}" ClipboardContentBinding="{x:Null}" Header="Match ID" Width="*" IsReadOnly="True" SortDirection="Ascending"/>
+                    <DataGridTextColumn Binding="{Binding First2}" ClipboardContentBinding="{x:Null}" Header="First" Width="*" IsReadOnly="True">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="TextWrapping" Value="WrapWithOverflow"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Binding="{Binding Last2}" ClipboardContentBinding="{x:Null}" Header="Last" Width="*" IsReadOnly="True">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="TextWrapping" Value="WrapWithOverflow"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
                     <DataGridCheckBoxColumn Binding="{Binding Pass2}" ClipboardContentBinding="{Binding Pass2}" Header="Pass"/>
                 </DataGrid.Columns>
-                <DataGrid.DataContext>
-                    <Data_Classes:Match/>
-                </DataGrid.DataContext>
             </DataGrid>
-            <Button x:Name="SaveButton" Content="Save" Margin="0,0,15,5" Background="#FF2EFF00" Foreground="White" IsEnabled="False" Click="SaveButton_Click" Grid.Column="7" Grid.Row="8" HorizontalContentAlignment="Center"/>
-            <Button x:Name="DiscardButton" Content="Discard" IsEnabled="False" Click="DiscardButton_Click" Grid.Column="6" Grid.Row="8" Margin="15,0,0,5" HorizontalContentAlignment="Center" Background="Red"/>
+            <Button x:Name="SaveButton" Content="Save" Margin="0,0,15,5" Background="#FF2EFF00" Foreground="White" Grid.Column="7" Grid.Row="8" HorizontalContentAlignment="Center" Command="{Binding _SaveDiscard.SaveCommand, Mode=Default}"/>
+            <Button x:Name="DiscardButton" Content="Discard" Grid.Column="6" Grid.Row="8" Margin="15,0,0,5" HorizontalContentAlignment="Center" Background="Red" Command="{Binding _SaveDiscard.DiscardCommand, Mode=Default}" />
             <ProgressBar x:Name="progressBar" LargeChange="0" Maximum="1" Grid.ColumnSpan="8" Grid.Row="1"/>
-            <ListBox x:Name="PassingStudentsBox" Grid.ColumnSpan="2" Grid.RowSpan="4" Grid.Column="6" Margin="5,5,0,5" Grid.Row="4" BorderBrush="#00ABADB3"/>
+            <ListBox x:Name="PassingStudentsBox" Grid.ColumnSpan="2" Grid.RowSpan="4" Grid.Column="6" Margin="5,5,0,5" Grid.Row="4" BorderBrush="#00ABADB3" ItemsSource="{Binding _Passer.PassingStudentsButtons}"/>
             <DockPanel Grid.ColumnSpan="8" LastChildFill="False" Background="#FFF0F0F0">
                 <Menu x:Name="menu" VerticalAlignment="Top" HorizontalAlignment="Left" DockPanel.Dock="Top">
                     <MenuItem Header="File"/>
@@ -69,11 +93,11 @@
                     </MenuItem>
                     <MenuItem x:Name="Search_Menu" Header ="Search">
                         <MenuItem Header="Filters">
-                            <CheckBox x:Name="Open_Filter" Content="Open" Checked="Filter_Change" Unchecked="Filter_Change"/>
-                            <CheckBox x:Name="Closed_Filter" Content="Closed" Checked="Filter_Change" Unchecked="Filter_Change"/>
-                            <MenuItem x:Name="Round_Filter" Header="Round"/>
+                            <CheckBox x:Name="Open_Filter" Content="Open" IsChecked="{Binding _FiltersAndSearch.CurrentFilters.Open, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            <CheckBox x:Name="Closed_Filter" Content="Closed" IsChecked="{Binding _FiltersAndSearch.CurrentFilters.Closed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            <MenuItem x:Name="Round_Filter" Header="Round" ItemsSource="{Binding _FiltersAndSearch.CurrentFilters.RoundCheckboxes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                         </MenuItem>
-                        <Button x:Name="Clear_Filters_Button" Content="Clear" HorizontalContentAlignment="Stretch" Click="Clear_Filters_Button_Click"/>
+                        <Button x:Name="Clear_Filters_Button" Content="Clear" HorizontalContentAlignment="Stretch" Command="{Binding _FiltersAndSearch.ClearFiltersCommand, Mode=OneWay}"/>
 
                     </MenuItem>
                     <Button x:Name="HelpMenuButton" Content="Help" Click="HelpMenuButton_Click"/>

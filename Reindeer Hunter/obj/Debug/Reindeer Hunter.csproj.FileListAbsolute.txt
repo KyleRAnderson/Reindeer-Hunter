@@ -56,3 +56,9 @@ E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\De
 E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\DataCards\StudentCard.baml
 E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\DataCards\DataCardWindow.baml
 E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\GeneratedInternalTypeHelper.g.cs
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\FFA\AskStudentNameDialog.g.cs
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\FFA\FreeForAll.g.cs
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\FFA\AskStudentNameDialog.baml
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\FFA\FreeForAll.baml
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\FFA\DataCard.g.cs
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\FFA\DataCard.baml

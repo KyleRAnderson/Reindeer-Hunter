@@ -34,7 +34,7 @@ namespace Reindeer_Hunter
         {
             bool success = masterWindow.ImportStudents();
             if (!success) return;
-            masterWindow.SetPageToHome();
+            masterWindow.GoToHome();
         }
     }
 }

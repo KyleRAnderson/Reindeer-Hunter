@@ -72,5 +72,10 @@ namespace Reindeer_Hunter.Data_Classes
                 In = In
             };
         }
+
+        /// <summary>
+        /// If the student is passed through a round, this is set to true; 
+        /// </summary>
+        public bool HasBeenPassed { get; set; } = false;
     }
 }

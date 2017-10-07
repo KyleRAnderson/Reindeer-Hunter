@@ -12,13 +12,15 @@ namespace Reindeer_Hunter.Data_Classes
     /// A class to contain the results inputted from the datagrid MainDisplay
     /// on the GUI
     /// </summary>
-    public class MatchGuiResult
+    public class MatchGuiResult : EventArgs
     {
+        // Fired when the button corresponding to this result is clicked.
+        public event EventHandler ResultButtonClick;
+
         public string MatchID { get; set; }
         public string Name { get; set; }
         public int StuID { get; set; }
         public Button ResultButton {get; set;}
-        public HomePage Home { get; set; }
 
         public MatchGuiResult(string name)
         {
@@ -32,12 +34,13 @@ namespace Reindeer_Hunter.Data_Classes
                 Background = Brushes.Black,
                 Foreground = Brushes.White
             };
-            ResultButton.Click += Remove;
+
+            ResultButton.Click += RaiseResultButtonClick;
         }
 
-        private void Remove(Object source, EventArgs e)
+        public void RaiseResultButtonClick (object sender, EventArgs e)
         {
-            Home.RemoveResult(StuID);
+            ResultButtonClick(this, new EventArgs());
         }
     }
 }

@@ -55,7 +55,7 @@ namespace Reindeer_Hunter
                 // Open the data file for writing
                 StreamWriter dataFileWrite = new StreamWriter(dataFileLocation);
 
-                // Serialize the grades dictionary with Json and then write it
+                // Serialize the dictionary with Json and then write it
                 string writable = JsonConvert.SerializeObject(data_to_write);
                 dataFileWrite.WriteLine(writable);
 
@@ -104,7 +104,14 @@ namespace Reindeer_Hunter
                 Newtonsoft.Json.Linq.JObject variousJarray =
                     (Newtonsoft.Json.Linq.JObject)data_hashtable["misc"];
 
-                // Convert them to their proper type
+                Newtonsoft.Json.Linq.JObject victorsJarray = null;
+                // Only do this if the victors key exists
+                if (data_hashtable.ContainsKey("victors")) {
+                        victorsJarray =
+                            (Newtonsoft.Json.Linq.JObject)data_hashtable["victors"];
+                }   
+
+            // Convert them to their proper type
                 Dictionary<int, Student> students =
                    studentsJarray.ToObject<Dictionary<int, Student>>();
 
@@ -114,6 +121,8 @@ namespace Reindeer_Hunter
                 Hashtable various_data =
                    variousJarray.ToObject<Hashtable>();
 
+                Dictionary<int, Victor> victors;                
+
                 // Re-create the hashtable
                 Hashtable data = new Hashtable {
                 {"students", students },
@@ -121,7 +130,44 @@ namespace Reindeer_Hunter
                 {"misc", various_data }
                 };
 
+            if (victorsJarray != null)
+            {
+                victors = victorsJarray.ToObject<Dictionary<int, Victor>>();
+                data.Add("victors", victors);
+            }
+
             return data;
+        }
+
+        /// <summary>
+        /// Function to save the victor classes to the file.
+        /// </summary>
+        /// <param name="victorsToSave"></param>
+        public void SaveVictors(Dictionary<int, Victor> victorsToSave)
+        {
+            // Make a new hashtable and fill it with what's already there
+            Hashtable dataToWrite = new Hashtable(Read());
+
+            // Make sure the victors part exists
+            if (!dataToWrite.ContainsKey("victors")) dataToWrite.Add("victors", null);
+
+            dataToWrite["victors"] = victorsToSave;
+
+            Write(dataToWrite);
+        }
+
+        /// <summary>
+        /// Function to retrieve the dictionary of victors, if it exists
+        /// </summary>
+        /// <returns>Dictionary of the victor's student number and the victor object.</returns>
+        public Dictionary<int, Victor> GetVictors()
+        {
+            Hashtable data = Read();
+
+            // If the key doesn't exist, it's the first time where we're setting this up.
+            if (!data.ContainsKey("victors")) return null;
+
+            return (Dictionary<int, Victor>)data["victors"];
         }
     }
 

@@ -1,5 +1,4 @@
-﻿using Reindeer_Hunter.Commands;
-using Reindeer_Hunter.Data_Classes;
+﻿using Reindeer_Hunter.Data_Classes;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -18,6 +17,9 @@ namespace Reindeer_Hunter
         // Event raised when something about matches is changed/updated
         public event EventHandler MatchChangeEvent;
 
+        // Called when the round number is increased.
+        public event EventHandler RoundIncreased;
+
         // This dictionary will contain all data for the program
         protected static Hashtable data;
         protected static Dictionary<int, Student> student_directory;
@@ -34,6 +36,18 @@ namespace Reindeer_Hunter
         protected static DataFileIO dataFile;
 
         private string StudentKey = "students";
+
+        /// <summary>
+        /// Determines if we're ready to go to the next round
+        /// </summary>
+        public bool IsReadyForNextRound
+        {
+            get
+            {
+                if (GetOpenMatchesList().Count() == 0) return true;
+                else return false;
+            }
+        }
 
         public School()
         {
@@ -126,7 +140,7 @@ namespace Reindeer_Hunter
         private bool CompliesWithFilters(Match match, Filter filter)
         {
             if (((match.Closed && filter.Closed) || !match.Closed && filter.Open)
-                && filter.Rounds.Contains(match.Round)) return true;
+                && filter.Round.Contains(match.Round)) return true;
             else return false;
         }
 
@@ -313,6 +327,7 @@ namespace Reindeer_Hunter
             }
 
             Save();
+
             MatchChangeEvent(this, new EventArgs());
         }
 
@@ -460,7 +475,7 @@ namespace Reindeer_Hunter
             foreach (Match match in matchList)
             {
                 if (((match.Closed && filter.Closed) || (!match.Closed && filter.Open)) 
-                    && filter.Rounds.Contains(match.Round))
+                    && filter.Round.Contains(match.Round))
                 {
                     returnList.Add(match);   
                 }
@@ -605,6 +620,9 @@ namespace Reindeer_Hunter
             }
 
             Save();
+
+            // Call round increased event
+            RoundIncreased(this, new EventArgs());
         }
 
         /// <summary>
@@ -680,6 +698,7 @@ namespace Reindeer_Hunter
             Hashtable safeStudentName_directory = new Hashtable(studentName_directory);
             Dictionary<int, List<Student>> safeHomeroom_directory = new Dictionary<int, List<Student>>(homeroom_directory); 
 
+            // Used in case of an error message to communicate which student ID exists already
             int id = 0;
             try
             {
@@ -690,20 +709,19 @@ namespace Reindeer_Hunter
                     id = student.Id;
                     safeStudent_directory.Add(student.Id, student);
 
-
-
+                    // Also add the student to the studentNameDirectory
                     // Start with the name
-                    string name = student.First + " " + student.Last;
+                    string name = student.First.ToUpper() + " " + student.Last.ToUpper();
                     try
                     {
-                        studentName_directory.Add(name, student);
+                        safeStudentName_directory.Add(name, student);
                     }
                     // In case there is someone with the same name
                     catch (ArgumentException)
                     {
                         // If a list already exists, add to it.
                         if (studentName_directory[name] is List<Student>) ((List<Student>)
-                                studentName_directory[name]).Add(student);
+                                safeStudentName_directory[name]).Add(student);
 
                         // Otherwise, make one with both students.
                         else
@@ -717,7 +735,7 @@ namespace Reindeer_Hunter
                         }
                     }
 
-                    // Add to the homeroom directory
+                    // Add the student to the homeroom directory
                     // If homeroom exists, easy adding
                     if (safeHomeroom_directory.ContainsKey(student.Homeroom))
                         safeHomeroom_directory[student.Homeroom].Add(student);
@@ -741,7 +759,7 @@ namespace Reindeer_Hunter
                 return false;
             }
 
-            ReplaceOldStuDicWithNewOne(safeStudent_directory);
+            ReplaceOldStuDicWithNewOne(safeStudent_directory, safeHomeroom_directory, safeStudentName_directory);
             Save();
             return true;
         }
@@ -751,10 +769,13 @@ namespace Reindeer_Hunter
         /// backup onto the master.
         /// </summary>
         /// <param name="newStudentDic">The backup that was made.</param>
-        private void ReplaceOldStuDicWithNewOne(Dictionary<int, Student> newStudentDic)
+        private void ReplaceOldStuDicWithNewOne(Dictionary<int, Student> newStudentDic, 
+            Dictionary<int, List<Student>> newStudentHmrmDic, Hashtable newStudentNameDic)
         {
             data[StudentKey] = new Dictionary<int, Student>(newStudentDic);
             student_directory = (Dictionary < int, Student > )data[StudentKey];
+            studentName_directory = newStudentNameDic;
+            homeroom_directory = newStudentHmrmDic;
         }
 
         /// <summary>
@@ -774,14 +795,63 @@ namespace Reindeer_Hunter
                 // Update the first student object
                 student_directory[match.Id1].CurrMatchID = match.MatchId;            
 
-                // Because there will be no student with id = 0, this is the id of a "pass" student
+                /* Because there will be no student with id = 0, this is the id of a "pass" student
+                 * We don't want to try to find a nonexistent "pass" student, so do this */
                 if (match.Id2 != 0)
                 {
                     student_directory[match.Id2].CurrMatchID = match.MatchId;
                 }
+                /* Otherwise, the first student of the match 
+                 * is being passed and their HasBeenPassed property should be set true. */
+                else
+                {
+                    student_directory[match.Id1].HasBeenPassed = true;
+                }
             }
+
+            /* If everyone has been passed at least once, 
+             * we need to reset the property so they can be passed again. */
+            if (HasEveryOneBeenPassedOnce()) ResetPassers();
+
             Save();
-            MatchChangeEvent(this, new EventArgs());
+
+
+            // Since this only happens once per round, also increase the round number
+            IncreaseCurrRoundNo();
+        }
+        
+        /// <summary>
+        /// Determines if all students have been passed once, and if so returns true.
+        /// This is important because in small reindeer hunts, it is possible for 
+        /// every student to be passed once and once this happens we want to 
+        /// reset it so that we can begin to pass them once again.
+        /// </summary>
+        /// <returns>True if all student's HasBeenPasses property is true, false otherwise.</returns>
+        private bool HasEveryOneBeenPassedOnce()
+        {
+            int numberOfNotPassedStudents = 0;
+
+            foreach (Student student in student_directory.Values)
+            {
+                if (!student.HasBeenPassed) numberOfNotPassedStudents += 1;
+                /* 4 students are allowed to be not passed, as the number
+                 * of grades is 4 and so it is possible for there to be four 
+                 * sets of odd number lists */
+                if (numberOfNotPassedStudents >= 4) return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Function that resets the HasBeenPassed values of all students.
+        /// </summary>
+        private void ResetPassers()
+        {
+            foreach (Student student in student_directory.Values)
+            {
+                student.HasBeenPassed = false;
+            }
         }
 
         /// <summary>
@@ -789,6 +859,7 @@ namespace Reindeer_Hunter
         /// </summary>
         public void Save()
         {
+            // TODO better handling for avoiding overwriting victor data.
             dataFile.Write(data);
         }
 
@@ -803,15 +874,6 @@ namespace Reindeer_Hunter
         }
 
         /// <summary>
-        /// Determines if we're ready to go to the next round
-        /// </summary>
-        public bool IsReadyForNextRound()
-        {
-            if (GetOpenMatchesList().Count() == 0) return true;
-            else return false;
-        }
-
-        /// <summary>
         /// Returns a true value when the rounds are officially high enough 
         /// for students to be going against students in other grades than theirs.
         /// </summary>
@@ -820,6 +882,20 @@ namespace Reindeer_Hunter
         public bool IsCombineTime()
         {
             return (bool)(GetCurrRoundNo() + 1 == (long)misc["CombiningRoundNo"]);
+        }
+
+        /// <summary>
+        /// Returns true when the next round should be the free for all round (FFA)
+        /// </summary>
+        public bool IsTimeForFFA
+        {
+            get
+            {
+                // Insert logic for determining this
+                int studentsLeft = GetAllParticipatingStudents().Count();
+                if (studentsLeft <= 16) return true;
+                return false;
+            }
         }
 
         /// <summary>
@@ -843,8 +919,13 @@ namespace Reindeer_Hunter
                 {"RoundNo", 0 },
 
                 // The round after which students from different grades compete against each other.
-                {"CombiningRoundNo",  5}
+                {"CombiningRoundNo",  5},
+
+                // Boolean representing if we're in the FFA round or not
+                {"IsFFA", false }
             };
+
+            Dictionary<int, Victor> victorList = new Dictionary<int, Victor>();
 
             // Create the data dictionary
             Hashtable data = new Hashtable
@@ -855,6 +936,29 @@ namespace Reindeer_Hunter
             };
 
             dataFile.Write(data);
+        }
+
+        /// <summary>
+        /// Function to return the dataFile object.
+        /// </summary>
+        /// <returns>The dataFile object</returns>
+        public DataFileIO GetDataFile()
+        {
+            return dataFile;
+        }
+
+        public bool IsFFARound
+        {
+            get
+            {
+                return (bool)(misc["IsFFA"]);
+            }
+
+            set
+            {
+                misc["IsFFA"] = value;
+                Save();
+            }
         }
     }
 }

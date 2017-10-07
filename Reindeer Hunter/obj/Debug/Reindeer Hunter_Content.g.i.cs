@@ -8,6 +8,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("resources/clipboard.ico")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("resources/clothespin.ico")]
 
 

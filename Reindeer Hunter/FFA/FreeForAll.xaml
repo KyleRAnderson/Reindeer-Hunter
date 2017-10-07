@@ -1,0 +1,48 @@
+﻿<UserControl x:Class="Reindeer_Hunter.FFA.FreeForAll"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Reindeer_Hunter.FFA"
+             mc:Ignorable="d"  Foreground="White" Background="Black">
+    <UserControl.DataContext>
+        <local:VictorHandler/>
+    </UserControl.DataContext>
+    <Viewbox Stretch="Uniform">
+        <Grid Height="455" Width="614">
+            <DataGrid x:Name="VictorDisplay" Margin="10,10,10,35" Background="Black" BorderBrush="Black" Foreground="Black" AutoGenerateColumns="False" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="18" ItemsSource="{Binding Victors.Values}" IsReadOnly="True" SelectionMode="Single">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Binding="{Binding FullName}" ClipboardContentBinding="{x:Null}" Header="Student Name" Width="*"/>
+                    <DataGridTextColumn Binding="{Binding Status, Mode=OneWay}" ClipboardContentBinding="{x:Null}" Header="Status" Width="*"/>
+                    <DataGridTextColumn Binding="{Binding NumKills}" ClipboardContentBinding="{x:Null}" Header="Kill Count" Width="*"/>
+                </DataGrid.Columns>
+                <DataGrid.Resources>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="Background" Value="White"/>
+                        <Setter Property="Foreground" Value="Black"/>
+                    </Style>
+                </DataGrid.Resources>
+            </DataGrid>
+
+            <DockPanel x:Name="MenuBar" Grid.ColumnSpan="1" LastChildFill="False" Margin="10,0,0,0">
+                <Menu x:Name="MainMenu" VerticalAlignment="Top" HorizontalAlignment="Left" DockPanel.Dock="Bottom" Background="{x:Null}">
+                    <Button Content="Switch To HomeScreen" x:Name="SwitchButton" Background="#FF707070" Foreground="White" Command="{Binding SwitchToHomeScreen, Mode=OneWay}" FontSize="18"/>
+                    <Button Content="Pin" x:Name="PinButton" Foreground="White" FontSize="18" Padding="1,1,35,1" FontWeight="Bold" BorderBrush="{x:Null}" Command="{Binding PinCommand, Mode=OneWay}">
+                        <Button.Background>
+                            <ImageBrush ImageSource="/Reindeer Hunter;component/Resources/clothesPin.ico" Stretch="Uniform">
+                                <ImageBrush.RelativeTransform>
+                                    <TransformGroup>
+                                        <ScaleTransform CenterY="0.5" CenterX="0.5"/>
+                                        <SkewTransform CenterY="0.5" CenterX="0.5"/>
+                                        <RotateTransform CenterY="0.5" CenterX="0.5"/>
+                                        <TranslateTransform X="0.35"/>
+                                    </TransformGroup>
+                                </ImageBrush.RelativeTransform>
+                            </ImageBrush>
+                        </Button.Background>
+                    </Button>
+                </Menu>
+            </DockPanel>
+        </Grid>
+    </Viewbox>
+</UserControl>
