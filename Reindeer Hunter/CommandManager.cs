@@ -18,6 +18,7 @@ namespace Reindeer_Hunter
         public ProcessButtonSubsystem _ProcessButtonSubsystem { get; }
         public SaveDiscardButtonSubsystem _SaveDiscard { get; }
         public PasserSubsystem _Passer { get; }
+        public ImportExportData _ImportExport { get; }
         
         // The homepage object.
         public HomePage Home { get; private set; }
@@ -43,6 +44,10 @@ namespace Reindeer_Hunter
             };
 
             _Passer = new PasserSubsystem
+            {
+                ManagerProperty = this
+            };
+            _ImportExport = new ImportExportData
             {
                 ManagerProperty = this
             };

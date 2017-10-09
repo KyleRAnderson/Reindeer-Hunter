@@ -7,13 +7,19 @@ using Newtonsoft.Json;
 using System.IO;
 using System.Collections;
 using Reindeer_Hunter.Data_Classes;
+using System.Windows;
+using System.Security.Cryptography;
+using System.Diagnostics;
+using Microsoft.Win32;
 
 namespace Reindeer_Hunter
 {
     public class DataFileIO
     {
+        public string DataLocation { get; } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Reindeer Hunter Data");
+
         // The master location of the data file
-        protected readonly string dataFileLocation = "data.json";
+        protected readonly string dataFileLocation;
 
         protected static bool dataFileExists = false;
 
@@ -22,6 +28,10 @@ namespace Reindeer_Hunter
 
         public DataFileIO()
         {
+            if (!Directory.Exists(DataLocation)) DataLocation = Environment.CurrentDirectory;
+
+            dataFileLocation = Path.Combine(DataLocation, "data.json");
+
             // Determine if the data file exists.
             string directory = Directory.GetCurrentDirectory();
             if (!File.Exists(Path.Combine(directory, dataFileLocation)))
@@ -168,6 +178,127 @@ namespace Reindeer_Hunter
             if (!data.ContainsKey("victors")) return null;
 
             return (Dictionary<int, Victor>)data["victors"];
+        }
+
+        /// <summary>
+        /// Function for importing and validating a new data file
+        /// </summary>
+        /// <param name="openLoc">String location of the file to import.</param>
+        public void Import (string openLoc)
+        {
+            // The appropriate length of the checksum in bytes.
+            int lengthOfChecksum = 16;
+
+            MD5 md5 = MD5.Create();
+            FileStream stream = File.OpenRead(openLoc);
+            int byteLength = (int)stream.Length;
+            byte[] bytes = new byte[byteLength];
+            stream.Read(bytes, 0, byteLength);
+
+            // Close the stream now that we're done
+            stream.Close();
+
+            // Make a checksum for the part of the file that contains data
+            byte[] dataBytes = new byte[byteLength - lengthOfChecksum];
+            Buffer.BlockCopy(bytes, 0, dataBytes, 0, byteLength - lengthOfChecksum);
+            byte[] newChecksum = md5.ComputeHash(dataBytes);
+
+            // Find the original checksum
+            byte[] oldChecksum = new byte[lengthOfChecksum];
+            Buffer.BlockCopy(bytes, byteLength - lengthOfChecksum, oldChecksum, 0, lengthOfChecksum);
+
+            // Compare
+            if (!oldChecksum.SequenceEqual(newChecksum))
+            {
+                // TODO error handling
+                MessageBox.Show("Error - File has been edited externally and cannot be used with this program. " +
+                    "Nothing has been imported.", "Import Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            // If they are equal, proceed.
+            else
+            {
+                // Move the selected file to import.
+                File.Delete(dataFileLocation);
+                File.Copy(openLoc, dataFileLocation);
+
+                // Restart the application.
+                RestartApplication();
+            }
+        }
+
+        /// <summary>
+        /// Function for exporting the data file, includign a checksum
+        /// </summary>
+        public void Export()
+        {
+            // Generate checksum for the file
+            MD5 md5 = MD5.Create();
+            FileStream stream = File.OpenRead(dataFileLocation);
+            byte[] checkSum = md5.ComputeHash(stream);
+            stream.Close();
+
+            // Copy the file.
+            SaveFileDialog askLoc = new SaveFileDialog
+            {
+
+                // Open the file dialog to the user's directory
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+
+                // Filter only for comma-seperated value files. 
+                Filter = "json files (*.json)|*.json",
+                FilterIndex = 2,
+                RestoreDirectory = true
+            };
+
+            askLoc.ShowDialog();
+
+            string copyLoc = askLoc.FileName;
+            // In case they cancel.
+            if (copyLoc == null || copyLoc == "") return;
+
+            File.Copy(dataFileLocation, copyLoc);
+
+            // Open the file and add the checksum.
+            stream = new FileStream(copyLoc, FileMode.Append, FileAccess.Write);
+            var bw = new BinaryWriter(stream);
+            bw.Write(checkSum);
+
+            // Close all streams
+            bw.Close();
+            stream.Close();
+        }
+
+        /// <summary>
+        /// Simple function to erase the program's data and then restart the program.
+        /// </summary>
+        public void EraseData()
+        {
+            // Get directory and loop around deleting all the files.
+            DirectoryInfo dir = new DirectoryInfo(DataLocation);
+
+            foreach (FileInfo file in dir.GetFiles())
+            {
+                // In case there's other stuff there.
+                if (file.Extension == "pdf" || file.Extension == ".json") file.Delete();
+            }
+        }
+
+        /// <summary>
+        /// Function used to restart this application.
+        /// </summary>
+        public void RestartApplication()
+        {
+            Process.Start(Application.ResourceAssembly.Location);
+            QuitApplication();
+        }
+
+        /// <summary>
+        /// Function to shutdown the application
+        /// </summary>
+        public void QuitApplication()
+        {
+            Application.Current.Shutdown();
         }
     }
 

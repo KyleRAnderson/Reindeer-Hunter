@@ -24,13 +24,16 @@ namespace Reindeer_Hunter
         protected static List<Match> MatchList;
 
         // Path location of the template PDF file
-        protected static string TemplateLocation;
+        private string TemplateLocation;
 
         // Path where the duplicated file will be exported.
-        protected static string TempLocation = "Duplicate.pdf";
+        private string TempLocation;
 
         // Path location where filled file will be exported.
-        protected static string OutputLocation = "FilledLicenses.pdf";
+        private string OutputLocation;
+
+        // Temporary path for stuff
+        private string Temp2Location;
 
         // Queue used for communication
         protected static Queue<PrintMessage> Print_Comms;
@@ -55,14 +58,19 @@ namespace Reindeer_Hunter
         public int PageNo = 0;
 
         public InstantPrinter(List<Match> matches,  
-            long roundNo, object key, Queue<PrintMessage> comms)
+            long roundNo, object key, Queue<PrintMessage> comms, string DataPath)
         {
+            // Set up file locations
+            TempLocation = Path.Combine(DataPath, "Duplicate.pdf");
+            OutputLocation = Path.Combine(DataPath, "FilledLicenses.pdf");
+            Temp2Location = Path.Combine(DataPath, "Temporary.pdf");
+            TemplateLocation = Path.Combine(DataPath, "TemplatePDF.pdf");
+
+
             Key = key;
             MatchList = matches;
             RoundNo = roundNo;
             Print_Comms = comms;
-            // Place where the template should always be.
-            TemplateLocation = "TemplatePDF.pdf";
 
             if (!File.Exists(TemplateLocation))
             {
@@ -122,11 +130,11 @@ namespace Reindeer_Hunter
             // TODO put in actual numbers.
             for (int copier = 0; copier < pagesNeeded; copier++)
             {
-                PdfReader pdfreader = RenamePDFFields(TemplateLocation, "Temporary.pdf", copier);
+                PdfReader pdfreader = RenamePDFFields(TemplateLocation, Temp2Location, copier);
                 copy.AddDocument(pdfreader);
                 readers.Add(pdfreader);
                 
-                File.Delete("Temporary.pdf");
+                File.Delete(Temp2Location);
             }
 
             copy.CloseStream = true;

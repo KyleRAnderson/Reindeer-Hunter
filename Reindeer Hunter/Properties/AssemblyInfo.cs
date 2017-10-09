@@ -10,7 +10,7 @@ using System.Windows;
 [assembly: AssemblyTitle("Reindeer Hunter")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Kyle Anderson")]
 [assembly: AssemblyProduct("Reindeer Hunter")]
 [assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]

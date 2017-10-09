@@ -33,7 +33,7 @@ namespace Reindeer_Hunter
         protected static Dictionary<string, Match> match_directory;
         protected static Hashtable misc;
 
-        protected static DataFileIO dataFile;
+        public DataFileIO DataFile { get; set; }
 
         private string StudentKey = "students";
 
@@ -54,14 +54,14 @@ namespace Reindeer_Hunter
             try
             {
                 // Make the new dataFile string and get the data from the data file.
-                dataFile = new DataFileIO();
-                data = dataFile.Read();
+                DataFile = new DataFileIO();
+                data = DataFile.Read();
             }
             catch (ProgramNotSetup)
             {
                 // Set up the program if it has no data yet.
                 FirstTimeSetup();
-                data = dataFile.Read();
+                data = DataFile.Read();
             }
 
             // Declare these for simplicity and ease of use.
@@ -860,7 +860,7 @@ namespace Reindeer_Hunter
         public void Save()
         {
             // TODO better handling for avoiding overwriting victor data.
-            dataFile.Write(data);
+            DataFile.Write(data);
         }
 
         /// <summary>
@@ -935,7 +935,7 @@ namespace Reindeer_Hunter
                 {"misc", various_data }
             };
 
-            dataFile.Write(data);
+            DataFile.Write(data);
         }
 
         /// <summary>
@@ -944,7 +944,7 @@ namespace Reindeer_Hunter
         /// <returns>The dataFile object</returns>
         public DataFileIO GetDataFile()
         {
-            return dataFile;
+            return DataFile;
         }
 
         public bool IsFFARound

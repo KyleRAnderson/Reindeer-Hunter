@@ -78,7 +78,11 @@
             <ListBox x:Name="PassingStudentsBox" Grid.ColumnSpan="2" Grid.RowSpan="4" Grid.Column="6" Margin="5,5,0,5" Grid.Row="4" BorderBrush="#00ABADB3" ItemsSource="{Binding _Passer.PassingStudentsButtons}"/>
             <DockPanel Grid.ColumnSpan="8" LastChildFill="False" Background="#FFF0F0F0">
                 <Menu x:Name="menu" VerticalAlignment="Top" HorizontalAlignment="Left" DockPanel.Dock="Top">
-                    <MenuItem Header="File"/>
+                    <MenuItem Header="File">
+                        <MenuItem Header="Import Data" Command="{Binding _ImportExport.Import, Mode=OneWay}"/>
+                        <MenuItem Header="Export Data" Command="{Binding _ImportExport.Export, Mode=OneWay}"/>
+                        <MenuItem Header="Erase Data" Command="{Binding _ImportExport.Erase, Mode=OneWay}"/>
+                    </MenuItem>
                     <MenuItem Header="Import">
                         <MenuItem x:Name="Import_Students_Button" Header="Students" Click="ComboBox_ImportStudentButton">
                             <MenuItem.Icon>
