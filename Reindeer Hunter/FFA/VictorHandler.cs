@@ -146,9 +146,13 @@ namespace Reindeer_Hunter.FFA
              * The reason for removing them is because, if we send the list with the
              * victor who's getting pinned in it, the user could select the pinned victor
              * as the pinner. */
-            List<Victor> victors = new List<Victor>(Victors.Values);
-            // Remove the person being pinned from the list
-            victors.Remove(pinnedVictor);
+            List<Victor> victors = new List<Victor>(); 
+
+            foreach (Victor victor in Victors.Values)
+            {
+                // If the person is out, or if they're the one being pinned, don't add them.
+                if (victor.In && victor.Id != pinnedVictor.Id) victors.Add(victor); 
+            }
 
             // Make the dialog
             dialog = new AskStudentNameDialog(victors, pinnedVictor, CancelButtonClick, SubmitButtonClick);

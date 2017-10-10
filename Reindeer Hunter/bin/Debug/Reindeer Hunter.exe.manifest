@@ -79,14 +79,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Reindeer Hunter.exe" size="595912">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Reindeer Hunter.exe" size="598984">
       <assemblyIdentity name="Reindeer Hunter" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>d+bAMNlGfDCJlvLJFjHOGcKI0x563FvhQ+kSzp0yfe8=</dsig:DigestValue>
+        <dsig:DigestValue>CpVpSP6MLKFkjrjzc+U9ND52/74uZis5Cdb/5pdL/0c=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

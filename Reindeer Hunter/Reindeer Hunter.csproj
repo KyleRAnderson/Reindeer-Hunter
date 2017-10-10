@@ -131,6 +131,8 @@
     <Compile Include="Subsystems\ProcessButtonSubsystem.cs" />
     <Compile Include="Subsystems\SaveDiscardButtonSubsystem.cs" />
     <Compile Include="Subsystems\RelayCommand.cs" />
+    <Compile Include="Subsystems\Statistics.cs" />
+    <Compile Include="Subsystems\Stats\Statistic.cs" />
     <Compile Include="Subsystems\Subsystem.cs" />
     <Compile Include="FFA\VictorHandler.cs" />
     <Page Include="DataCards\MatchCard.xaml">

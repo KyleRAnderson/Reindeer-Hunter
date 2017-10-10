@@ -10,16 +10,17 @@
         <local:CommandManager/>
     </UserControl.DataContext>
     <Viewbox Stretch="Uniform">
-        <Grid Height="455" Width="614">
+        <Grid Height="455" Width="725">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="66*"/>
-                <ColumnDefinition Width="66*"/>
-                <ColumnDefinition Width="66*"/>
-                <ColumnDefinition Width="66*"/>
-                <ColumnDefinition Width="66*"/>
-                <ColumnDefinition Width="64*"/>
-                <ColumnDefinition Width="66*"/>
-                <ColumnDefinition Width="65*"/>
+                <ColumnDefinition Width="81*"/>
+                <ColumnDefinition Width="81*"/>
+                <ColumnDefinition Width="81*"/>
+                <ColumnDefinition Width="81*"/>
+                <ColumnDefinition Width="81*"/>
+                <ColumnDefinition Width="79*"/>
+                <ColumnDefinition Width="100*"/>
+                <ColumnDefinition Width="100*"/>
+                <ColumnDefinition Width="150*"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="24*"/>
@@ -33,7 +34,7 @@
                 <RowDefinition Height="39*"/>
                 <RowDefinition Height="56*"/>
             </Grid.RowDefinitions>
-            <Button x:Name="process_button" Content="Matchmake" Margin="15,0,15,10" Background="Black" Foreground="White" Grid.Column="6" Grid.Row="9" Grid.ColumnSpan="2" HorizontalContentAlignment="Center" Command="{Binding _ProcessButtonSubsystem.ProcessCommand, Mode=OneWay}" CommandParameter="{Binding _ProcessButtonSubsystem.Status}"/>
+            <Button x:Name="process_button" Content="Matchmake" Margin="5,0,5,10" Background="Black" Foreground="White" Grid.Column="6" Grid.Row="9" Grid.ColumnSpan="2" HorizontalContentAlignment="Center" Command="{Binding _ProcessButtonSubsystem.ProcessCommand, Mode=OneWay}" CommandParameter="{Binding _ProcessButtonSubsystem.Status}"/>
             <Button x:Name="search_button" Content="Search" Margin="0" BorderThickness="1" Grid.Column="5" VerticalContentAlignment="Center" Grid.Row="2" FontSize="16" Command="{Binding _FiltersAndSearch.Searcher}" CommandParameter="{Binding Text, ElementName=search_box}"/>
             <TextBox x:Name="search_box" Margin="10,0,0,0" TextWrapping="Wrap" AutomationProperties.HelpText="Search for students or matches..." Text="Search for students, homerooms or matches..." VerticalContentAlignment="Center" Grid.ColumnSpan="5" Grid.Row="2" CharacterCasing="Upper"/>
             <TextBox x:Name="progressDisplayBox" Margin="0" TextWrapping="Wrap" Background="Transparent" BorderBrush="#00ABADB3" IsEnabled="False" FontSize="10" Grid.ColumnSpan="2" Grid.Column="6" Grid.RowSpan="2" Grid.Row="2"/>
@@ -54,7 +55,7 @@
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Binding="{Binding MatchId}" ClipboardContentBinding="{x:Null}" Header="Match ID" Width="*" IsReadOnly="True" SortDirection="Ascending"/>
+                    <DataGridTextColumn Binding="{Binding MatchId}" ClipboardContentBinding="{x:Null}" Header="Match ID" Width="*" IsReadOnly="True" SortDirection="Ascending" SortMemberPath="MatchNumber"/>
                     <DataGridTextColumn Binding="{Binding First2}" ClipboardContentBinding="{x:Null}" Header="First" Width="*" IsReadOnly="True">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
@@ -72,11 +73,11 @@
                     <DataGridCheckBoxColumn Binding="{Binding Pass2}" ClipboardContentBinding="{Binding Pass2}" Header="Pass"/>
                 </DataGrid.Columns>
             </DataGrid>
-            <Button x:Name="SaveButton" Content="Save" Margin="0,0,15,5" Background="#FF2EFF00" Foreground="White" Grid.Column="7" Grid.Row="8" HorizontalContentAlignment="Center" Command="{Binding _SaveDiscard.SaveCommand, Mode=Default}"/>
-            <Button x:Name="DiscardButton" Content="Discard" Grid.Column="6" Grid.Row="8" Margin="15,0,0,5" HorizontalContentAlignment="Center" Background="Red" Command="{Binding _SaveDiscard.DiscardCommand, Mode=Default}" />
-            <ProgressBar x:Name="progressBar" LargeChange="0" Maximum="1" Grid.ColumnSpan="8" Grid.Row="1"/>
-            <ListBox x:Name="PassingStudentsBox" Grid.ColumnSpan="2" Grid.RowSpan="4" Grid.Column="6" Margin="5,5,0,5" Grid.Row="4" BorderBrush="#00ABADB3" ItemsSource="{Binding _Passer.PassingStudentsButtons}"/>
-            <DockPanel Grid.ColumnSpan="8" LastChildFill="False" Background="#FFF0F0F0">
+            <Button x:Name="SaveButton" Content="Save" Margin="0,0,5,5" Background="#FF2EFF00" Foreground="White" Grid.Column="7" Grid.Row="8" HorizontalContentAlignment="Center" Command="{Binding _SaveDiscard.SaveCommand, Mode=Default}"/>
+            <Button x:Name="DiscardButton" Content="Discard" Grid.Column="6" Grid.Row="8" Margin="5,0,0,5" HorizontalContentAlignment="Center" Background="Red" Command="{Binding _SaveDiscard.DiscardCommand, Mode=Default}" />
+            <ProgressBar x:Name="progressBar" LargeChange="0" Maximum="1" Grid.ColumnSpan="9" Grid.Row="1"/>
+            <ListBox x:Name="PassingStudentsBox" Grid.RowSpan="6" Grid.Column="8" Margin="5,5,0,5" Grid.Row="4" BorderBrush="#00ABADB3" ItemsSource="{Binding _Passer.PassingStudentsButtons}"/>
+            <DockPanel Grid.ColumnSpan="9" LastChildFill="False" Background="#FFF0F0F0">
                 <Menu x:Name="menu" VerticalAlignment="Top" HorizontalAlignment="Left" DockPanel.Dock="Top">
                     <MenuItem Header="File">
                         <MenuItem Header="Import Data" Command="{Binding _ImportExport.Import, Mode=OneWay}"/>
@@ -107,6 +108,24 @@
                     <Button x:Name="HelpMenuButton" Content="Help" Click="HelpMenuButton_Click"/>
                 </Menu>
             </DockPanel>
+            <DataGrid x:Name="StatisticsDisplay" Grid.ColumnSpan="2" Grid.Column="6" Margin="5" Grid.Row="4" Grid.RowSpan="4" Background="{x:Null}" IsReadOnly="True" HeadersVisibility="None" BorderBrush="{x:Null}" Foreground="#FF4D4D4D" ItemsSource="{Binding _Stats.DisplayList}" AutoGenerateColumns="False" SelectionMode="Single" SelectionUnit="Cell" BorderThickness="1" GridLinesVisibility="None">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Binding="{Binding Title, Mode=OneWay}" ClipboardContentBinding="{x:Null}" Width="3*">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="TextWrapping" Value="WrapWithOverflow"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Binding="{Binding Stat}" ClipboardContentBinding="{x:Null}" Width="*">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="TextWrapping" Value="WrapWithOverflow"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                </DataGrid.Columns>
+            </DataGrid>
         </Grid>
     </Viewbox>
 </UserControl>

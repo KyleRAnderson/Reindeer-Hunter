@@ -19,6 +19,7 @@ namespace Reindeer_Hunter
         public SaveDiscardButtonSubsystem _SaveDiscard { get; }
         public PasserSubsystem _Passer { get; }
         public ImportExportData _ImportExport { get; }
+        public Statistics _Stats { get; }
         
         // The homepage object.
         public HomePage Home { get; private set; }
@@ -48,6 +49,10 @@ namespace Reindeer_Hunter
                 ManagerProperty = this
             };
             _ImportExport = new ImportExportData
+            {
+                ManagerProperty = this
+            };
+            _Stats = new Statistics
             {
                 ManagerProperty = this
             };

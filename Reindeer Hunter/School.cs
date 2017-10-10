@@ -30,6 +30,31 @@ namespace Reindeer_Hunter
         // Students with keys of "homeroom#"
         protected static Dictionary<int, List<Student>> homeroom_directory;
 
+        public int NumInStudents
+        {
+            get
+            {
+                return GetAllParticipatingStudents().Count;
+            }
+        }
+
+        public int TotalNumStudents
+        {
+            get
+            {
+                return student_directory.Count;
+            }
+        }
+
+        /// <summary>
+        /// Simple function to get the number of matches on file that are either open or closed.
+        /// </summary>
+        /// <returns></returns>
+        public int GetNumMatchesGenerated()
+        {
+            return match_directory.Count;
+        }
+
         protected static Dictionary<string, Match> match_directory;
         protected static Hashtable misc;
 
@@ -76,6 +101,11 @@ namespace Reindeer_Hunter
             CreateStudentDirs();
             match_directory = (Dictionary <string,  Match > )data["matches"];
             misc = (Hashtable)data["misc"];
+        }
+
+        public int GetNumStudentsStillIn()
+        {
+            return GetAllParticipatingStudents().Count();
         }
 
         private void CreateStudentDirs()

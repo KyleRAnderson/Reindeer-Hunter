@@ -210,7 +210,17 @@ namespace Reindeer_Hunter.Subsystems
         /// <param name="e"></param>
         public void DoubleClickPopup(object sender, MouseButtonEventArgs e)
         {
-            Match match = (Match)MainDisplay.CurrentCell.Item;
+            // This error is produced when the user presses the sort buttons repeatedly, so avoid crash. 
+            Match match;
+            try
+            {
+                match = (Match)MainDisplay.CurrentCell.Item;
+            }
+            catch (InvalidCastException)
+            {
+                return;
+            }
+            
             int currentColumnIndex = MainDisplay.CurrentCell.Column.DisplayIndex;
 
             StartupWindow masterWindow = Manager.Home.MasterWindow;
