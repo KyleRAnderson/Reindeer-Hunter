@@ -11,7 +11,7 @@ namespace Reindeer_Hunter
     public class CommandManager
     {
         // Necessary for some operations
-        public School _School { get; set;  }
+        public School _School { get; set; }
 
         // The command subsystems.
         public FiltersAndSearch _FiltersAndSearch { get; }
@@ -20,6 +20,7 @@ namespace Reindeer_Hunter
         public PasserSubsystem _Passer { get; }
         public ImportExportData _ImportExport { get; }
         public Statistics _Stats { get; }
+        public Import_Subsystem _Importer { get; }
         
         // The homepage object.
         public HomePage Home { get; private set; }
@@ -53,6 +54,10 @@ namespace Reindeer_Hunter
                 ManagerProperty = this
             };
             _Stats = new Statistics
+            {
+                ManagerProperty = this
+            };
+            _Importer = new Import_Subsystem
             {
                 ManagerProperty = this
             };

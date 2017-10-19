@@ -11,6 +11,8 @@ namespace Reindeer_Hunter.Subsystems.ProcessButtonCommands
 {
     public class Process : ICommand
     {
+        InstantPrintHandler Printer;
+
         // The subsystem in charge of this command
         public ProcessButtonSubsystem ProcessButtonSubsystem { get; set; }
 
@@ -50,7 +52,11 @@ namespace Reindeer_Hunter.Subsystems.ProcessButtonCommands
             // Instant Print
             else
             {
-                InstantPrintHandler printer = new InstantPrintHandler(
+                // If we're currently printing, don't print twice.
+
+                if (Printer != null && Printer.IsPrinting) return;
+
+                 Printer = new InstantPrintHandler(
                     ProcessButtonSubsystem.ManagerProperty._School,
                     ProcessButtonSubsystem);
             }

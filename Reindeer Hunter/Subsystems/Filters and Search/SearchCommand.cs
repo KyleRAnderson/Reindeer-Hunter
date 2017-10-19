@@ -108,7 +108,7 @@ namespace Reindeer_Hunter.Subsystems.SearchAndFilters
             }
 
             List<Match> returnMatchList = _School.GetSearchResults(Query, filter);
-            if (returnMatchList == null)
+            if (returnMatchList == null || returnMatchList.Count == 0)
             {
                 NotFound();
                 return null;
@@ -129,7 +129,6 @@ namespace Reindeer_Hunter.Subsystems.SearchAndFilters
             // If matches were just made, disable search.
             if (Filters_Subsystem.ManagerProperty._ProcessButtonSubsystem.AreMatchesMade) return false;
             // For whatever reason, it is always null the first time, so we'll handle this.
-            // TODO figure out why and fix.
             else if (parameter == null) return true;
 
             // Can't execute if it's empty, or if it's the default.
@@ -141,6 +140,9 @@ namespace Reindeer_Hunter.Subsystems.SearchAndFilters
 
         public void Execute(object parameter)
         {
+            // In case it's empty
+            if (parameter == null) return;
+
             List<Match> resultsList =
                 Search(parameter.ToString(), Filters_Subsystem.GetFilters());
             if (resultsList == null) return;

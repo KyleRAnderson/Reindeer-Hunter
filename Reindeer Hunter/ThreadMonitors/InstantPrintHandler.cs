@@ -24,8 +24,14 @@ namespace Reindeer_Hunter.ThreadMonitors
         private InstantPrinter printer;
         private ProcessButtonSubsystem subsystem;
 
+        /// <summary>
+        /// True when we are currently in the printing process, false otherwise.
+        /// </summary>
+        public bool IsPrinting { get; set; }
+
         public InstantPrintHandler(School school, ProcessButtonSubsystem subsystemInCharge)
         {
+            IsPrinting = true;
             subsystem = subsystemInCharge;
 
             // Create the queue for communications purposes.
@@ -115,6 +121,8 @@ namespace Reindeer_Hunter.ThreadMonitors
                     File.Move(returnValue.Path, path);
 
                     System.Diagnostics.Process.Start("explorer.exe", System.IO.Path.GetDirectoryName(path));
+
+                    IsPrinting = false;
                 }
             }
         }

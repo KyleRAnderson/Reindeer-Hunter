@@ -5,7 +5,19 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Reindeer_Hunter"
              xmlns:Data_Classes="clr-namespace:Reindeer_Hunter.Data_Classes" x:Class="Reindeer_Hunter.HomePage"
-             mc:Ignorable="d" Foreground="White" Background="White">
+             mc:Ignorable="d" Foreground="White">
+    <UserControl.Background>
+        <ImageBrush ImageSource="reindeer.ico" Stretch="Uniform">
+            <ImageBrush.RelativeTransform>
+                <TransformGroup>
+                    <ScaleTransform CenterY="0.5" CenterX="0.5" ScaleY="0.75" ScaleX="0.75"/>
+                    <SkewTransform CenterY="0.5" CenterX="0.5"/>
+                    <RotateTransform CenterY="0.5" CenterX="0.5"/>
+                    <TranslateTransform X="-0.21" Y="0.075"/>
+                </TransformGroup>
+            </ImageBrush.RelativeTransform>
+        </ImageBrush>
+    </UserControl.Background>
     <UserControl.DataContext>
         <local:CommandManager/>
     </UserControl.DataContext>
@@ -34,11 +46,12 @@
                 <RowDefinition Height="39*"/>
                 <RowDefinition Height="56*"/>
             </Grid.RowDefinitions>
-            <Button x:Name="process_button" Content="Matchmake" Margin="5,0,5,10" Background="Black" Foreground="White" Grid.Column="6" Grid.Row="9" Grid.ColumnSpan="2" HorizontalContentAlignment="Center" Command="{Binding _ProcessButtonSubsystem.ProcessCommand, Mode=OneWay}" CommandParameter="{Binding _ProcessButtonSubsystem.Status}"/>
-            <Button x:Name="search_button" Content="Search" Margin="0" BorderThickness="1" Grid.Column="5" VerticalContentAlignment="Center" Grid.Row="2" FontSize="16" Command="{Binding _FiltersAndSearch.Searcher}" CommandParameter="{Binding Text, ElementName=search_box}"/>
-            <TextBox x:Name="search_box" Margin="10,0,0,0" TextWrapping="Wrap" AutomationProperties.HelpText="Search for students or matches..." Text="Search for students, homerooms or matches..." VerticalContentAlignment="Center" Grid.ColumnSpan="5" Grid.Row="2" CharacterCasing="Upper"/>
+            <Button x:Name="process_button" Content="Matchmake" Margin="5,0,5,10" Background="Black" Foreground="White" Grid.Column="6" Grid.Row="9" Grid.ColumnSpan="2" HorizontalContentAlignment="Center" Command="{Binding _ProcessButtonSubsystem.ProcessCommand, Mode=OneWay}" CommandParameter="{Binding _ProcessButtonSubsystem.Status}" ToolTip="Spacebar"/>
+            <Button x:Name="search_button" Content="Search" Margin="0" BorderThickness="1" Grid.Column="5" VerticalContentAlignment="Center" Grid.Row="2" FontSize="16" Command="{Binding _FiltersAndSearch.Searcher}" CommandParameter="{Binding Text, ElementName=search_box}" ToolTip="Tab"/>
+            <TextBox x:Name="search_box" Margin="10,0,0,0" TextWrapping="Wrap" AutomationProperties.HelpText="Search for students or matches..." Text="Search for students, homerooms or matches..." VerticalContentAlignment="Center" Grid.ColumnSpan="5" Grid.Row="2" CharacterCasing="Upper">
+            </TextBox>
             <TextBox x:Name="progressDisplayBox" Margin="0" TextWrapping="Wrap" Background="Transparent" BorderBrush="#00ABADB3" IsEnabled="False" FontSize="10" Grid.ColumnSpan="2" Grid.Column="6" Grid.RowSpan="2" Grid.Row="2"/>
-            <DataGrid x:Name="MainDisplay" Margin="10,0,0,10" AlternationCount="2" AlternatingRowBackground="#FFA8A8A8" CanUserAddRows="False" SelectionMode="Single" AutoGenerateColumns="False" Grid.ColumnSpan="6" Grid.Row="3" Grid.RowSpan="7" SelectionUnit="Cell" IsReadOnly="True" ItemsSource="{Binding _FiltersAndSearch.MainDisplay_Display_List}" IsSynchronizedWithCurrentItem="True">
+            <DataGrid x:Name="MainDisplay" Margin="10,0,0,10" AlternationCount="2" AlternatingRowBackground="#BFA8A8A8" CanUserAddRows="False" SelectionMode="Single" AutoGenerateColumns="False" Grid.ColumnSpan="6" Grid.Row="3" Grid.RowSpan="7" SelectionUnit="Cell" IsReadOnly="True" ItemsSource="{Binding _FiltersAndSearch.MainDisplay_Display_List}" IsSynchronizedWithCurrentItem="True" Background="#BFF0F0F0" Foreground="#7F000000" ToolTip="&quot;P&quot; Key">
                 <DataGrid.Columns>
                     <DataGridCheckBoxColumn Binding="{Binding Pass1}" ClipboardContentBinding="{x:Null}" Header="Pass"/>
                     <DataGridTextColumn Binding="{Binding First1}" ClipboardContentBinding="{x:Null}" Header="First" Width="*" IsReadOnly="True">
@@ -73,10 +86,10 @@
                     <DataGridCheckBoxColumn Binding="{Binding Pass2}" ClipboardContentBinding="{Binding Pass2}" Header="Pass"/>
                 </DataGrid.Columns>
             </DataGrid>
-            <Button x:Name="SaveButton" Content="Save" Margin="0,0,5,5" Background="#FF2EFF00" Foreground="White" Grid.Column="7" Grid.Row="8" HorizontalContentAlignment="Center" Command="{Binding _SaveDiscard.SaveCommand, Mode=Default}"/>
-            <Button x:Name="DiscardButton" Content="Discard" Grid.Column="6" Grid.Row="8" Margin="5,0,0,5" HorizontalContentAlignment="Center" Background="Red" Command="{Binding _SaveDiscard.DiscardCommand, Mode=Default}" />
+            <Button x:Name="SaveButton" Content="Save" Margin="0,0,5,5" Background="#FF2EFF00" Foreground="White" Grid.Column="7" Grid.Row="8" HorizontalContentAlignment="Center" Command="{Binding _SaveDiscard.SaveCommand, Mode=Default}" ToolTip="&quot;S&quot; Key"/>
+            <Button x:Name="DiscardButton" Content="Discard" Grid.Column="6" Grid.Row="8" Margin="5,0,0,5" HorizontalContentAlignment="Center" Background="Red" Command="{Binding _SaveDiscard.DiscardCommand, Mode=Default}" ToolTip="&quot;D&quot; Key" />
             <ProgressBar x:Name="progressBar" LargeChange="0" Maximum="1" Grid.ColumnSpan="9" Grid.Row="1"/>
-            <ListBox x:Name="PassingStudentsBox" Grid.RowSpan="6" Grid.Column="8" Margin="5,5,0,5" Grid.Row="4" BorderBrush="#00ABADB3" ItemsSource="{Binding _Passer.PassingStudentsButtons}"/>
+            <ListBox x:Name="PassingStudentsBox" Grid.RowSpan="6" Grid.Column="8" Margin="5,5,0,5" Grid.Row="4" BorderBrush="#00ABADB3" ItemsSource="{Binding _Passer.PassingStudentsButtons}" Background="#3FFFFFFF"/>
             <DockPanel Grid.ColumnSpan="9" LastChildFill="False" Background="#FFF0F0F0">
                 <Menu x:Name="menu" VerticalAlignment="Top" HorizontalAlignment="Left" DockPanel.Dock="Top">
                     <MenuItem Header="File">
@@ -85,12 +98,12 @@
                         <MenuItem Header="Erase Data" Command="{Binding _ImportExport.Erase, Mode=OneWay}"/>
                     </MenuItem>
                     <MenuItem Header="Import">
-                        <MenuItem x:Name="Import_Students_Button" Header="Students" Click="ComboBox_ImportStudentButton">
+                        <MenuItem x:Name="Import_Students_Button" Header="Students" Command="{Binding _Importer.ImportStudents, Mode=OneWay}">
                             <MenuItem.Icon>
                                 <Image Source="Resources/student.ico"/>
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem x:Name="Import_Match_Results_Button" Header="Match Results" Click="Import_Match_ResultsButton_Click">
+                        <MenuItem x:Name="Import_Match_Results_Button" Header="Match Results" Command="{Binding _Importer.ImportMatchResults, Mode=OneWay}">
                             <MenuItem.Icon>
                                 <Image Source="Resources/clipboard.ico"/>
                             </MenuItem.Icon>
@@ -128,4 +141,11 @@
             </DataGrid>
         </Grid>
     </Viewbox>
+    <UserControl.InputBindings>
+        <KeyBinding Key="Space" Command="{Binding _ProcessButtonSubsystem.ProcessCommand, Mode=OneWay}" CommandParameter="{Binding _ProcessButtonSubsystem.Status}"/>
+        <KeyBinding Key="Tab" Command="{Binding _FiltersAndSearch.Searcher}" CommandParameter="{Binding Text, ElementName=search_box}"/>
+        <KeyBinding Key="P" Command="{Binding _FiltersAndSearch.PropertiesPopup, Mode=OneWay}"/>
+        <KeyBinding Key="S" Command="{Binding _SaveDiscard.SaveCommand, Mode=Default}"/>
+        <KeyBinding Key="D" Command="{Binding _SaveDiscard.DiscardCommand, Mode=Default}"/>
+    </UserControl.InputBindings>
 </UserControl>

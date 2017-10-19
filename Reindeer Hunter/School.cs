@@ -3,8 +3,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Reindeer_Hunter
@@ -19,6 +17,9 @@ namespace Reindeer_Hunter
 
         // Called when the round number is increased.
         public event EventHandler RoundIncreased;
+
+        // Called when students are imported
+        public event EventHandler StudentsImported;
 
         // This dictionary will contain all data for the program
         protected static Hashtable data;
@@ -43,6 +44,14 @@ namespace Reindeer_Hunter
             get
             {
                 return student_directory.Count;
+            }
+        }
+
+        public int NumOpenMatches
+        {
+            get
+            {
+                return GetOpenMatchesList().Count;
             }
         }
 
@@ -791,6 +800,8 @@ namespace Reindeer_Hunter
 
             ReplaceOldStuDicWithNewOne(safeStudent_directory, safeHomeroom_directory, safeStudentName_directory);
             Save();
+
+            if (StudentsImported != null) StudentsImported(this, new EventArgs());
             return true;
         }
 
@@ -887,10 +898,11 @@ namespace Reindeer_Hunter
         /// <summary>
         /// Saves all students added and settings changed.
         /// </summary>
-        public void Save()
+        /// <param name="overrider">If you want to override the conditions that block save, set
+        /// this to true.</param>
+        public void Save(bool overrider = false)
         {
-            // TODO better handling for avoiding overwriting victor data.
-            DataFile.Write(data);
+            if (!IsFFARound || overrider) DataFile.Write(data);
         }
 
         /// <summary>
@@ -952,7 +964,7 @@ namespace Reindeer_Hunter
                 {"CombiningRoundNo",  5},
 
                 // Boolean representing if we're in the FFA round or not
-                {"IsFFA", false }
+                {"IsFFA", false },
             };
 
             Dictionary<int, Victor> victorList = new Dictionary<int, Victor>();
@@ -987,7 +999,7 @@ namespace Reindeer_Hunter
             set
             {
                 misc["IsFFA"] = value;
-                Save();
+                Save(true);
             }
         }
     }

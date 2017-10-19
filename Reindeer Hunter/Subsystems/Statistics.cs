@@ -27,7 +27,7 @@ namespace Reindeer_Hunter.Subsystems
 
         public string NumOpenMatches()
         {
-            return _School.GetOpenMatchesList().Count.ToString();
+            return _School.NumOpenMatches.ToString();
         }
 
         public string NumGeneratedMatches()
@@ -70,6 +70,7 @@ namespace Reindeer_Hunter.Subsystems
             // Subscribe to a bunch of events that may need the statistics to refresh
             _School.MatchChangeEvent += Refresh;
             _School.RoundIncreased += Refresh;
+            _School.StudentsImported += Refresh;
         }
 
         /// <summary>

@@ -92,6 +92,7 @@ namespace Reindeer_Hunter.Subsystems
             // Subscribe to match change event and round increased event and save/discard events.
             _School.MatchChangeEvent += OnMatchesChanged;
             _School.RoundIncreased += OnMatchesChanged;
+            _School.StudentsImported += OnMatchesChanged;
             Manager._SaveDiscard.Save += OnSave;
             Manager._SaveDiscard.Discard += OnDiscard;
         }

@@ -55,6 +55,38 @@ namespace Reindeer_Hunter.FFA
             SelectionBox.ItemsSource = Selections;
         }
 
+        public AskStudentNameDialog(List<Victor> victors, string questionToAsk,
+            RelayCommand cancelCommand, RelayCommand submitCommand)
+        {
+            InitializeComponent();
+
+            // Set the button's commands.
+            CancelButton.Command = cancelCommand;
+            SubmitButton.Command = submitCommand;
+
+            // Disable the cancel command
+            CancelButton.IsEnabled = false;
+
+            // Update the title with the pinned student's name.
+            Title = questionToAsk;
+            DisplayVictors = victors;
+
+            KilledStudentId = 0;
+
+            // Construct the list of menuitems
+            Selections = new List<MenuItem>();
+            foreach (Victor victor in victors)
+            {
+                Selections.Add(new MenuItem
+                {
+                    Header = victor.FullName
+                });
+            }
+
+            // Display It
+            SelectionBox.ItemsSource = Selections;
+        }
+
         /// <summary>
         /// Function used when trying to find out the Id of a victor given its index.
         /// </summary>

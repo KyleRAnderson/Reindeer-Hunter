@@ -22,6 +22,7 @@ namespace Reindeer_Hunter.Subsystems
 
         public void Execute(object parameter)
         {
+            if (FunctionToExecute == null) return;
             FunctionToExecute(parameter);
         }
 

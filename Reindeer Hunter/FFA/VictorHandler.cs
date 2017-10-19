@@ -8,6 +8,8 @@ using System.Windows.Controls;
 using Reindeer_Hunter.Subsystems;
 using System.ComponentModel;
 using Reindeer_Hunter.FFA;
+using System.Windows;
+using System.Collections;
 
 namespace Reindeer_Hunter.FFA
 {
@@ -22,11 +24,11 @@ namespace Reindeer_Hunter.FFA
         private AskStudentNameDialog dialog;
 
         // These two commands are for handling the dialog button when it is closed.
-        public RelayCommand CancelButtonClick { get; } = new RelayCommand
+        public RelayCommand CancelButtonCommand { get; } = new RelayCommand
         {
             CanExecuteDeterminer = () => true
         };
-        public RelayCommand SubmitButtonClick { get; } = new RelayCommand
+        public RelayCommand SubmitButtonCommand { get; } = new RelayCommand
         {
             CanExecuteDeterminer = () => true
         };
@@ -35,30 +37,87 @@ namespace Reindeer_Hunter.FFA
         {
             CanExecuteDeterminer = () => true
         };
-
-        // Command for the Pin button
+        public RelayCommand CalculateVictor { get; } = new RelayCommand();
+                // Command for the Pin button
         public RelayCommand PinCommand { get; } = new RelayCommand();
+
+        /// <summary>
+        /// List of victors who haven't been pinned yet.
+        /// </summary>
+        private List<Victor> InVictors
+        {
+            get
+            {
+                List<Victor> returnable = new List<Victor>();
+                foreach (Victor victor in Victors.Values) if (victor.In) returnable.Add(victor);
+
+                return returnable;
+            }
+        }
 
         public DataFileIO DataHandler;
         private DataGrid MainDisplay;
         public School _School;
-        
+
         public FreeForAll ParentPage { get; private set; }
 
-        public Dictionary<int, Victor> Victors { get; private set; } = new Dictionary<int, Victor>();
+        private Hashtable Data { get; set; }
+
+        public Dictionary<int, Victor> Victors { get; private set; }
+
+        private int NumStudentsLeft
+        {
+            get
+            {
+                int count = 0;
+                foreach (Victor victor in Victors.Values)
+                {
+                    if (victor.In) count += 1;
+                }
+                return count;
+            }
+        }
+
+        private bool AreWinnersSet
+        {
+            get
+            {
+                if (Data.ContainsKey(winnerDataLoc))
+                {
+                    return ((List<Victor>)Data[winnerDataLoc]).Count > 0;
+                }
+                else return false;
+            }
+        }
+
+        // Location of some of the data in the Data Hashtable
+        private string winnerDataLoc;
+        private string victorDataLoc;
 
         public VictorHandler()
         {
             SwitchToHomeScreen.FunctionToExecute = SwitchToHome;
+            CalculateVictor.FunctionToExecute = Calculate_Victor;
+            CalculateVictor.CanExecuteDeterminer = Can_Calculate_Victor;
 
             // Subscribe to its own ParentPageSet event, to do stuff when parentpage is set
             ParentPageSet += OnParentPageSet;
 
             // Give the commands their functions to execute
-            SubmitButtonClick.FunctionToExecute = Submit;
-            CancelButtonClick.FunctionToExecute = Cancel;
+            SubmitButtonCommand.FunctionToExecute = Submit;
+            CancelButtonCommand.FunctionToExecute = Cancel;
             PinCommand.FunctionToExecute = Pin;
             PinCommand.CanExecuteDeterminer = CanBePinned;
+        }
+
+        /// <summary>
+        /// Function that the calculate victor command uses to see if it can calculate the victor
+        /// </summary>
+        /// <returns>Bool true when the operation should be allowed, false otherwise</returns>
+        public bool Can_Calculate_Victor()
+        {
+            if (DataHandler == null) return false;
+            return !DataHandler.IsTerminated;
         }
 
         /// <summary>
@@ -68,16 +127,28 @@ namespace Reindeer_Hunter.FFA
         /// <param name="e"></param>
         public void OnParentPageSet(object sender, EventArgs e)
         {
+            // Define the locations of the data
+            winnerDataLoc = DataHandler.winnerDataLoc;
+            victorDataLoc = DataHandler.victorDataLoc;
+
+            // Do this to refresh the command
+            CalculateVictor.RaiseCanExecuteChanged();
+
             // Set some properties so we can actually do stuff
             MainDisplay = ParentPage.VictorDisplay;
 
             // Get the victors
-            Victors = DataHandler.GetVictors();
+            Data = DataHandler.GetFFAData();
 
             // If there are no victors, create them.
-            if (Victors == null)
+            if (Data == null)
             {
-                Victors = new Dictionary<int, Victor>();
+                Data = new Hashtable
+                {
+                    { victorDataLoc, new Dictionary<int, Victor>() }
+                };
+                Victors = (Dictionary<int, Victor>)Data[victorDataLoc];
+
                 // Loop around, converting students to victors
                 List<Student> studentsList = _School.GetAllParticipatingStudents();
                 foreach (Student student in studentsList)
@@ -86,7 +157,28 @@ namespace Reindeer_Hunter.FFA
                 }
 
                 // Save newly created victors.
-                DataHandler.SaveVictors(Victors);
+                Save();
+            }
+            else if (!Data.ContainsKey(winnerDataLoc))
+            {
+                // Set the Victors
+                Victors = (Dictionary<int, Victor>)Data[victorDataLoc];
+            }
+            // Figure out if someone has won already
+            else
+            {
+                // Set the Victors
+                Victors = (Dictionary<int, Victor>)Data[victorDataLoc];
+
+                /* If there is only one person, they won. If there are
+                 * more than one, then it's time to prompt the user 
+                 * for coint toss. */
+                List<Victor> winner = (List<Victor>)Data[winnerDataLoc];
+                if (winner.Count == 1) DisplayWinner(winner[0]);
+                else
+                {
+                    Display_Coin_Toss(winner);
+                }
             }
 
             // Refresh the display
@@ -95,6 +187,25 @@ namespace Reindeer_Hunter.FFA
             // Subscribe to the double click and single click events from the MainDisplay
             MainDisplay.SelectedCellsChanged += SelectionChanged;
             MainDisplay.MouseDoubleClick += OnDoubleClick;
+        }
+
+        private void Display_Coin_Toss(List<Victor> possibleWinnners)
+        {
+            dialog = new AskStudentNameDialog(possibleWinnners, "Tie. Who won the coin toss?", CancelButtonCommand, SubmitButtonCommand);
+            dialog.ShowDialog();
+        }
+
+        /// <summary>
+        /// Function to save the ties in the calculation of the victor to the data file.
+        /// </summary>
+        /// <param name="winners"></param>
+        private void Set_Coin_Toss(List<Victor> winners)
+        {
+            Data.Add(winnerDataLoc, winners);
+
+            Save();
+
+            Display_Coin_Toss(winners);
         }
 
         /// <summary>
@@ -124,6 +235,8 @@ namespace Reindeer_Hunter.FFA
             // We'll get a null reference when nothing is selected, so it shouldn't be enabled.
             try
             {
+                // Make sure they can't pin the last person
+                if (NumStudentsLeft <= 1 || DataHandler.IsTerminated || AreWinnersSet) return false;
                 Victor currentVictor = (Victor)MainDisplay.CurrentCell.Item;
                 return currentVictor.In;
             }
@@ -139,6 +252,10 @@ namespace Reindeer_Hunter.FFA
         /// </summary>
         public void Pin(object parameter)
         {
+
+            // If selection is invalid, return
+            if (!MainDisplay.CurrentCell.IsValid) return;
+
             // Figure out which victor we're pinning
             Victor pinnedVictor = (Victor)MainDisplay.CurrentCell.Item;
 
@@ -155,7 +272,7 @@ namespace Reindeer_Hunter.FFA
             }
 
             // Make the dialog
-            dialog = new AskStudentNameDialog(victors, pinnedVictor, CancelButtonClick, SubmitButtonClick);
+            dialog = new AskStudentNameDialog(victors, pinnedVictor, CancelButtonCommand, SubmitButtonCommand);
 
             // Show the dialog
             dialog.ShowDialog();
@@ -179,27 +296,40 @@ namespace Reindeer_Hunter.FFA
         /// <param name="parameter"></param>
         public void Submit(object parameter)
         {
-            // Find the student Id and get the victor from it.
+            /* Get the Student id of whatever victor did something 
+             * (either won coin toss or pinned someone else) */
             int selectionindex = (int)parameter;
             int studentId = dialog.GetVictorIdByIndex(selectionindex);
-            Victor killer = Victors[studentId];
+            Victor actingVictor = Victors[studentId];
 
-            // Add to their kills and to the list of people whom they've killed.
-            killer.NumKills += 1;
-            if (killer.Kills == null) killer.Kills = new List<int>();
-            killer.Kills.Add(dialog.KilledStudentId);
+            // It's zero if we're asking for who won the coin toss.
+            if (dialog.KilledStudentId != 0)
+            {
+                // Add to their kills and to the list of people whom they've killed.
+                actingVictor.NumKills += 1;
+                if (actingVictor.Kills == null) actingVictor.Kills = new List<int>();
+                actingVictor.Kills.Add(dialog.KilledStudentId);
 
-            // Toggle the status of the pinned victor
-            Victors[dialog.KilledStudentId].In = false;
+                // Toggle the status of the pinned victor
+                Victors[dialog.KilledStudentId].In = false;
 
-            dialog.Close();
+                dialog.Close();
+
+                // Save changes
+                Save();
+            }
+            else
+            {
+                // Close dialog
+                dialog.Close();
+
+                // Set the winner
+                SetWinner(actingVictor);
+            }
 
             // Refresh the GUI
             PropertyChanged(this, new PropertyChangedEventArgs("Victors"));
             MainDisplay.Items.Refresh();
-            
-            // Save changes
-            Save();
         }
 
         /// <summary>
@@ -239,10 +369,92 @@ namespace Reindeer_Hunter.FFA
 
         /// <summary>
         /// Simple function to save what has been changed.
+        /// Note that when the hunt is over, saving is blocked.
         /// </summary>
         public void Save()
         {
-            DataHandler.SaveVictors(Victors);
+            // As a backup, make sure we don't save anything if the hunt is supposed to be over.
+            if (DataHandler.IsTerminated) return;
+
+            DataHandler.SaveVictors(Data);
+        }
+
+        /// <summary>
+        /// Function called by the calculate victor button command. 
+        /// </summary>
+        public void Calculate_Victor(object parameter)
+        {
+            // If there are winner set already, make sure we don't overwrite it, or calculate it twice.
+            if (AreWinnersSet)
+            {
+                Display_Coin_Toss((List<Victor>)Data[winnerDataLoc]);
+                return;
+            }
+
+            // Make sure this is what the user wants, as it can't be undone.
+            MessageBoxResult result = MessageBox.Show("Proceed with calculating the victor of this " +
+                "Reindeer Hunt? This action CANNOT BE UNDONE.", "Proceed?", 
+                MessageBoxButton.OKCancel, MessageBoxImage.Question);
+
+            if (result != MessageBoxResult.OK) return;
+
+            // We only look at the victors that are still in
+            List<Victor> possiblewinner = new List<Victor>(InVictors);
+
+            // This will acutally have the list of victors who  got past the loop 
+            List<Victor> moveOn = new List<Victor>();
+
+            // Determine who has the highest number of kills
+            int maxKills = 0;
+            foreach (Victor victor in possiblewinner)
+            {
+                if (victor.NumKills > maxKills)
+                {
+                    moveOn.Clear();
+                    moveOn.Add(victor);
+                    maxKills = victor.NumKills;
+                }
+
+                // In case of ties, don't delete the others.
+                else if (victor.NumKills == maxKills)
+                {
+                    moveOn.Add(victor);
+                }
+            }
+
+            // That's it, the hunt is over.
+            if (moveOn.Count() == 1) SetWinner(moveOn[0]);
+
+            else
+            {
+                Set_Coin_Toss(moveOn);
+            }
+        }
+
+        /// <summary>
+        /// Function to be called when the winner is known, and it is time to
+        /// do stuff to save and handle the info.
+        /// </summary>
+        private void SetWinner(Victor winner)
+        {
+            Data.Add(winnerDataLoc, new List<Victor>
+            {
+                {winner }
+            });
+
+            // Save the stuff before terminating hunt
+            Save();
+
+            // End the hunt. 
+            DataHandler.IsTerminated = true;
+
+            DisplayWinner(winner);
+        }
+
+        public void DisplayWinner(Victor winner)
+        {
+            string messageToShow = String.Format("The Winner of this Reindeer Hunt is {0}!", winner.FullName);
+            MessageBox.Show(messageToShow, "AND THE WINNER IS...", MessageBoxButton.OK, MessageBoxImage.Exclamation);
         }
     }
 }

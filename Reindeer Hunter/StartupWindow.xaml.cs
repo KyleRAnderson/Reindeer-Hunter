@@ -2,6 +2,7 @@
 using System.Windows;
 using Reindeer_Hunter.Data_Classes;
 using Reindeer_Hunter.FFA;
+using System;
 
 namespace Reindeer_Hunter
 {
@@ -53,7 +54,6 @@ namespace Reindeer_Hunter
             }
             else
             {
-                // TODO switch to setup user control.
                 SetPage(new SetupPage(this));
             }
         }

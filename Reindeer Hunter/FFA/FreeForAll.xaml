@@ -25,9 +25,9 @@
             </DataGrid>
 
             <DockPanel x:Name="MenuBar" Grid.ColumnSpan="1" LastChildFill="False" Margin="10,0,0,0">
-                <Menu x:Name="MainMenu" VerticalAlignment="Top" HorizontalAlignment="Left" DockPanel.Dock="Bottom" Background="{x:Null}">
-                    <Button Content="Switch To HomeScreen" x:Name="SwitchButton" Background="#FF707070" Foreground="White" Command="{Binding SwitchToHomeScreen, Mode=OneWay}" FontSize="18"/>
-                    <Button Content="Pin" x:Name="PinButton" Foreground="White" FontSize="18" Padding="1,1,35,1" FontWeight="Bold" BorderBrush="{x:Null}" Command="{Binding PinCommand, Mode=OneWay}">
+                <Menu x:Name="MainMenu" VerticalAlignment="Top" HorizontalAlignment="Left" DockPanel.Dock="Bottom" Background="{x:Null}" FontSize="18">
+                    <Button Content="Switch To HomeScreen" x:Name="SwitchButton" Background="#FF707070" Foreground="White" Command="{Binding SwitchToHomeScreen, Mode=OneWay}" FontSize="18" ToolTip="&quot;H&quot; key"/>
+                    <Button Content="Pin" x:Name="PinButton" Foreground="White" FontSize="18" Padding="1,1,35,1" FontWeight="Bold" BorderBrush="{x:Null}" Command="{Binding PinCommand, Mode=OneWay}" ToolTip="&quot;P&quot; key">
                         <Button.Background>
                             <ImageBrush ImageSource="/Reindeer Hunter;component/Resources/clothesPin.ico" Stretch="Uniform">
                                 <ImageBrush.RelativeTransform>
@@ -41,8 +41,13 @@
                             </ImageBrush>
                         </Button.Background>
                     </Button>
+                    <Button Content="Calculate Winner" x:Name="CalculateButton" Background="Red" Foreground="White" BorderBrush="{x:Null}" Command="{Binding CalculateVictor, Mode=OneWay}"/>
                 </Menu>
             </DockPanel>
         </Grid>
     </Viewbox>
+    <UserControl.InputBindings>
+        <KeyBinding Key="H" Command="{Binding SwitchToHomeScreen, Mode=OneWay}"/>
+        <KeyBinding Key="P" Command="{Binding PinCommand, Mode=OneWay}"/>
+    </UserControl.InputBindings>
 </UserControl>

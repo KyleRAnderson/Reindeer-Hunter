@@ -26,6 +26,43 @@ namespace Reindeer_Hunter
         // This is what other threads must have to access the sensitive code.
         static object key = new object();
 
+        public readonly string FFADataLoc = "FFA";
+        public readonly string StudentDataLoc = "students";
+        public readonly string MatchDataLoc = "matches";
+        public readonly string MiscDataLoc = "misc";
+        public readonly string TerminatedLoc = "terminated";
+
+        // Locations of FFA data
+        public readonly string winnerDataLoc = "winner";
+        public readonly string victorDataLoc = "victors";
+
+        /// <summary>
+        /// Boolean telling if the Reindeer Hunt is over or not.
+        /// True when it's over, false otherwise.
+        /// </summary>
+        public bool IsTerminated
+        {
+            get
+            {
+                Hashtable miscData = (Hashtable)Read()[MiscDataLoc];
+                if (miscData.ContainsKey(TerminatedLoc)) return (bool)miscData[TerminatedLoc];
+                else return false;
+            }
+
+            set
+            {
+                // If it's false, we just don't set anything
+                if (!value) return;
+                Hashtable data = Read();
+                
+                // If it exists, modify it. Otherwise, create it. 
+                if (((Hashtable)data[MiscDataLoc]).ContainsKey(TerminatedLoc)) ((Hashtable)data[MiscDataLoc])[TerminatedLoc] = value;
+                else ((Hashtable)data[MiscDataLoc]).Add(TerminatedLoc, value);
+
+                Write(data);
+            }
+        }
+
         public DataFileIO()
         {
             if (!Directory.Exists(DataLocation)) DataLocation = Environment.CurrentDirectory;
@@ -106,19 +143,19 @@ namespace Reindeer_Hunter
 
                 // Load up the sub-collectives as JObjects
                 Newtonsoft.Json.Linq.JObject studentsJarray =
-                    (Newtonsoft.Json.Linq.JObject)data_hashtable["students"];
+                    (Newtonsoft.Json.Linq.JObject)data_hashtable[StudentDataLoc];
 
                 Newtonsoft.Json.Linq.JObject matchesJarray =
-                    (Newtonsoft.Json.Linq.JObject)data_hashtable["matches"];
+                    (Newtonsoft.Json.Linq.JObject)data_hashtable[MatchDataLoc];
 
                 Newtonsoft.Json.Linq.JObject variousJarray =
-                    (Newtonsoft.Json.Linq.JObject)data_hashtable["misc"];
+                    (Newtonsoft.Json.Linq.JObject)data_hashtable[MiscDataLoc];
 
                 Newtonsoft.Json.Linq.JObject victorsJarray = null;
                 // Only do this if the victors key exists
-                if (data_hashtable.ContainsKey("victors")) {
+                if (data_hashtable.ContainsKey(FFADataLoc)) {
                         victorsJarray =
-                            (Newtonsoft.Json.Linq.JObject)data_hashtable["victors"];
+                            (Newtonsoft.Json.Linq.JObject)data_hashtable[FFADataLoc];
                 }   
 
             // Convert them to their proper type
@@ -131,19 +168,19 @@ namespace Reindeer_Hunter
                 Hashtable various_data =
                    variousJarray.ToObject<Hashtable>();
 
-                Dictionary<int, Victor> victors;                
+                Hashtable FFAData;                
 
                 // Re-create the hashtable
                 Hashtable data = new Hashtable {
-                {"students", students },
-                {"matches", matches },
-                {"misc", various_data }
+                {StudentDataLoc, students },
+                {MatchDataLoc, matches },
+                {MiscDataLoc, various_data }
                 };
 
             if (victorsJarray != null)
             {
-                victors = victorsJarray.ToObject<Dictionary<int, Victor>>();
-                data.Add("victors", victors);
+                FFAData = victorsJarray.ToObject<Hashtable>();
+                data.Add(FFADataLoc, FFAData);
             }
 
             return data;
@@ -152,16 +189,16 @@ namespace Reindeer_Hunter
         /// <summary>
         /// Function to save the victor classes to the file.
         /// </summary>
-        /// <param name="victorsToSave"></param>
-        public void SaveVictors(Dictionary<int, Victor> victorsToSave)
+        /// <param name="dataToSave"></param>
+        public void SaveVictors(Hashtable dataToSave)
         {
             // Make a new hashtable and fill it with what's already there
             Hashtable dataToWrite = new Hashtable(Read());
 
             // Make sure the victors part exists
-            if (!dataToWrite.ContainsKey("victors")) dataToWrite.Add("victors", null);
+            if (!dataToWrite.ContainsKey(FFADataLoc)) dataToWrite.Add(FFADataLoc, null);
 
-            dataToWrite["victors"] = victorsToSave;
+            dataToWrite[FFADataLoc] = dataToSave;
 
             Write(dataToWrite);
         }
@@ -170,14 +207,37 @@ namespace Reindeer_Hunter
         /// Function to retrieve the dictionary of victors, if it exists
         /// </summary>
         /// <returns>Dictionary of the victor's student number and the victor object.</returns>
-        public Dictionary<int, Victor> GetVictors()
+        public Hashtable GetFFAData()
         {
-            Hashtable data = Read();
+            Hashtable returnable = new Hashtable();
+            Hashtable data = (Hashtable)Read();
 
             // If the key doesn't exist, it's the first time where we're setting this up.
-            if (!data.ContainsKey("victors")) return null;
+            if (!data.ContainsKey(FFADataLoc)) return null;
 
-            return (Dictionary<int, Victor>)data["victors"];
+            data = (Hashtable)data[FFADataLoc];
+
+            // Reconstruct the hashtable
+            Newtonsoft.Json.Linq.JObject victorsJarray =
+                    (Newtonsoft.Json.Linq.JObject)data[victorDataLoc];
+
+            Dictionary<int, Victor> victors =
+                  victorsJarray.ToObject<Dictionary<int, Victor>>();
+
+            returnable.Add(victorDataLoc, victors);
+
+            if (data.ContainsKey(winnerDataLoc))
+            {
+                Newtonsoft.Json.Linq.JArray winnersJarray =
+                    (Newtonsoft.Json.Linq.JArray)data[winnerDataLoc];
+
+                List<Victor> winner =
+                  winnersJarray.ToObject<List<Victor>>();
+
+                returnable.Add(winnerDataLoc, winner);
+            }
+
+            return returnable;
         }
 
         /// <summary>
@@ -210,7 +270,6 @@ namespace Reindeer_Hunter
             // Compare
             if (!oldChecksum.SequenceEqual(newChecksum))
             {
-                // TODO error handling
                 MessageBox.Show("Error - File has been edited externally and cannot be used with this program. " +
                     "Nothing has been imported.", "Import Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;

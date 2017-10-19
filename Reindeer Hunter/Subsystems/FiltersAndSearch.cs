@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Reindeer_Hunter.Subsystems.SearchAndFilters;
 using Reindeer_Hunter.Data_Classes;
 using System.Windows.Controls;
-using System.Windows.Forms;
 using System.ComponentModel;
 using System.Windows.Input;
+using System.Windows;
 
 namespace Reindeer_Hunter.Subsystems
 {
@@ -24,16 +21,23 @@ namespace Reindeer_Hunter.Subsystems
         // The commands for this subsystem
         public ClearFiltersAndSearch ClearFiltersCommand { get; }
         public SearchCommand Searcher { get; }
+        public RelayCommand PropertiesPopup { get; } = new RelayCommand
+        {
+            CanExecuteDeterminer = () => true
+        };
 
         // The GUI element objects that this subsystem controls.
-        private System.Windows.Controls.MenuItem Filter_Menu { get; set; }
-        private System.Windows.Controls.CheckBox OpenCheckbox { get; set; }
-        private System.Windows.Controls.CheckBox ClosedCheckbox { get; set; }
-        private System.Windows.Controls.MenuItem RoundFilter { get; set; }
+        private MenuItem Filter_Menu { get; set; }
+        private CheckBox OpenCheckbox { get; set; }
+        private CheckBox ClosedCheckbox { get; set; }
+        private MenuItem RoundFilter { get; set; }
+        private TextBox SearchBox { get; set; }
+
+        private readonly string searchBox_Default_Text = "Search for students, homerooms or matches...";
 
         public List<Match> MainDisplay_Display_List { get; private set; } = new List<Match>();
 
-        private System.Windows.Controls.DataGrid MainDisplay;
+        private DataGrid MainDisplay;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -42,6 +46,7 @@ namespace Reindeer_Hunter.Subsystems
             // Create the commands.
             ClearFiltersCommand = new ClearFiltersAndSearch(this);
             Searcher = new SearchCommand(this);
+            PropertiesPopup.FunctionToExecute = DoubleClickRelayCommander;
         }
 
         /// <summary>
@@ -62,9 +67,11 @@ namespace Reindeer_Hunter.Subsystems
             OpenCheckbox = Manager.Home.Open_Filter;
             ClosedCheckbox = Manager.Home.Closed_Filter;
             RoundFilter = Manager.Home.Round_Filter;
+            SearchBox = Manager.Home.search_box;
             // Subscribe to their events
             OpenCheckbox.Click += LoadContent;
             ClosedCheckbox.Click += LoadContent;
+            SearchBox.GotFocus += Search_Box_Got_Focus;
 
             // Reset the filters
             ResetFilters();
@@ -83,6 +90,7 @@ namespace Reindeer_Hunter.Subsystems
              */
             Manager._Passer.PassingStudentsSaved += LoadContent;
             Manager._ProcessButtonSubsystem.MatchesRegistered += OnMatchesSaved;
+            _School.MatchChangeEvent += OnMatchesSaved;
             Manager._ProcessButtonSubsystem.MatchesDiscarded += LoadContent;
             Manager._ProcessButtonSubsystem.MatchesMade += ShowNewMatches;
 
@@ -92,6 +100,11 @@ namespace Reindeer_Hunter.Subsystems
 
             // Give the SearchCommand the School object
             Searcher._School = _School;
+        }
+
+        private void Search_Box_Got_Focus(object sender, RoutedEventArgs e)
+        {
+            if (SearchBox.Text == searchBox_Default_Text) SearchBox.Clear();
         }
 
         /// <summary>
@@ -136,6 +149,7 @@ namespace Reindeer_Hunter.Subsystems
 
             CurrentFilters.Closed = false;
             CurrentFilters.Open = true;
+            Searcher.ClearSearch();
 
             // Set the round filters and then refres the GUI for them.
             CurrentFilters.Round = rounds;
@@ -203,13 +217,22 @@ namespace Reindeer_Hunter.Subsystems
         }
 
         /// <summary>
+        /// Used as a relay for the relay command to trigger the DoubleClickPopup function
+        /// </summary>
+        /// <param name="parameter"></param>
+        private void DoubleClickRelayCommander(object parameter) { DoubleClickPopup(); }
+
+        /// <summary>
         /// Called by the MainDisplay mouse double click event.
         /// Displays the popup info on the double clicked item.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public void DoubleClickPopup(object sender, MouseButtonEventArgs e)
+        public void DoubleClickPopup(object sender = null, MouseButtonEventArgs e = null)
         {
+            // Do nothing if no cell is selected.
+            if (!MainDisplay.CurrentCell.IsValid) return;
+
             // This error is produced when the user presses the sort buttons repeatedly, so avoid crash. 
             Match match;
             try

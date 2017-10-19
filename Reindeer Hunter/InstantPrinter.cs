@@ -53,8 +53,9 @@ namespace Reindeer_Hunter
         public static int COMPLETED = 3;
         public Stopwatch stopwatch;
 
-        // TODO document
+        // Index number is the index value of the form field.
         public int IndexNo = 1;
+        // Page number is the current page we're creating .
         public int PageNo = 0;
 
         public InstantPrinter(List<Match> matches,  
@@ -127,7 +128,6 @@ namespace Reindeer_Hunter
             document.Open();
                        
 
-            // TODO put in actual numbers.
             for (int copier = 0; copier < pagesNeeded; copier++)
             {
                 PdfReader pdfreader = RenamePDFFields(TemplateLocation, Temp2Location, copier);

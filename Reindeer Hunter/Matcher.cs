@@ -96,7 +96,6 @@ namespace Reindeer_Hunter
                     throw new System.ArgumentException(
                         "Forgot to supply matchesDone or matchesToProcess");
 
-                // TODO do the math in a better way
                 // Calculate how far we've gone.
                 decimalPercent = 100 * (matchesDone / matchesToProcess);
                 int percent = (int)Math.Round(decimalPercent);
@@ -154,9 +153,7 @@ namespace Reindeer_Hunter
                 // Determine how many matches we will create
                 for (int b = 9; b < 13; b++)
                 {
-                    // TODO better way plz.
-                    double temp = students_dic[b].Count() / 2;
-                    numMatchesToCreate += (int)Math.Round(temp);
+                    numMatchesToCreate += (int)Math.Round(((double)students_dic[b].Count() / 2));
                 }
 
                 // Do this for grades 9-12
