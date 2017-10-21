@@ -82,6 +82,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
@@ -126,6 +127,7 @@
     <Compile Include="FFA\FreeForAll.xaml.cs">
       <DependentUpon>FreeForAll.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Subsystems\Help.cs" />
     <Compile Include="Subsystems\ImportExportData.cs" />
     <Compile Include="Subsystems\Import_Subsystem.cs" />
     <Compile Include="Subsystems\PasserSubsystem.cs" />

@@ -17,6 +17,7 @@ namespace Reindeer_Hunter
     public class DataFileIO
     {
         public string DataLocation { get; } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Reindeer Hunter Data");
+        public readonly string ProgramLocation = Environment.CurrentDirectory;
 
         // The master location of the data file
         protected readonly string dataFileLocation;
@@ -35,6 +36,23 @@ namespace Reindeer_Hunter
         // Locations of FFA data
         public readonly string winnerDataLoc = "winner";
         public readonly string victorDataLoc = "victors";
+
+        // Location of the user manual
+        public string ManualLoc
+        {
+            get
+            {
+                return Path.Combine(ProgramLocation, "User_Manual.pdf");
+            }
+        }
+
+        public bool ManualExists
+        {
+            get
+            {
+                return File.Exists(ManualLoc);
+            }
+        }
 
         /// <summary>
         /// Boolean telling if the Reindeer Hunt is over or not.

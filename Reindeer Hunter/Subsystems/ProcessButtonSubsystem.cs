@@ -13,6 +13,7 @@ namespace Reindeer_Hunter.Subsystems
     {
         public event EventHandler<NewMatches_EventArgs> MatchesMade;
         public event EventHandler MatchesDiscarded;
+        public event EventHandler WentToFFA;
 
         // The commands that this subsystem is in charge of.
         public Process ProcessCommand { get; } = new Process();
@@ -196,6 +197,7 @@ namespace Reindeer_Hunter.Subsystems
         {
             _School.IsFFARound = true;
             ((StartupWindow)Manager.Home.Parent).GoToFFA();
+            WentToFFA(this, new EventArgs());
         }
     }
 }

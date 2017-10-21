@@ -108,6 +108,8 @@ namespace Reindeer_Hunter.Subsystems
             // The mainDisplay object that we look at.
             System.Windows.Controls.DataGrid mainDisplay = Manager.Home.MainDisplay;
 
+            if (!mainDisplay.CurrentCell.IsValid) return;
+
             // Make sure it's the "pass" column. Otherwise, we don't care.
             if (mainDisplay.CurrentCell.Column.Header.ToString() != "Pass") return;
 

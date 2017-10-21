@@ -27,9 +27,6 @@ namespace Reindeer_Hunter
 
             InitializeComponent();
 
-            // Disable importing students if we are past round 0
-            Import_Students_Button.IsEnabled = MasterWindow._School.GetCurrRoundNo() == 0;
-
             // Send this object's data to the command manager
             ((CommandManager)DataContext).SetHomePage(this);
 

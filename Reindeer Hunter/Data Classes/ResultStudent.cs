@@ -14,6 +14,9 @@ namespace Reindeer_Hunter.Data_Classes
     [IgnoreFirst(1)]
     public class ResultStudent
     {
+        [FieldNullValue("")]
+        public string TimeStamp;
+
         [FieldNotEmpty]
         public string First;
 

@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Reindeer_Hunter.Subsystems
 {
@@ -31,11 +29,12 @@ namespace Reindeer_Hunter.Subsystems
             MasterWindow = Manager.Home.MasterWindow;
             _Importer = MasterWindow.ImporterSystem;
 
-            Refresh();
-
             // Subscribe to events that will merit refresh
             _School.MatchChangeEvent += Refresh;
             _School.RoundIncreased += Refresh;
+            Manager._ProcessButtonSubsystem.WentToFFA += Refresh;
+
+            Refresh();
         }
 
         /// <summary>
@@ -44,9 +43,9 @@ namespace Reindeer_Hunter.Subsystems
         /// <param name="parameter"></param>
         public bool Can_Import_Students()
         {
-            // You can only import during round 0.
-            if (_School == null ||_School.GetCurrRoundNo() > 0 || _Importer == null) return false;
-            else return true;
+            // You can only import during round 0. or during Free For all
+            bool result = (_School != null && (_School.GetCurrRoundNo() == 0 || _School.IsFFARound) && _Importer != null);
+            return result;
         }
 
         /// <summary>

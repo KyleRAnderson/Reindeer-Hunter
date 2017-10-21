@@ -8,7 +8,7 @@ using System.Windows;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Reindeer Hunter")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("An application that manges the annual Sacred Heart High School Reindeer Hunt.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Kyle Anderson")]
 [assembly: AssemblyProduct("Reindeer Hunter")]

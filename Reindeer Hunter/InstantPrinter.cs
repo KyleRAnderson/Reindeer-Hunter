@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using iTextSharp;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using System.IO;
-using System.Windows.Forms;
 using System.Diagnostics;
-using System.Threading;
 using Reindeer_Hunter.Data_Classes;
+using System.Windows.Forms;
 
 namespace Reindeer_Hunter
 {

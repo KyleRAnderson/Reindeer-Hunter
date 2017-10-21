@@ -2,7 +2,7 @@
 using System.Windows;
 using Reindeer_Hunter.Data_Classes;
 using Reindeer_Hunter.FFA;
-using System;
+using System.Deployment.Application;
 
 namespace Reindeer_Hunter
 {

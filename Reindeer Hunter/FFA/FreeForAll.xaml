@@ -26,7 +26,7 @@
 
             <DockPanel x:Name="MenuBar" Grid.ColumnSpan="1" LastChildFill="False" Margin="10,0,0,0">
                 <Menu x:Name="MainMenu" VerticalAlignment="Top" HorizontalAlignment="Left" DockPanel.Dock="Bottom" Background="{x:Null}" FontSize="18">
-                    <Button Content="Switch To HomeScreen" x:Name="SwitchButton" Background="#FF707070" Foreground="White" Command="{Binding SwitchToHomeScreen, Mode=OneWay}" FontSize="18" ToolTip="&quot;H&quot; key"/>
+                    <Button Content="Go Home" x:Name="SwitchButton" Background="Red" Foreground="White" Command="{Binding SwitchToHomeScreen, Mode=OneWay}" FontSize="18" ToolTip="&quot;H&quot; key" BorderBrush="{x:Null}"/>
                     <Button Content="Pin" x:Name="PinButton" Foreground="White" FontSize="18" Padding="1,1,35,1" FontWeight="Bold" BorderBrush="{x:Null}" Command="{Binding PinCommand, Mode=OneWay}" ToolTip="&quot;P&quot; key">
                         <Button.Background>
                             <ImageBrush ImageSource="/Reindeer Hunter;component/Resources/clothesPin.ico" Stretch="Uniform">

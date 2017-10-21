@@ -21,6 +21,7 @@ namespace Reindeer_Hunter
         public ImportExportData _ImportExport { get; }
         public Statistics _Stats { get; }
         public Import_Subsystem _Importer { get; }
+        public Help _Help { get; }
         
         // The homepage object.
         public HomePage Home { get; private set; }
@@ -58,6 +59,10 @@ namespace Reindeer_Hunter
                 ManagerProperty = this
             };
             _Importer = new Import_Subsystem
+            {
+                ManagerProperty = this
+            };
+            _Help = new Help
             {
                 ManagerProperty = this
             };
