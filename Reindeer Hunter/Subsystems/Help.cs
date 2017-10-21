@@ -28,7 +28,7 @@ namespace Reindeer_Hunter.Subsystems
 
         private void OpenManual(object parameter)
         {
-            Process.Start(_DataManager.ManualLoc);
+            Process.Start(DataFileIO.ManualLoc);
         }
 
         /// <summary>
