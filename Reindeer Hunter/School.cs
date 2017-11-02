@@ -620,8 +620,18 @@ namespace Reindeer_Hunter
         /// create match ids.
         /// </summary>
         /// <returns>The current match number.</returns>
-        public long GetCurrMatchNo() => (long)misc["TopMatch"];
-
+        public long CurrMatchNo
+        {
+            get
+            {
+                return (long)misc["TopMatch"];
+            }
+            set
+            {
+                misc["TopMatch"] = value;
+                Save();
+            }
+        }
         /// <summary>
         /// Function to update the new top match id number after match creation
         /// </summary>
@@ -801,7 +811,7 @@ namespace Reindeer_Hunter
             ReplaceOldStuDicWithNewOne(safeStudent_directory, safeHomeroom_directory, safeStudentName_directory);
             Save();
 
-            if (StudentsImported != null) StudentsImported(this, new EventArgs());
+            StudentsImported?.Invoke(this, new EventArgs());
             return true;
         }
 

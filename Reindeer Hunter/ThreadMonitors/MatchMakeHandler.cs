@@ -37,12 +37,12 @@ namespace Reindeer_Hunter.ThreadMonitors
             Matcher matcher;
             if (!school.IsCombineTime())
             {
-                matcher = new Matcher(school.GetCurrRoundNo() + 1, school.GetCurrMatchNo(), Key,
+                matcher = new Matcher(school.GetCurrRoundNo() + 1, school.CurrMatchNo, Key,
                     comms, studentsDic: school.GetStudentsByGrade());
             }
             else
             {
-                matcher = new Matcher(school.GetCurrRoundNo() + 1, school.GetCurrMatchNo(), Key,
+                matcher = new Matcher(school.GetCurrRoundNo() + 1, school.CurrMatchNo, Key,
                     comms, studentList: school.GetAllParticipatingStudents());
             }
 
@@ -81,6 +81,8 @@ namespace Reindeer_Hunter.ThreadMonitors
                     matchMakeThread.Join();
 
                     subsystem.NewMatches = returnValue.Matches;
+
+                    school.CurrMatchNo = returnValue.Matches[returnValue.Matches.Count -1].MatchNumber;
 
                     // Unsubscribe from the rendering event
                     CompositionTarget.Rendering -= MatchmakeMonitor;
