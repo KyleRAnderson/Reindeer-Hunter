@@ -59,6 +59,7 @@ namespace Reindeer_Hunter.Subsystems
 
         public bool Can_Import_Results()
         {
+            // If there are no matches, there is no importing results for matches.
             if (_School.NumOpenMatches <= 0) return false;
             else return true;
         }
@@ -73,7 +74,7 @@ namespace Reindeer_Hunter.Subsystems
             object[] inputtedResults;
             try
             {
-                inputtedResults = _Importer.Import(1).ElementAt<object[]>(0);
+                inputtedResults = _Importer.Import(Importer.IMPORT_MATCH_RESULTS).ElementAt<object[]>(0);
             }
             catch (System.ArgumentNullException)
             {

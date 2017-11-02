@@ -354,10 +354,11 @@ namespace Reindeer_Hunter
             // Get directory and loop around deleting all the files.
             DirectoryInfo dir = new DirectoryInfo(DataLocation);
 
-            foreach (FileInfo file in dir.GetFiles())
+            List<FileInfo> filesInSaveDir = new List<FileInfo>(dir.GetFiles());
+            foreach (FileInfo file in filesInSaveDir)
             {
                 // In case there's other stuff there.
-                if (file.Extension == "pdf" || file.Extension == ".json") file.Delete();
+                if (file.Extension == ".pdf" || file.Extension == ".json") file.Delete();
             }
         }
 

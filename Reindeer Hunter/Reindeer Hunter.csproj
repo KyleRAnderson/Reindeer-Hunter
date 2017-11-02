@@ -128,7 +128,7 @@
       <DependentUpon>FreeForAll.xaml</DependentUpon>
     </Compile>
     <Compile Include="Subsystems\Help.cs" />
-    <Compile Include="Subsystems\ImportExportData.cs" />
+    <Compile Include="Subsystems\DataDealer.cs" />
     <Compile Include="Subsystems\Import_Subsystem.cs" />
     <Compile Include="Subsystems\PasserSubsystem.cs" />
     <Compile Include="Subsystems\ProcessButtonCommands\Process.cs" />

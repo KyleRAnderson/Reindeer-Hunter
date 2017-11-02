@@ -18,7 +18,7 @@ namespace Reindeer_Hunter
         public ProcessButtonSubsystem _ProcessButtonSubsystem { get; }
         public SaveDiscardButtonSubsystem _SaveDiscard { get; }
         public PasserSubsystem _Passer { get; }
-        public ImportExportData _ImportExport { get; }
+        public DataDealer _ImportExport { get; }
         public Statistics _Stats { get; }
         public Import_Subsystem _Importer { get; }
         public Help _Help { get; }
@@ -50,7 +50,7 @@ namespace Reindeer_Hunter
             {
                 ManagerProperty = this
             };
-            _ImportExport = new ImportExportData
+            _ImportExport = new DataDealer
             {
                 ManagerProperty = this
             };

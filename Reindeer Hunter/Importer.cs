@@ -11,7 +11,9 @@ namespace Reindeer_Hunter
 {
     public class Importer
     {
-        private int IMPORT_STUDENTS = 0;
+        // ID for importing students
+        public static int IMPORT_STUDENTS = 0;
+        public static int IMPORT_MATCH_RESULTS = 1;
 
         /// <summary>
         /// Used to import data from a .csv file
@@ -43,7 +45,7 @@ namespace Reindeer_Hunter
                 List<object[]> returnList = new List<object[]>();
 
                 if (csvopenDialog.FileName.Count() == 0) return null;
-                foreach(string path in csvopenDialog.FileNames)
+                foreach (string path in csvopenDialog.FileNames)
                 {
                     // In case the user presses the cancel button
                     if (path == "") return null;
@@ -85,7 +87,7 @@ namespace Reindeer_Hunter
             }
 
             // If importing match results
-            else
+            else if (id == IMPORT_MATCH_RESULTS)
             {
                 string path = csvopenDialog.FileName;
                 var engine = new FileHelperEngine<ResultStudent>();
@@ -121,6 +123,8 @@ namespace Reindeer_Hunter
                     return null;
                 }
             }
+
+            else return null;
         }
     }
 }

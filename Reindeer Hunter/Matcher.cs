@@ -13,7 +13,7 @@ namespace Reindeer_Hunter
     /// </summary>
     public class Matcher
     {
-        protected static Dictionary<int, List<Student>> students_dic;
+        protected static Dictionary<int, List<Student>> students_grade_dic;
         protected static long round;
         protected static long topMatchNo;
         protected static int numMatchesToCreate = 0;
@@ -52,14 +52,14 @@ namespace Reindeer_Hunter
         public Matcher(long roundNo, long maxMatchNo, object key, Queue<Message> messenger,
             Dictionary<int, List<Student>> studentsDic = null, List<Student> studentList = null)
         {
-            students_dic = studentsDic;
+            students_grade_dic = studentsDic;
             round = roundNo;
             topMatchNo = maxMatchNo;
             comms = messenger;
             students_list = studentList;
             Key = key;
 
-            if (students_dic == null && students_list == null)
+            if (students_grade_dic == null && students_list == null)
             {
                 throw new Exception("Cannot have two null arguments for Matcher.");
             }
@@ -147,21 +147,24 @@ namespace Reindeer_Hunter
             // Make the random class
             rndm = new Random();
 
-            // If the student directory isn't null, we're doing it by grade
-            if (students_dic != null)
+            // If the student grade directory isn't null, we're doing it by grade
+            if (students_grade_dic != null)
             {
+                // Make a list of students by grade, having gotten rid of the key-value pair now.
+                List<List<Student>> grades = new List<List<Student>>(students_grade_dic.Values);
+
                 // Determine how many matches we will create
-                for (int b = 9; b < 13; b++)
+                for (int a = 0; a < grades.Count; a++)
                 {
-                    numMatchesToCreate += (int)Math.Round(((double)students_dic[b].Count() / 2));
+                    numMatchesToCreate += (int)Math.Round(((double)grades[a].Count() / 2));
                 }
 
-                // Do this for grades 9-12
-                for (int a = 9; a < 13; a++)
+                // Do this for all grades in the grades dictionary
+                for (int a = 0; a < grades.Count; a++)
                 {
 
-                    // Duplicate the student lists, but don't clone the objects.
-                    matchesCreated.AddRange(MatchCreator(students_dic[a]));
+                    // Create and add the matches for this grade.
+                    matchesCreated.AddRange(MatchCreator(grades[a]));
 
                 }
             }

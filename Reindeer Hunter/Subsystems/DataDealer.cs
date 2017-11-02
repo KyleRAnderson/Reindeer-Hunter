@@ -11,14 +11,14 @@ using System.Diagnostics;
 
 namespace Reindeer_Hunter.Subsystems
 {
-    public class ImportExportData : Subsystem
+    public class DataDealer : Subsystem
     {
         // The import and export command that this subsystem takes care of. Also, the erase command.
         public RelayCommand Import { get; private set; }
         public RelayCommand Export { get; private set; }
         public RelayCommand Erase { get; private set; }
 
-        public ImportExportData() : base()
+        public DataDealer() : base()
         {
             Import = new RelayCommand
             {

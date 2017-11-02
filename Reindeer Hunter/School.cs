@@ -55,6 +55,14 @@ namespace Reindeer_Hunter
             }
         }
 
+        public int Numgrades
+        {
+            get
+            {
+                return GetAllStudentsByGrade().Count;
+            }
+        }
+
         /// <summary>
         /// Simple function to get the number of matches on file that are either open or closed.
         /// </summary>
@@ -681,15 +689,14 @@ namespace Reindeer_Hunter
         /// Format: {key: grade, value: list of students in that grade}</returns>
         public Dictionary<int, List<Student>> GetAllStudentsByGrade()
         {
-            Dictionary<int, List<Student>> studentDic = new Dictionary<int, List<Student>>
-            {
-                {9, new List<Student>() },
-                {10, new List<Student>() },
-                {11, new List<Student>() },
-                {12, new List<Student>() }
-            };
+            Dictionary<int, List<Student>> studentDic = new Dictionary<int, List<Student>>();
+
             foreach (KeyValuePair<int, Student> studentKeyValue in student_directory)
             {
+                // If the grade doesn't exist in the dictionary, add it.
+                if (!studentDic.ContainsKey(studentKeyValue.Value.Grade)) studentDic.Add(studentKeyValue.Value.Grade, new List<Student>());
+
+                // Add the student to their appropriate grade.
                 studentDic[studentKeyValue.Value.Grade].Add(studentKeyValue.Value);
             }
            
@@ -703,16 +710,18 @@ namespace Reindeer_Hunter
         /// Format: {key: grade, value: list of students in that grade}</returns>
         public Dictionary<int, List<Student>> GetStudentsByGrade()
         {
-            Dictionary<int, List<Student>> studentDic = new Dictionary<int, List<Student>>
-            {
-                {9, new List<Student>() },
-                {10, new List<Student>() },
-                {11, new List<Student>() },
-                {12, new List<Student>() }
-            };
+            Dictionary<int, List<Student>> studentDic = new Dictionary<int, List<Student>>();
             foreach (Student student in student_directory.Values)
             {;
-                if (student.In) studentDic[student.Grade].Add(student);
+                if (student.In)
+                {
+                    // If that grade has not been put in the student dictionary, add the grade.
+                    if (!studentDic.ContainsKey(student.Grade))
+                        studentDic.Add(student.Grade, new List<Student>());
+
+                    // Add the student to their proper grade.
+                    studentDic[student.Grade].Add(student);
+                }
 
             }
 
@@ -872,7 +881,7 @@ namespace Reindeer_Hunter
         }
         
         /// <summary>
-        /// Determines if all students have been passed once, and if so returns true.
+        /// Determines if all students have been passed through a round once, and if so returns true.
         /// This is important because in small reindeer hunts, it is possible for 
         /// every student to be passed once and once this happens we want to 
         /// reset it so that we can begin to pass them once again.
@@ -880,17 +889,18 @@ namespace Reindeer_Hunter
         /// <returns>True if all student's HasBeenPasses property is true, false otherwise.</returns>
         private bool HasEveryOneBeenPassedOnce()
         {
-            int numberOfNotPassedStudents = 0;
-
-            foreach (Student student in student_directory.Values)
+            Dictionary<int, List<Student>> studentsByGrade = GetAllStudentsByGrade();
+            foreach (List<Student> gradeList in studentsByGrade.Values)
             {
-                if (!student.HasBeenPassed) numberOfNotPassedStudents += 1;
-                /* 4 students are allowed to be not passed, as the number
-                 * of grades is 4 and so it is possible for there to be four 
-                 * sets of odd number lists */
-                if (numberOfNotPassedStudents >= 4) return false;
+                foreach (Student student in gradeList)
+                {
+                    /* Since it is possible for one odd student in every grade,
+                     * we make sure there is no grade with less than one passable
+                     * student. 
+                     */
+                    if (!student.HasBeenPassed) return false;
+                }
             }
-
             return true;
         }
 

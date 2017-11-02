@@ -82,7 +82,7 @@ namespace Reindeer_Hunter
         /// <returns>A true or false value, true if the operation succeeded, false otherwise.</returns>
         public bool ImportStudents()
         {
-            List<object[]> resultList = ImporterSystem.Import(0);
+            List<object[]> resultList = ImporterSystem.Import(Importer.IMPORT_STUDENTS);
             List<Student> students_to_add = new List<Student>();
             long round = _School.GetCurrRoundNo();
 
