@@ -1,4 +1,5 @@
-﻿using Reindeer_Hunter.Data_Classes;
+﻿using Microsoft.Win32;
+using Reindeer_Hunter.Data_Classes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,6 @@ namespace Reindeer_Hunter.Subsystems
         public RelayCommand ImportStudents { get; } = new RelayCommand();
         public RelayCommand ImportMatchResults { get; } = new RelayCommand();
 
-        private Importer _Importer;
         private StartupWindow MasterWindow;
 
         protected override void OnHomePageSet(object sender, EventArgs e)
@@ -27,7 +27,6 @@ namespace Reindeer_Hunter.Subsystems
             ImportMatchResults.CanExecuteDeterminer = Can_Import_Results;
 
             MasterWindow = Manager.Home.MasterWindow;
-            _Importer = MasterWindow.ImporterSystem;
 
             // Subscribe to events that will merit refresh
             _School.MatchChangeEvent += Refresh;
@@ -44,7 +43,7 @@ namespace Reindeer_Hunter.Subsystems
         public bool Can_Import_Students()
         {
             // You can only import during round 0. or during Free For all
-            bool result = (_School != null && (_School.GetCurrRoundNo() == 0 || _School.IsFFARound) && _Importer != null);
+            bool result = (_School != null && (_School.GetCurrRoundNo() == 0 || _School.IsFFARound));
             return result;
         }
 
@@ -74,7 +73,20 @@ namespace Reindeer_Hunter.Subsystems
             object[] inputtedResults;
             try
             {
-                inputtedResults = _Importer.Import(Importer.IMPORT_MATCH_RESULTS).ElementAt<object[]>(0);
+                OpenFileDialog csvFileDialog = new OpenFileDialog
+                {
+                    InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                    Filter = "csv files (*.csv)|*.csv",
+                    FilterIndex = 2,
+                    RestoreDirectory = true,
+                    Multiselect = false
+                };
+
+                csvFileDialog.ShowDialog();
+
+
+                inputtedResults = Importer.Import(Importer.IMPORT_MATCH_RESULTS, 
+                    filePath: csvFileDialog.FileName).ElementAt<object[]>(0);
             }
             catch (System.ArgumentNullException)
             {

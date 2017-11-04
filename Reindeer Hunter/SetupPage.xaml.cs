@@ -19,9 +19,7 @@ namespace Reindeer_Hunter
 
         private void Import_button_Click(object sender, RoutedEventArgs e)
         {
-            bool success = masterWindow.ImportStudents();
-            if (!success) return;
-            masterWindow.GoToHome();
+            masterWindow.ImportStudents();
         }
 
         private void Open_User_manual_Click(object sender, RoutedEventArgs e)

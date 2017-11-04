@@ -748,8 +748,9 @@ namespace Reindeer_Hunter
         /// Adds students to the master student dictionary
         /// </summary>
         /// <param name="students">The list of students to add.</param>
-        /// <returns>Boolean representing if the operation completed successfully.</returns>
-        public bool AddStudents(List<Student> students)
+        /// <param name="inThread">True if this is being called frorm a thread
+        /// other than the main one. </param>
+        public bool AddStudents(List<Student> students, Boolean inThread = false)
         {
             // So that we can rollback any changes.
             Dictionary<int, Student> safeStudent_directory = new Dictionary<int, Student>(student_directory);
@@ -820,7 +821,10 @@ namespace Reindeer_Hunter
             ReplaceOldStuDicWithNewOne(safeStudent_directory, safeHomeroom_directory, safeStudentName_directory);
             Save();
 
-            StudentsImported?.Invoke(this, new EventArgs());
+            // Don't want to do this from a sub-thread.
+            if (!inThread)
+                StudentsImported?.Invoke(this, new EventArgs());
+
             return true;
         }
 

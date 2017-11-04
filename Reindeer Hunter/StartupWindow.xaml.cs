@@ -2,7 +2,9 @@
 using System.Windows;
 using Reindeer_Hunter.Data_Classes;
 using Reindeer_Hunter.FFA;
-using System.Deployment.Application;
+using System;
+using Microsoft.Win32;
+using Reindeer_Hunter.ThreadMonitors;
 
 namespace Reindeer_Hunter
 {
@@ -13,7 +15,6 @@ namespace Reindeer_Hunter
     {
 
         public School _School { get; set; }
-        public Importer ImporterSystem { get; set; }
         private HomePage home;
         public HomePage Home
         {
@@ -39,7 +40,6 @@ namespace Reindeer_Hunter
             InitializeComponent();
 
             _School = new School();
-            ImporterSystem = new Importer();
 
 
             if (_School.IsData() && !_School.IsFFARound)
@@ -80,41 +80,34 @@ namespace Reindeer_Hunter
         /// Prompts the user to import students from .csv file(s)
         /// </summary>
         /// <returns>A true or false value, true if the operation succeeded, false otherwise.</returns>
-        public bool ImportStudents()
+        public void ImportStudents()
         {
-            List<object[]> resultList = ImporterSystem.Import(Importer.IMPORT_STUDENTS);
-            List<Student> students_to_add = new List<Student>();
-            long round = _School.GetCurrRoundNo();
 
-            // In case of problems.
-            if (resultList == null) return false;
-
-            foreach (object[] result in resultList)
+            OpenFileDialog csvopenDialog = new OpenFileDialog
             {
-                // In case of any import errors.
-                if (result == null) return false;
 
-                foreach (ImportedStudent importedStudent in result)
-                {
-                    // Make new student, set the student's round number and add them to the new list
-                    Student student = new Student
-                    {
-                        First = importedStudent.First,
-                        Last = importedStudent.Last,
-                        Id = importedStudent.Id,
-                        Grade = importedStudent.Grade,
-                        Homeroom = importedStudent.Homeroom,
-                        LastRoundParticipated = round,
-                        In = true,
-                        MatchesParticipated = new List<string>()
-                    };
-                    students_to_add.Add(student);
-                }
+                // Open the file dialog to the user's directory
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+
+                // Filter only for comma-seperated value files. 
+                Filter = "csv files (*.csv)|*.csv",
+                FilterIndex = 2,
+                RestoreDirectory = true,
+                Multiselect = true
+            };
+
+            csvopenDialog.ShowDialog();
+
+            // If use selects nothing, return
+            if (csvopenDialog.FileNames == null) return;
+            foreach (string path in csvopenDialog.FileNames)
+            {
+                if (String.IsNullOrEmpty(path)) return;
             }
 
-            if (!_School.AddStudents(students_to_add)) return false;
+            ImportHandler importer = new ImportHandler(_School, csvopenDialog.FileNames, GoToHome);
 
-            return true;
+            return;
         }
     }
 }

@@ -127,6 +127,7 @@
     <Compile Include="FFA\FreeForAll.xaml.cs">
       <DependentUpon>FreeForAll.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ImportStudents.cs" />
     <Compile Include="Subsystems\Help.cs" />
     <Compile Include="Subsystems\DataDealer.cs" />
     <Compile Include="Subsystems\Import_Subsystem.cs" />
@@ -176,6 +177,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ThreadMonitors\ImportHandler.cs" />
     <Compile Include="ThreadMonitors\InstantPrintHandler.cs" />
     <Compile Include="ThreadMonitors\MatchMakeHandler.cs" />
     <Compile Include="Subsystems\Filters and Search\SearchCommand.cs" />

@@ -120,7 +120,7 @@ namespace Reindeer_Hunter.ThreadMonitors
                     // Move the temporary file out of the code's folder.
                     File.Move(returnValue.Path, path);
 
-                    System.Diagnostics.Process.Start("explorer.exe", System.IO.Path.GetDirectoryName(path));
+                    System.Diagnostics.Process.Start("explorer.exe", Path.GetDirectoryName(path));
 
                     IsPrinting = false;
                 }

@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using FileHelpers;
 using System.Windows.Forms;
 using Reindeer_Hunter.Data_Classes;
 
 namespace Reindeer_Hunter
 {
-    public class Importer
+    public static class Importer
     {
         // ID for importing students
         public static int IMPORT_STUDENTS = 0;
@@ -20,32 +18,14 @@ namespace Reindeer_Hunter
         /// </summary>
         /// <param name="id">ID0 = Student, ID1 = ResultStudent</param>
         /// <returns>object list containing the objects made, or null when error occurred.</returns>
-        public List<object[]> Import(int id)
+        public static List<object[]> Import(int id, String filePath = null, String[] pathsList = null)
         {
-            OpenFileDialog csvopenDialog = new OpenFileDialog
-            {
-
-                // Open the file dialog to the user's directory
-                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-
-                // Filter only for comma-seperated value files. 
-                Filter = "csv files (*.csv)|*.csv",
-                FilterIndex = 2,
-                RestoreDirectory = true
-            };
-
-            // If importing students, multiselect is enabled.
-            if (id == IMPORT_STUDENTS) csvopenDialog.Multiselect = true;
-
-            csvopenDialog.ShowDialog();
-
             // If importing students
             if (id == IMPORT_STUDENTS)
             {
                 List<object[]> returnList = new List<object[]>();
 
-                if (csvopenDialog.FileName.Count() == 0) return null;
-                foreach (string path in csvopenDialog.FileNames)
+                foreach (string path in pathsList)
                 {
                     // In case the user presses the cancel button
                     if (path == "") return null;
@@ -89,14 +69,13 @@ namespace Reindeer_Hunter
             // If importing match results
             else if (id == IMPORT_MATCH_RESULTS)
             {
-                string path = csvopenDialog.FileName;
                 var engine = new FileHelperEngine<ResultStudent>();
 
-                if (path == "") return null;
+                if (filePath == "") return null;
                 try
                 {
                     // Make result into an array of Student
-                    var result = engine.ReadFile(path);
+                    var result = engine.ReadFile(filePath);
                     // If the user imports a csv with no students in it, error message.
                     if (result.Count() <= 0)
                     {
