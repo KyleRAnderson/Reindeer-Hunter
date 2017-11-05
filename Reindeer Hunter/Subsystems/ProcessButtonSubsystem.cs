@@ -100,7 +100,7 @@ namespace Reindeer_Hunter.Subsystems
 
         private void UpdateStatus()
         {
-            if (_School.IsTimeForFFA) Status = FFA;
+            if (_School.IsTimeForFFA || _School.IsFFARound) Status = FFA;
             else if (_School.IsReadyForNextRound) Status = MATCHMAKING;
             else Status = INSTANTPRINT;
         }

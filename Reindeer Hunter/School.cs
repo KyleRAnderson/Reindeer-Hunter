@@ -1026,5 +1026,18 @@ namespace Reindeer_Hunter
                 Save(true);
             }
         }
+
+        /// <summary>
+        /// Checks whether the given student's values are valid
+        /// </summary>
+        /// <param name="student">The student object who's values to check</param>
+        /// <returns>True or false, depending on if the student is valid</returns>
+        public static bool IsvalidStudent(Student student)
+        {
+            // Student number must be under 6 characters,
+            if (student.Id.ToString().Length > 6) return false;
+
+            return true;
+        }
     }
 }

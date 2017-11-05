@@ -53,6 +53,14 @@ namespace Reindeer_Hunter
                         In = true,
                         MatchesParticipated = new List<string>()
                     };
+
+                    // Check to make sure the student is valid.
+                    if (!School.IsvalidStudent(student))
+                    {
+                        Finish(false);
+                        return;
+                    }
+
                     students_to_add.Add(student);
                 }
             }

@@ -73,7 +73,9 @@ namespace Reindeer_Hunter
 
         public void SetPage(System.Windows.Controls.UserControl page)
         {
-            this.Content = page;
+            // Only do this if the current page isn't already set to that page.
+            if (!Content.Equals(page))
+                Content = page;
         }
 
         /// <summary>
@@ -99,7 +101,7 @@ namespace Reindeer_Hunter
             csvopenDialog.ShowDialog();
 
             // If use selects nothing, return
-            if (csvopenDialog.FileNames == null) return;
+            if (csvopenDialog.FileNames.Length == 0) return;
             foreach (string path in csvopenDialog.FileNames)
             {
                 if (String.IsNullOrEmpty(path)) return;

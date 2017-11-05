@@ -56,6 +56,13 @@ namespace Reindeer_Hunter.ThreadMonitors
             // Only run it if there is success.
             if (comms.Count > 0 && comms.ToList<bool>()[0])
                 EndFunction?.Invoke();
+
+            // Clear queue
+            comms.Clear();
+
+
+            // Unsubscribe from event
+            CompositionTarget.Rendering -= Monitor;
         }
     }
 }
