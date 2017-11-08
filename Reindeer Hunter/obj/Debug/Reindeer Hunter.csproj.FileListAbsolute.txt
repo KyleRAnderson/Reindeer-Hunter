@@ -84,3 +84,5 @@ E:\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\DataCar
 E:\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\Reindeer Hunter.TrustInfo.xml
 E:\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\Reindeer Hunter.exe.manifest
 E:\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\Reindeer Hunter.application
+E:\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\Subsystems\ProcessButtonCommands\MatchmakeDialog.g.cs
+E:\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\Subsystems\ProcessButtonCommands\MatchmakeDialog.baml

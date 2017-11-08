@@ -1,0 +1,18 @@
+﻿<Window x:Class="Reindeer_Hunter.Subsystems.ProcessButtonCommands.MatchmakeDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Reindeer_Hunter.Subsystems.ProcessButtonCommands"
+        mc:Ignorable="d"
+        Title="Matchmaking Options" Height="230" Width="600">
+    <Viewbox Stretch="Uniform">
+        <Grid Height="115" Width="300">
+            <RadioButton x:Name="Homerooms" Content="Matchmake between two Homerooms" HorizontalAlignment="Left" Margin="22,22,0,0" VerticalAlignment="Top" GroupName="selection" FontSize="14" Background="White" Click="RaiseCanExecuteChanged"/>
+            <RadioButton x:Name="Grades" Content="Matchmake within grades" HorizontalAlignment="Left" Margin="22,45,0,0" VerticalAlignment="Top" GroupName="selection" FontSize="14" Click="RaiseCanExecuteChanged"/>
+            <RadioButton x:Name="Students" Content="Matchmake between all students" HorizontalAlignment="Left" Margin="22,67,0,0" VerticalAlignment="Top" GroupName="selection" FontSize="14" Click="RaiseCanExecuteChanged"/>
+            <Button x:Name="Cancel" Content="Cancel" HorizontalAlignment="Left" Margin="22,89,0,0" VerticalAlignment="Top" Width="75" Command="{Binding CancelCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MatchmakeDialog}}}"/>
+            <Button x:Name="Ok" Content="Ok" HorizontalAlignment="Left" Margin="202,89,0,0" VerticalAlignment="Top" Width="76" Command="{Binding OkCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MatchmakeDialog}}}"/>
+        </Grid>
+    </Viewbox>
+</Window>

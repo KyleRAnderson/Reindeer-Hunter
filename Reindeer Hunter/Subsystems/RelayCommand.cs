@@ -31,7 +31,7 @@ namespace Reindeer_Hunter.Subsystems
         /// </summary>
         public void RaiseCanExecuteChanged()
         {
-            CanExecuteChanged(this, new EventArgs());
+            CanExecuteChanged?.Invoke(this, new EventArgs());
         }
     }
 }

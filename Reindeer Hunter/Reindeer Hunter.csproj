@@ -132,6 +132,9 @@
     <Compile Include="Subsystems\DataDealer.cs" />
     <Compile Include="Subsystems\Import_Subsystem.cs" />
     <Compile Include="Subsystems\PasserSubsystem.cs" />
+    <Compile Include="Subsystems\ProcessButtonCommands\MatchmakeDialog.xaml.cs">
+      <DependentUpon>MatchmakeDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Subsystems\ProcessButtonCommands\Process.cs" />
     <Compile Include="Subsystems\FiltersAndSearch.cs" />
     <Compile Include="Subsystems\ProcessButtonSubsystem.cs" />
@@ -209,6 +212,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Subsystems\ProcessButtonCommands\MatchmakeDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -235,6 +242,7 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <None Include="Reindeer Hunter_TemporaryKey.pfx" />
+    <None Include="Resources\User_Manual.pdf" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

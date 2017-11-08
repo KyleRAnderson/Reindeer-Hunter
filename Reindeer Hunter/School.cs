@@ -160,21 +160,13 @@ namespace Reindeer_Hunter
                 }
 
                 // Then the homerooms
-                if (homeroom_directory.ContainsKey(student.Homeroom))
-                    homeroom_directory[student.Homeroom].Add(student);
 
-                // If key doesn't exist, create list for it.
-                else
-                {
-                    // Create new list for that homeroom's students
-                    List<Student> hmrmList = new List<Student>
-                    {
-                        {student }
-                    };
-
-                    // Add this list to the directory.
-                    homeroom_directory.Add(student.Homeroom, hmrmList);
-                }
+                // If the homeroom list doesn't exist, add it.
+                if (!homeroom_directory.ContainsKey(student.Homeroom))
+                    homeroom_directory.Add(student.Homeroom, new List<Student>());
+                
+                // Add the student to the right homeroom
+                homeroom_directory[student.Homeroom].Add(student);
             }
         }
 
@@ -640,15 +632,6 @@ namespace Reindeer_Hunter
                 Save();
             }
         }
-        /// <summary>
-        /// Function to update the new top match id number after match creation
-        /// </summary>
-        /// <param name="matchNo">New match id number</param>
-        public void SetCurrMatchNo(long matchNo)
-        {
-            misc["MatchNo"] = matchNo;
-            Save();
-        }
 
         /// <summary>
         /// Used to find the current round number. 
@@ -849,7 +832,7 @@ namespace Reindeer_Hunter
         public void AddMatches(List<Match> matchesToAdd)
         {
             // Update the match numbers.
-            SetCurrMatchNo(matchesToAdd[matchesToAdd.Count() - 1].MatchNumber);
+            CurrMatchNo = matchesToAdd[matchesToAdd.Count() - 1].MatchNumber;
 
             foreach (Match match in matchesToAdd)
             {
@@ -940,17 +923,6 @@ namespace Reindeer_Hunter
         }
 
         /// <summary>
-        /// Returns a true value when the rounds are officially high enough 
-        /// for students to be going against students in other grades than theirs.
-        /// </summary>
-        /// <returns>True whe nit is time for Grade vs Grade, false when it is
-        /// still StudentInGrade vs StudentInSameGrade </returns>
-        public bool IsCombineTime()
-        {
-            return (bool)(GetCurrRoundNo() + 1 == (long)misc["CombiningRoundNo"]);
-        }
-
-        /// <summary>
         /// Returns true when the next round should be the free for all round (FFA)
         /// </summary>
         public bool IsTimeForFFA
@@ -984,9 +956,6 @@ namespace Reindeer_Hunter
                 // The current round number. Starts at 0 to indicate no round is in progress.
                 {"RoundNo", 0 },
 
-                // The round after which students from different grades compete against each other.
-                {"CombiningRoundNo",  5},
-
                 // Boolean representing if we're in the FFA round or not
                 {"IsFFA", false },
             };
@@ -1002,6 +971,31 @@ namespace Reindeer_Hunter
             };
 
             DataFile.Write(data);
+        }
+
+        public Dictionary<int, Dictionary<int, List<Student>>> GetStudentsByGradeAndHomeroom()
+        {
+            Dictionary<int, List<Student>> homeroomList = new Dictionary<int, List<Student>>();
+
+            // Duplicate all the students in the homeroom directory so they're not modified externally.
+            foreach(KeyValuePair<int, List<Student>> studentKV in homeroom_directory)
+            {
+                homeroomList.Add(studentKV.Key, new List<Student>());
+                for (int a = 0; a < studentKV.Value.Count; a++)
+                {
+                    homeroomList[studentKV.Key].Add(studentKV.Value[a].Clone());
+                }
+            }
+
+            Dictionary<int, Dictionary<int, List<Student>>> gradeHomeroomList = new Dictionary<int, Dictionary<int, List<Student>>>();
+
+            foreach (KeyValuePair<int, List<Student>> hmrm_students in homeroomList) {
+                int grade = hmrm_students.Value[0].Grade;
+                if (!gradeHomeroomList.ContainsKey(grade)) gradeHomeroomList.Add(grade, new Dictionary<int, List<Student>>());
+                gradeHomeroomList[grade].Add(hmrm_students.Key, hmrm_students.Value);
+            }
+
+            return gradeHomeroomList;
         }
 
         /// <summary>

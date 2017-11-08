@@ -1,4 +1,5 @@
 ﻿using Reindeer_Hunter.Subsystems;
+using Reindeer_Hunter.Subsystems.ProcessButtonCommands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +25,15 @@ namespace Reindeer_Hunter.ThreadMonitors
 
         public MatchMakeHandler(School school, ProcessButtonSubsystem subsystemInCharge)
         {
+
+            // First determine what type of matchmaking we'll be doing
+            MatchmakeDialog selectionDialog = new MatchmakeDialog();
+            selectionDialog.ShowDialog();
+
+            int result = selectionDialog.GetResult();
+
+            if (result == MatchmakeDialog.CANCELLED) return;
+
             subsystem = subsystemInCharge;
 
             // Create the queue for communications purposes.
@@ -34,16 +44,20 @@ namespace Reindeer_Hunter.ThreadMonitors
 
             // Create the matchmaker and then assign the thread target to it
             // +1 to current round because we want next round's matches.
-            Matcher matcher;
-            if (!school.IsCombineTime())
+            if (result == MatchmakeDialog.GRADES)
             {
                 matcher = new Matcher(school.GetCurrRoundNo() + 1, school.CurrMatchNo, Key,
                     comms, studentsDic: school.GetStudentsByGrade());
             }
-            else
+            else if (result == MatchmakeDialog.STUDENTS)
             {
                 matcher = new Matcher(school.GetCurrRoundNo() + 1, school.CurrMatchNo, Key,
                     comms, studentList: school.GetAllParticipatingStudents());
+            }
+            else
+            {
+                matcher = new Matcher(school.GetCurrRoundNo() + 1, school.CurrMatchNo, Key,
+                    comms, homeroomList: school.GetStudentsByGradeAndHomeroom());
             }
 
             matchMakeThread = new Thread(matcher.Generate)
@@ -80,9 +94,9 @@ namespace Reindeer_Hunter.ThreadMonitors
                     //  Terminate the thread
                     matchMakeThread.Join();
 
-                    subsystem.NewMatches = returnValue.Matches;
+                    subsystem.GenerationInfo = new Tuple<long, List<Data_Classes.Match>>
+                        (returnValue.Matches[returnValue.Matches.Count - 1].MatchNumber, returnValue.Matches);
 
-                    school.CurrMatchNo = returnValue.Matches[returnValue.Matches.Count -1].MatchNumber;
 
                     // Unsubscribe from the rendering event
                     CompositionTarget.Rendering -= MatchmakeMonitor;

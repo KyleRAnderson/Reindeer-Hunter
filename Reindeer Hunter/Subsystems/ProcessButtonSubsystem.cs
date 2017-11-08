@@ -40,6 +40,26 @@ namespace Reindeer_Hunter.Subsystems
             }
         }
 
+        /*
+         * Information set by the MatchMakeHandler when matches are generated.
+         * This is required for when things are saved and both the matches and the
+         * match number have to be saved.
+         */
+        private Tuple<long, List<Match>> generationInfo;
+        public Tuple<long, List<Match>> GenerationInfo
+        {
+            get
+            {
+                return generationInfo;
+            }
+
+            set
+            {
+                generationInfo = value;
+                NewMatches = value.Item2;
+            }
+        }
+
         private List<Match> newMatches = new List<Match>();
         /// <summary>
         /// Stores matches that were just created by the match maker.
@@ -170,7 +190,11 @@ namespace Reindeer_Hunter.Subsystems
             // If matches were indeed just made but not saved, add them.
             if (AreMatchesMade)
             {
+                // Add the generated matches
                 _School.AddMatches(NewMatches);
+                
+                // Set the new current match number
+                _School.CurrMatchNo = GenerationInfo.Item1;
 
                 NewMatches.Clear();
                 // Fire the event.
