@@ -86,3 +86,5 @@ E:\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\Reindee
 E:\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\Reindeer Hunter.application
 E:\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\Subsystems\ProcessButtonCommands\MatchmakeDialog.g.cs
 E:\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\Subsystems\ProcessButtonCommands\MatchmakeDialog.baml
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\Subsystems\ProcessButtonCommands\MatchmakeDialog.g.cs
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\Subsystems\ProcessButtonCommands\MatchmakeDialog.baml

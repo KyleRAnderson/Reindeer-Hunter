@@ -251,16 +251,18 @@ namespace Reindeer_Hunter.DataCards
 
         private void DataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            // <5 indicating that it is one of the first student's rows. 
-            if (DataGrid.Items.IndexOf(DataGrid.CurrentItem) < 5 && 
-                DataGrid.CurrentCell.Column.DisplayIndex == 1)
+            // Figure out what row is selected.
+            int displayIndex = DataGrid.Items.IndexOf(DataGrid.CurrentCell.Item);
+
+            // < 5 indicating that it is one of the first student's rows. 
+            if (displayIndex < 5 && DataGrid.CurrentCell.Column.DisplayIndex == 1)
             {
                 // Display the first student.
                 MasterWindow.Display(studentId: Id1);
             }
-            // If not, it's the second student.
-            else if (DataGrid.Items.IndexOf(DataGrid.CurrentItem) >9 &&
-                DataGrid.CurrentCell.Column.DisplayIndex == 1)
+
+            // > 9 means it's in one of the second student's rows.
+            else if (displayIndex > 9 && DataGrid.CurrentCell.Column.DisplayIndex == 1)
             {
                 // Display the second student
                 MasterWindow.Display(studentId: Id2);

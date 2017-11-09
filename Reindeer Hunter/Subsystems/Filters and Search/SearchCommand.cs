@@ -73,12 +73,12 @@ namespace Reindeer_Hunter.Subsystems.SearchAndFilters
             else if (UserInput.Substring(0, 3) == "MAR" && int.TryParse(UserInput.Substring(3, 1), out int roundNo)) matchId = UserInput;
 
             // Check for student number
-            else if (UserInput.Length == 6 && int.TryParse(UserInput, out studentNo)) { }
+            else if (UserInput.Substring(0, 1) == "S" && int.TryParse(UserInput.Substring(1, UserInput.Length - 1), out studentNo)) { }
 
             // Check for homeroom number
-            else if (4 <= UserInput.Length && UserInput.Length < 6 && int.TryParse(UserInput, out homeroomNo)) { }
+            else if (int.TryParse(UserInput, out homeroomNo)) { }
 
-            // Otherwise, error.
+            // If any of those variables are still their default value, return null
             else return null;
 
             return new SearchQuery
@@ -86,7 +86,7 @@ namespace Reindeer_Hunter.Subsystems.SearchAndFilters
                 MatchId = matchId,
                 StudentName = studentName,
                 StudentNo = studentNo,
-                Homeroom = homeroomNo
+                Homeroom =homeroomNo
             };
         }
 
@@ -107,7 +107,7 @@ namespace Reindeer_Hunter.Subsystems.SearchAndFilters
                 return null;
             }
 
-            List<Match> returnMatchList = _School.GetSearchResults(Query, filter);
+            List<Match> returnMatchList = _School.GetMatches(Query, filter);
             if (returnMatchList == null || returnMatchList.Count == 0)
             {
                 NotFound();

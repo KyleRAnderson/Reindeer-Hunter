@@ -122,6 +122,8 @@ namespace Reindeer_Hunter
             StudentPage.In = student.In;
             StudentPage.CurrentMatch = student.CurrMatchID;
             StudentPage.ParticipatedMatches = student.MatchesParticipated;
+
+            StudentPage.Refresh();
         }
 
         /// <summary>

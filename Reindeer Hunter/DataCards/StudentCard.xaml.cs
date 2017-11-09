@@ -32,6 +32,11 @@ namespace Reindeer_Hunter.DataCards
         private DataRow Status = new DataRow { Property = "Status", Value = "" };
         private DataRow D_CurrentMatch = new DataRow { Property = "Match", Value = "" };
 
+        public void Refresh()
+        {
+            DataGrid.Items.Refresh();
+        }
+
         // The visible properties.
         public int StudentId
         {

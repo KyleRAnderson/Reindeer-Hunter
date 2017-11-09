@@ -188,7 +188,7 @@ namespace Reindeer_Hunter
         /// </summary>
         /// <param name="query">SearchQuery object with search parameters.</param>
         /// <returns>List of matches relevant to the search</returns>
-        public List<Match> GetSearchResults(SearchQuery query, Filter filter)
+        public List<Match> GetMatches(SearchQuery query, Filter filter)
         {
             List<Match> resultsList = new List<Match>();
 
@@ -506,7 +506,7 @@ namespace Reindeer_Hunter
         /// </summary>
         /// <param name="filter">The filter object to use to filter through the matches</param>
         /// <returns>A lit of the matches that meet the filter's criteria.</returns>
-        public List<Match> GetMatchesWithFilter(Filter filter)
+        public List<Match> GetMatches(Filter filter)
         {
             List<Match> matchList = GetMatchList();
             List<Match> returnList = new List<Match>();
@@ -1032,6 +1032,22 @@ namespace Reindeer_Hunter
             if (student.Id.ToString().Length > 6) return false;
 
             return true;
+        }
+
+        /// <summary>
+        /// Function that properly returns the students involved in a match.
+        /// This is used because it will properly skip passmatches
+        /// </summary>
+        /// <param name="match">The match from which to get the students</param>
+        /// <returns>A list of the valid students involved in the match, if any.</returns>
+        public List<Student> GetStudentsInMatch(Match match)
+        {
+            List<Student> returnable = new List<Student>();
+
+            if (student_directory.ContainsKey(match.Id1)) returnable.Add(student_directory[match.Id1].Clone());
+            if (student_directory.ContainsKey(match.Id2)) returnable.Add(student_directory[match.Id2].Clone());
+
+            return returnable;
         }
     }
 }

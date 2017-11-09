@@ -48,7 +48,7 @@
             </Grid.RowDefinitions>
             <Button x:Name="process_button" Content="Matchmake" Margin="5,0,5,10" Background="Black" Foreground="White" Grid.Column="6" Grid.Row="9" Grid.ColumnSpan="2" HorizontalContentAlignment="Center" Command="{Binding _ProcessButtonSubsystem.ProcessCommand, Mode=OneWay}" CommandParameter="{Binding _ProcessButtonSubsystem.Status}" ToolTip="Spacebar"/>
             <Button x:Name="search_button" Content="Search" Margin="0" BorderThickness="1" Grid.Column="5" VerticalContentAlignment="Center" Grid.Row="2" FontSize="16" Command="{Binding _FiltersAndSearch.Searcher}" CommandParameter="{Binding Text, ElementName=search_box}" ToolTip="Tab"/>
-            <TextBox x:Name="search_box" Margin="10,0,0,0" TextWrapping="Wrap" AutomationProperties.HelpText="Search for students or matches..." Text="Search for students, homerooms or matches..." VerticalContentAlignment="Center" Grid.ColumnSpan="5" Grid.Row="2" CharacterCasing="Upper">
+            <TextBox x:Name="search_box" Margin="10,0,0,0" TextWrapping="Wrap" AutomationProperties.HelpText="Search for students or matches..." Text="Search &quot;S + [Student Id]&quot;, &quot;[Homeroom]&quot;, &quot;[Match Number]&quot;" VerticalContentAlignment="Center" Grid.ColumnSpan="5" Grid.Row="2" CharacterCasing="Upper" ToolTip="Search &quot;S + [Student Id]&quot;, &quot;[Homeroom]&quot;, &quot;[Match Number]&quot;">
             </TextBox>
             <TextBox x:Name="progressDisplayBox" Margin="0" TextWrapping="Wrap" Background="Transparent" BorderBrush="#00ABADB3" IsEnabled="False" FontSize="10" Grid.ColumnSpan="2" Grid.Column="6" Grid.RowSpan="2" Grid.Row="2"/>
             <DataGrid x:Name="MainDisplay" Margin="10,0,0,10" AlternationCount="2" AlternatingRowBackground="#BFA8A8A8" CanUserAddRows="False" SelectionMode="Single" AutoGenerateColumns="False" Grid.ColumnSpan="6" Grid.Row="3" Grid.RowSpan="7" SelectionUnit="Cell" IsReadOnly="True" ItemsSource="{Binding _FiltersAndSearch.MainDisplay_Display_List}" IsSynchronizedWithCurrentItem="True" Background="#BFF0F0F0" Foreground="#7F000000" ToolTip="Ctrl + P">
@@ -89,23 +89,28 @@
             <Button x:Name="SaveButton" Content="Save" Margin="0,0,5,5" Background="#FF2EFF00" Foreground="White" Grid.Column="7" Grid.Row="8" HorizontalContentAlignment="Center" Command="{Binding _SaveDiscard.SaveCommand, Mode=Default}" ToolTip="Ctrl + S"/>
             <Button x:Name="DiscardButton" Content="Discard" Grid.Column="6" Grid.Row="8" Margin="5,0,0,5" HorizontalContentAlignment="Center" Background="Red" Command="{Binding _SaveDiscard.DiscardCommand, Mode=Default}" ToolTip="Ctrl + D" />
             <ProgressBar x:Name="progressBar" LargeChange="0" Maximum="1" Grid.ColumnSpan="9" Grid.Row="1"/>
-            <ListBox x:Name="PassingStudentsBox" Grid.RowSpan="6" Grid.Column="8" Margin="5,5,0,5" Grid.Row="4" BorderBrush="#00ABADB3" ItemsSource="{Binding _Passer.PassingStudentsButtons}" Background="#3FFFFFFF"/>
+            <ListBox x:Name="PassingStudentsBox" Grid.RowSpan="6" Grid.Column="8" Margin="5,5,0,5" Grid.Row="4" BorderBrush="#00ABADB3" ItemsSource="{Binding _Passer.PassingStudentsButtons}" Background="#3FFFFFFF" ToolTip="Click on the student to not pass them"/>
             <DockPanel Grid.ColumnSpan="9" LastChildFill="False" Background="#FFF0F0F0">
                 <Menu x:Name="menu" VerticalAlignment="Top" HorizontalAlignment="Left" DockPanel.Dock="Top">
                     <MenuItem Header="File">
-                        <MenuItem Header="Import Data" Command="{Binding _ImportExport.Import, Mode=OneWay}"/>
-                        <MenuItem Header="Export Data" Command="{Binding _ImportExport.Export, Mode=OneWay}"/>
-                        <MenuItem Header="Erase Data" Command="{Binding _ImportExport.Erase, Mode=OneWay}"/>
+                        <MenuItem Header="Import Data" Command="{Binding _ImportExport.Import, Mode=OneWay}" ToolTip="Import a Reindeer Hunt from a file"/>
+                        <MenuItem Header="Export Data" Command="{Binding _ImportExport.Export, Mode=OneWay}" ToolTip="Export this Reindeer Hunt to file"/>
+                        <MenuItem Header="Erase Data" Command="{Binding _ImportExport.Erase, Mode=OneWay}" ToolTip="Wipe the program data"/>
                     </MenuItem>
-                    <MenuItem Header="Import">
-                        <MenuItem x:Name="Import_Students_Button" Header="Students" Command="{Binding _Importer.ImportStudents, Mode=OneWay}">
+                    <MenuItem Header="Manage">
+                        <MenuItem x:Name="Import_Students_Button" Header="Students" Command="{Binding _Importer.ImportStudents, Mode=OneWay}" ToolTip="Import more students Into the application">
                             <MenuItem.Icon>
                                 <Image Source="Resources/student.ico"/>
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem x:Name="Import_Match_Results_Button" Header="Match Results" Command="{Binding _Importer.ImportMatchResults, Mode=OneWay}">
+                        <MenuItem x:Name="Import_Match_Results_Button" Header="Match Results" Command="{Binding _Importer.ImportMatchResults, Mode=OneWay}" ToolTip="Import a match results csv">
                             <MenuItem.Icon>
                                 <Image Source="Resources/clipboard.ico"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem x:Name="Export_Students_Button" Header="Export Students" ToolTip="Export the current view of students" Command="{Binding _Importer.ExportStudents, Mode=OneWay}">
+                            <MenuItem.Icon>
+                                <Image Source="Resources/student.ico"/>
                             </MenuItem.Icon>
                         </MenuItem>
                     </MenuItem>
@@ -115,7 +120,7 @@
                             <CheckBox x:Name="Closed_Filter" Content="Closed" IsChecked="{Binding _FiltersAndSearch.CurrentFilters.Closed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                             <MenuItem x:Name="Round_Filter" Header="Round" ItemsSource="{Binding _FiltersAndSearch.CurrentFilters.RoundCheckboxes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                         </MenuItem>
-                        <Button x:Name="Clear_Filters_Button" Content="Clear" HorizontalContentAlignment="Stretch" Command="{Binding _FiltersAndSearch.ClearFiltersCommand, Mode=OneWay}"/>
+                        <MenuItem x:Name="Clear_Filters_Button" Header="Clear" HorizontalContentAlignment="Stretch" Command="{Binding _FiltersAndSearch.ClearFiltersCommand, Mode=OneWay}" ToolTip="Clear the current search and filters"/>
 
                     </MenuItem>
                     <MenuItem x:Name="Help" Header="Help">

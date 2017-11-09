@@ -7,7 +7,7 @@ using Reindeer_Hunter.Data_Classes;
 
 namespace Reindeer_Hunter
 {
-    public static class Importer
+    public static class CSVHandler
     {
         // ID for importing students
         public static int IMPORT_STUDENTS = 0;
@@ -31,7 +31,7 @@ namespace Reindeer_Hunter
                     if (path == "") return null;
 
                     // Begin processing the data
-                    var engine = new FileHelperEngine<ImportedStudent>();
+                    var engine = new FileHelperEngine<RawStudent>();
 
                     try
                     {
@@ -94,9 +94,9 @@ namespace Reindeer_Hunter
                         return returnList;
                     }
                 }
-                catch (FileHelpers.ConvertException)
+                catch (ConvertException)
                 {
-                    System.Windows.Forms.MessageBox.Show("The file you imported is invalid.",
+                    MessageBox.Show("The file you imported is invalid.",
                         "Error - Nothing imported.",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return null;
@@ -104,6 +104,19 @@ namespace Reindeer_Hunter
             }
 
             else return null;
+        }
+
+        /// <summary>
+        /// Exports the given students to the given file path.
+        /// </summary>
+        /// <param name="students">The students to export</param>
+        /// <param name="exportLocation"></param>
+        public static void ExportStudents(List<RawStudent> students, string exportLocation)
+        {
+            var engine = new FileHelperEngine<RawStudent>();
+            engine.HeaderText = engine.GetFileHeader();
+
+            engine.WriteFile(exportLocation, students);
         }
     }
 }

@@ -26,6 +26,17 @@ namespace Reindeer_Hunter.Subsystems
             CanExecuteDeterminer = () => true
         };
 
+        /// <summary>
+        /// Simple way of getting the number of students on screen
+        /// </summary>
+        public int Number_Of_Matches_Being_Displayed
+        {
+            get
+            {
+                return MainDisplay_Display_List.Count;
+            }
+        }
+
         // The GUI element objects that this subsystem controls.
         private MenuItem Filter_Menu { get; set; }
         private CheckBox OpenCheckbox { get; set; }
@@ -33,7 +44,7 @@ namespace Reindeer_Hunter.Subsystems
         private MenuItem RoundFilter { get; set; }
         private TextBox SearchBox { get; set; }
 
-        private readonly string searchBox_Default_Text = "Search for students, homerooms or matches...";
+        private readonly string searchBox_Default_Text = "Search \"S + [Student Id]\", \"[Homeroom]\", \"[Match Number]\"";
 
         public List<Match> MainDisplay_Display_List { get; private set; } = new List<Match>();
 
@@ -156,7 +167,7 @@ namespace Reindeer_Hunter.Subsystems
             RoundFilter.Items.Refresh();
 
             // Subscribe to the newly created checkboxes' events.
-            foreach (System.Windows.Controls.CheckBox checkbox in CurrentFilters.RoundCheckboxes)
+            foreach (CheckBox checkbox in CurrentFilters.RoundCheckboxes)
             {
                 checkbox.Click += LoadContent;
             }
@@ -169,20 +180,28 @@ namespace Reindeer_Hunter.Subsystems
         /// <summary>
         /// Simple function to load content onto the MainDisplay object.
         /// </summary>
-        public void LoadContent(object sender = null, EventArgs e = null)
+        private void LoadContent(object sender = null, EventArgs e = null)
         {
+            MainDisplay_Display_List = GetMatches();
+            // Notify UI that the Main Display Match List has changed and it should update.
+            PropertyChanged(this, new PropertyChangedEventArgs("MainDisplay_Display_List"));
+        }
+
+        public List<Match> GetMatches()
+        {
+            List<Match> returnable;
+
             if (Searcher.CurrentQuery == null)
             {
-                MainDisplay_Display_List = _School.GetMatchesWithFilter(CurrentFilters);
+                returnable = _School.GetMatches(CurrentFilters);
             }
             else
             {
-                MainDisplay_Display_List = 
-                    _School.GetSearchResults(Searcher.CurrentQuery, CurrentFilters);
+                returnable =
+                    _School.GetMatches(Searcher.CurrentQuery, CurrentFilters);
             }
 
-            // Notify UI that the Main Display Match List has changed and it should update.
-            PropertyChanged(this, new PropertyChangedEventArgs("MainDisplay_Display_List"));
+            return returnable;
         }
 
         /// <summary>

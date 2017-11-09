@@ -130,7 +130,7 @@
     <Compile Include="ImportStudents.cs" />
     <Compile Include="Subsystems\Help.cs" />
     <Compile Include="Subsystems\DataDealer.cs" />
-    <Compile Include="Subsystems\Import_Subsystem.cs" />
+    <Compile Include="Subsystems\Student_ManagerSubsystem.cs" />
     <Compile Include="Subsystems\PasserSubsystem.cs" />
     <Compile Include="Subsystems\ProcessButtonCommands\MatchmakeDialog.xaml.cs">
       <DependentUpon>MatchmakeDialog.xaml</DependentUpon>
@@ -142,6 +142,7 @@
     <Compile Include="Subsystems\RelayCommand.cs" />
     <Compile Include="Subsystems\Statistics.cs" />
     <Compile Include="Subsystems\Stats\Statistic.cs" />
+    <Compile Include="Subsystems\Student_Manager\ExportStudents.cs" />
     <Compile Include="Subsystems\Subsystem.cs" />
     <Compile Include="FFA\VictorHandler.cs" />
     <Page Include="DataCards\MatchCard.xaml">
@@ -185,7 +186,7 @@
     <Compile Include="ThreadMonitors\MatchMakeHandler.cs" />
     <Compile Include="Subsystems\Filters and Search\SearchCommand.cs" />
     <Compile Include="Data Classes\Filter.cs" />
-    <Compile Include="Data Classes\ImportedStudent.cs" />
+    <Compile Include="Data Classes\RawStudent.cs" />
     <Compile Include="Data Classes\SearchQuery.cs" />
     <Compile Include="Data Classes\Student.cs" />
     <Compile Include="DataFileIO.cs" />
@@ -197,7 +198,7 @@
     <Compile Include="Matcher.cs" />
     <Compile Include="Data Classes\MatchGuiResult.cs" />
     <Compile Include="Data Classes\PrintMessage.cs" />
-    <Compile Include="Importer.cs" />
+    <Compile Include="CSVHandler.cs" />
     <Compile Include="Data Classes\ResultStudent.cs" />
     <Compile Include="School.cs" />
     <Compile Include="Subsystems\Filters and Search\ClearFiltersAndSearch.cs" />

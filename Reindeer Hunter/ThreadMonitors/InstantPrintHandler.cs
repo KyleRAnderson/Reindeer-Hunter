@@ -53,7 +53,7 @@ namespace Reindeer_Hunter.ThreadMonitors
             }
 
 
-            printThread = new System.Threading.Thread(printer.Print)
+            printThread = new Thread(printer.Print)
             {
                 Name = "Instant Printer"
             };

@@ -22,7 +22,7 @@ namespace Reindeer_Hunter
         /// </summary>
         public void Import()
         {
-            List<object[]> resultsList = Importer.Import(Importer.IMPORT_STUDENTS, pathsList: FileLocation);
+            List<object[]> resultsList = CSVHandler.Import(CSVHandler.IMPORT_STUDENTS, pathsList: FileLocation);
             List<Student> students_to_add = new List<Student>();
 
             // In case of problems.
@@ -39,7 +39,7 @@ namespace Reindeer_Hunter
                     return;
                 }
 
-                foreach (ImportedStudent importedStudent in result)
+                foreach (RawStudent importedStudent in result)
                 {
                     // Make new student, set the student's round number and add them to the new list
                     Student student = new Student
