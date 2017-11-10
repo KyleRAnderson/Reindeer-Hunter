@@ -1,18 +1,8 @@
 ﻿using Reindeer_Hunter.Data_Classes;
 using Reindeer_Hunter.DataCards;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace Reindeer_Hunter
 {
@@ -21,6 +11,12 @@ namespace Reindeer_Hunter
     /// </summary>
     public partial class DataCardWindow : Window
     {
+        // A possible close status
+        public static readonly int STUDENT_DELETED;
+
+        // Reason why the window closed, 0 being because the user closed it.
+        public int CloseStatus { get; private set; } = 0;
+
         private School _School;
         private MatchCard _MatchCard;
         private StudentCard _StudentCard;
@@ -37,7 +33,8 @@ namespace Reindeer_Hunter
         {
             get
             {
-                if (_StudentCard == null) _StudentCard = new StudentCard(this);
+                if (_StudentCard == null) _StudentCard = new StudentCard(this, _School.GetCurrRoundNo());
+                _StudentCard.StudentDeleted += OnStudentDeletion;
                 return _StudentCard;
             }
         }
@@ -137,6 +134,17 @@ namespace Reindeer_Hunter
 
             // Reload the match data card
             Display(matchId: MatchId);
+        }
+
+        public void DeleteStudent(int studentId)
+        {
+            _School.DeleteStudent(studentId: studentId);
+        }
+
+        private void OnStudentDeletion(object sender, EventArgs e)
+        {
+            CloseStatus = STUDENT_DELETED;
+            Close();
         }
     }
 }

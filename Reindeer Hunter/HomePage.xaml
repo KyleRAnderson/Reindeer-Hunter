@@ -152,7 +152,7 @@
         <KeyBinding Key="Space" Command="{Binding _ProcessButtonSubsystem.ProcessCommand, Mode=OneWay}" CommandParameter="{Binding _ProcessButtonSubsystem.Status}"/>
         <KeyBinding Key="Tab" Command="{Binding _FiltersAndSearch.Searcher}" CommandParameter="{Binding Text, ElementName=search_box}"/>
         <KeyBinding Modifiers="Ctrl" Key="P" Command="{Binding _FiltersAndSearch.PropertiesPopup, Mode=OneWay}"/>
-        <KeyBinding Modifiers="Ctrl" Key="S" Command="{Binding _SaveDiscard.SaveCommand, Mode=Default}"/>
-        <KeyBinding Modifiers ="Ctrl" Key="D" Command="{Binding _SaveDiscard.DiscardCommand, Mode=Default}"/>
+        <KeyBinding Modifiers="Ctrl" Key="S" Command="{Binding _SaveDiscard.SaveCommand, Mode=OneWay}"/>
+        <KeyBinding Modifiers ="Ctrl" Key="D" Command="{Binding _SaveDiscard.DiscardCommand, Mode=OneWay}"/>
     </UserControl.InputBindings>
 </UserControl>

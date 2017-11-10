@@ -228,8 +228,20 @@ namespace Reindeer_Hunter
             {
                 if (!student_directory.ContainsKey(query.StudentNo)) return null;
                 Student student = student_directory[query.StudentNo];
+
+                if (student.MatchesParticipated.Count == 0 || student.MatchesParticipated[0] == null)
+                {
+                    resultsList.Add(CreateFakeMatch(student));
+                }
+
                 foreach (string matchId in student.MatchesParticipated)
                 {
+                    // If the match id is null, there are no matches. Break and display fake match
+                    if (matchId == null)
+                    {
+                        break;
+                    }
+
                     // Check for filter compliance. If it complies, return it. 
                     if (CompliesWithFilters(match_directory[matchId], filter))
                         resultsList.Add(match_directory[matchId].Clone());
@@ -256,7 +268,7 @@ namespace Reindeer_Hunter
                     Student student = (Student)studentName_directory[query.StudentName];
 
                     // In case they haven't had a match yet
-                    if (student.MatchesParticipated.Count() == 0)
+                    if (student.MatchesParticipated.Count() == 0 || student.MatchesParticipated[0] == null)
                     {
                         // Make a fake match for the student if they have not yet had a match
                         resultsList.Add(CreateFakeMatch(student));
@@ -1048,6 +1060,55 @@ namespace Reindeer_Hunter
             if (student_directory.ContainsKey(match.Id2)) returnable.Add(student_directory[match.Id2].Clone());
 
             return returnable;
+        }
+
+        /// <summary>
+        /// Function to delete the student specified by the student object or student id.
+        /// </summary>
+        /// <param name="studentId"></param>
+        /// <param name="student"></param>
+        public void DeleteStudent(int studentId = 0, Student student = null) 
+        {
+            int id;
+            if (studentId == 0 && student == null)
+            {
+                throw new Exception("StudentId and student parameters cannot be ignored");
+            }
+            else if (GetCurrRoundNo() != 0)
+            {
+                throw new Exception("Cannot delete students past round 0.");
+            }
+
+            // If just the studentId is null, 
+            else if (studentId == 0)
+            {
+                id = student.Id;
+            }
+            else
+            {
+                id = studentId;
+            }
+
+            Student studentToRemove = student_directory[id];
+
+            // Remove the student from all lists and save
+            student_directory.Remove(id);
+            homeroom_directory[studentToRemove.Homeroom].Remove(studentToRemove);
+
+            string studentName = string.Format("[0] [1]", studentToRemove.First.ToUpper(), studentToRemove.Last.ToUpper());
+            var data = studentName_directory[studentName];
+
+            if (data is List<Student>)
+            {
+                ((List<Student>)data).Remove(studentToRemove);
+            }
+            else
+            {
+                studentName_directory.Remove(studentName);
+            }
+
+            Save();
+        
         }
     }
 }

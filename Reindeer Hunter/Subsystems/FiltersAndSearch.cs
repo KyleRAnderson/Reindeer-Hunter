@@ -107,7 +107,7 @@ namespace Reindeer_Hunter.Subsystems
 
             // Subscribe to save and discard events
             Manager._SaveDiscard.Save += OnSaveDiscard;
-            Manager._SaveDiscard.Discard += OnSaveDiscard;
+            Manager._ProcessButtonSubsystem.MatchesDiscarded += OnSaveDiscard;
 
             // Give the SearchCommand the School object
             Searcher._School = _School;
@@ -128,6 +128,7 @@ namespace Reindeer_Hunter.Subsystems
         public void OnSaveDiscard(object sender, EventArgs e)
         {
             Filter_Menu.IsEnabled = true;
+            Searcher.RaiseCanExecuteChanged();
         }
 
         public void OnMatchesSaved(object sneder, EventArgs e)
@@ -161,6 +162,9 @@ namespace Reindeer_Hunter.Subsystems
             CurrentFilters.Closed = false;
             CurrentFilters.Open = true;
             Searcher.ClearSearch();
+
+            // Clear the searchbox text
+            SearchBox.Text = searchBox_Default_Text;
 
             // Set the round filters and then refres the GUI for them.
             CurrentFilters.Round = rounds;
@@ -292,6 +296,9 @@ namespace Reindeer_Hunter.Subsystems
 
             // If we didn't return, show the window as a dialog.
             window.ShowDialog();
+
+            // If a student is deleted, clear the filters
+            if (window.CloseStatus == DataCardWindow.STUDENT_DELETED) ResetFilters();
         }
 
         /// <summary>

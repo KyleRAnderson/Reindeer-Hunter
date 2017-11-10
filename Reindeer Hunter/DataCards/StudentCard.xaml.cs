@@ -22,6 +22,8 @@ namespace Reindeer_Hunter.DataCards
     /// </summary>
     public partial class StudentCard : UserControl
     {
+        public event EventHandler StudentDeleted;
+
         // The DataRow classes
         private DataRow D_StudentId = new DataRow { Property = "Id", Value = "" };
         private DataRow D_LastRound = new DataRow { Property = "Last Round", Value = "" };
@@ -138,7 +140,7 @@ namespace Reindeer_Hunter.DataCards
 
         private DataCardWindow MasterWindow;
 
-        public StudentCard(DataCardWindow window)
+        public StudentCard(DataCardWindow window, long RoundNo)
         {
             InitializeComponent();
             MasterWindow = window;
@@ -155,6 +157,9 @@ namespace Reindeer_Hunter.DataCards
             };
 
             DataGrid.ItemsSource = DisplayList;
+
+            // The delete button should only be enabled when the round number is 0.
+            Delete_Button.IsEnabled = RoundNo == 0;
         }
 
         // To change to a match display box.
@@ -163,6 +168,21 @@ namespace Reindeer_Hunter.DataCards
             // This happens when it's empty
             if (MatchesBox.SelectedItem == null) return;
             MasterWindow.Display(matchId: (string)MatchesBox.SelectedItem);
+        }
+
+        private void Delete_Button_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBoxResult confirmation = MessageBox.Show("Are you sure you\'d like to delete this studentt? " +
+                "This action CANNOT BE UNDONE.", "Proceed?",
+                MessageBoxButton.YesNo, MessageBoxImage.Warning);
+
+            // If the user doesn't confirm the action, return.
+            if (confirmation != MessageBoxResult.Yes) return;
+
+            MasterWindow.DeleteStudent(StudentId);
+
+            // Raise the event 
+            StudentDeleted?.Invoke(this, new EventArgs());
         }
     }
 }
