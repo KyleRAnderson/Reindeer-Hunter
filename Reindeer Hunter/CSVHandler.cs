@@ -79,7 +79,7 @@ namespace Reindeer_Hunter
                     // If the user imports a csv with no students in it, error message.
                     if (result.Count() <= 0)
                     {
-                        System.Windows.Forms.MessageBox.Show("The file you " +
+                        MessageBox.Show("The file you " +
                             "attempted to import students with contains " +
                             "no results in it.", "Error - No results Imported",
                             MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -94,9 +94,10 @@ namespace Reindeer_Hunter
                         return returnList;
                     }
                 }
-                catch (ConvertException)
+                catch (ConvertException e)
                 {
-                    MessageBox.Show("The file you imported is invalid.",
+                    MessageBox.Show(String.Format("The file you imported is invalid.\nCheck line {0} column {1} of the file.\nCould not convert \"{2}\" properly.",
+                        e.LineNumber, e.ColumnNumber, e.FieldStringValue),
                         "Error - Nothing imported.",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return null;

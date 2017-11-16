@@ -27,15 +27,15 @@ namespace Reindeer_Hunter
         // This is what other threads must have to access the sensitive code.
         static object key = new object();
 
-        public readonly string FFADataLoc = "FFA";
-        public readonly string StudentDataLoc = "students";
-        public readonly string MatchDataLoc = "matches";
-        public readonly string MiscDataLoc = "misc";
-        public readonly string TerminatedLoc = "terminated";
+        public static readonly string FFADataLoc = "FFA";
+        public static readonly string StudentDataLoc = "students";
+        public static readonly string MatchDataLoc = "matches";
+        public static readonly string MiscDataLoc = "misc";
+        public static readonly string TerminatedLoc = "terminated";
 
         // Locations of FFA data
-        public readonly string winnerDataLoc = "winner";
-        public readonly string victorDataLoc = "victors";
+        public static readonly string winnerDataLoc = "winner";
+        public static readonly string victorDataLoc = "victors";
 
         // Location of the user manual
         public static string ManualLoc

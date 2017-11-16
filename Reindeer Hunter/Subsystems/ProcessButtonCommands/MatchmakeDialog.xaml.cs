@@ -69,5 +69,13 @@ namespace Reindeer_Hunter.Subsystems.ProcessButtonCommands
         {
             OkCommand.RaiseCanExecuteChanged();
         }
+
+        public string EndDate
+        {
+            get
+            {
+                return DateBox.Text;
+            }
+        }
     }
 }

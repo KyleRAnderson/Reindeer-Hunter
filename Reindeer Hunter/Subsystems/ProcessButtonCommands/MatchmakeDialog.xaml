@@ -5,14 +5,16 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Reindeer_Hunter.Subsystems.ProcessButtonCommands"
         mc:Ignorable="d"
-        Title="Matchmaking Options" Height="230" Width="600">
+        Title="Matchmaking Options" Height="300" Width="600">
     <Viewbox Stretch="Uniform">
-        <Grid Height="115" Width="300">
-            <RadioButton x:Name="Homerooms" Content="Matchmake between two Homerooms" HorizontalAlignment="Left" Margin="22,22,0,0" VerticalAlignment="Top" GroupName="selection" FontSize="14" Background="White" Click="RaiseCanExecuteChanged"/>
-            <RadioButton x:Name="Grades" Content="Matchmake within grades" HorizontalAlignment="Left" Margin="22,45,0,0" VerticalAlignment="Top" GroupName="selection" FontSize="14" Click="RaiseCanExecuteChanged"/>
-            <RadioButton x:Name="Students" Content="Matchmake between all students" HorizontalAlignment="Left" Margin="22,67,0,0" VerticalAlignment="Top" GroupName="selection" FontSize="14" Click="RaiseCanExecuteChanged"/>
-            <Button x:Name="Cancel" Content="Cancel" HorizontalAlignment="Left" Margin="22,89,0,0" VerticalAlignment="Top" Width="75" Command="{Binding CancelCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MatchmakeDialog}}}"/>
-            <Button x:Name="Ok" Content="Ok" HorizontalAlignment="Left" Margin="202,89,0,0" VerticalAlignment="Top" Width="76" Command="{Binding OkCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MatchmakeDialog}}}"/>
+        <Grid Height="134" Width="300">
+            <RadioButton x:Name="Homerooms" Content="Matchmake between two Homerooms" HorizontalAlignment="Left" Margin="22,10,0,0" VerticalAlignment="Top" GroupName="selection" FontSize="14" Background="White" Click="RaiseCanExecuteChanged" FontFamily="Comic Sans MS"/>
+            <RadioButton x:Name="Grades" Content="Matchmake within grades" HorizontalAlignment="Left" Margin="22,33,0,0" VerticalAlignment="Top" GroupName="selection" FontSize="14" Click="RaiseCanExecuteChanged" FontFamily="Comic Sans MS"/>
+            <RadioButton x:Name="Students" Content="Matchmake between all students" HorizontalAlignment="Left" Margin="22,55,0,0" VerticalAlignment="Top" GroupName="selection" FontSize="14" Click="RaiseCanExecuteChanged" FontFamily="Comic Sans MS"/>
+            <Button x:Name="Cancel" Content="Cancel" HorizontalAlignment="Left" Margin="22,104,0,0" VerticalAlignment="Top" Width="75" Command="{Binding CancelCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MatchmakeDialog}}}" FontFamily="Arial Black" Background="Black" Foreground="Red"/>
+            <Button x:Name="Ok" Content="Ok" HorizontalAlignment="Left" Margin="202,104,0,0" VerticalAlignment="Top" Width="76" Command="{Binding OkCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MatchmakeDialog}}}" FontFamily="Arial Black" Foreground="Black" Background="#FF00FF0C"/>
+            <TextBox x:Name="DateBox" Margin="89,78,22,0" TextWrapping="Wrap" ToolTip="The Round's End Date" VerticalAlignment="Top" SpellCheck.IsEnabled="True" MaxLength="20"/>
+            <Label x:Name="DateLabel" Content="End Date" HorizontalAlignment="Left" Margin="22,74,0,0" VerticalAlignment="Top" Width="62" FontWeight="Bold" FontFamily="Comic Sans MS" FontSize="11" ToolTip="The Round's End Date"/>
         </Grid>
     </Viewbox>
 </Window>

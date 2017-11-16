@@ -98,12 +98,12 @@
                         <MenuItem Header="Erase Data" Command="{Binding _ImportExport.Erase, Mode=OneWay}" ToolTip="Wipe the program data"/>
                     </MenuItem>
                     <MenuItem Header="Manage">
-                        <MenuItem x:Name="Import_Students_Button" Header="Students" Command="{Binding _Importer.ImportStudents, Mode=OneWay}" ToolTip="Import more students Into the application">
+                        <MenuItem x:Name="Import_Students_Button" Header="Import Students" Command="{Binding _Importer.ImportStudents, Mode=OneWay}" ToolTip="Import more students Into the application">
                             <MenuItem.Icon>
                                 <Image Source="Resources/student.ico"/>
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem x:Name="Import_Match_Results_Button" Header="Match Results" Command="{Binding _Importer.ImportMatchResults, Mode=OneWay}" ToolTip="Import a match results csv">
+                        <MenuItem x:Name="Import_Match_Results_Button" Header="Import Match Results" Command="{Binding _Importer.ImportMatchResults, Mode=OneWay}" ToolTip="Import a match results csv">
                             <MenuItem.Icon>
                                 <Image Source="Resources/clipboard.ico"/>
                             </MenuItem.Icon>

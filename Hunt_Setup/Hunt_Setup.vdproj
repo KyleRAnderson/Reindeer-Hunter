@@ -15,25 +15,25 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_1AAF665E1A10ACD1897A3607FD4A66DD"
+        "MsmKey" = "8:_2201163EE9BDCA10709FF960B3D5778E"
         "OwnerKey" = "8:_C75AC0EAD6924FA1B0FA1FD7AA105174"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_1AAF665E1A10ACD1897A3607FD4A66DD"
+        "MsmKey" = "8:_2201163EE9BDCA10709FF960B3D5778E"
         "OwnerKey" = "8:_D17EE9D028C746FC944DEA895C488E0B"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_2201163EE9BDCA10709FF960B3D5778E"
+        "MsmKey" = "8:_42C324B02E740709F140E69FB53D6578"
         "OwnerKey" = "8:_C75AC0EAD6924FA1B0FA1FD7AA105174"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_2201163EE9BDCA10709FF960B3D5778E"
+        "MsmKey" = "8:_42C324B02E740709F140E69FB53D6578"
         "OwnerKey" = "8:_D17EE9D028C746FC944DEA895C488E0B"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -45,38 +45,32 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_6A4D12850AD64F202776AB3AF6FA3990"
+        "MsmKey" = "8:_91F7118FA992A27ECB3F9268DB0D2379"
         "OwnerKey" = "8:_C75AC0EAD6924FA1B0FA1FD7AA105174"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_6A4D12850AD64F202776AB3AF6FA3990"
+        "MsmKey" = "8:_91F7118FA992A27ECB3F9268DB0D2379"
         "OwnerKey" = "8:_D17EE9D028C746FC944DEA895C488E0B"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_A6AC7716F0F595D5DD6103E6964BF479"
-        "OwnerKey" = "8:_C75AC0EAD6924FA1B0FA1FD7AA105174"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_A6AC7716F0F595D5DD6103E6964BF479"
-        "OwnerKey" = "8:_D17EE9D028C746FC944DEA895C488E0B"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_B54DCB6D35B949808DE5366B3A958F82"
-        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_C75AC0EAD6924FA1B0FA1FD7AA105174"
         "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_C811387089AC6555A6605D550FFC549E"
+        "OwnerKey" = "8:_C75AC0EAD6924FA1B0FA1FD7AA105174"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_C811387089AC6555A6605D550FFC549E"
+        "OwnerKey" = "8:_D17EE9D028C746FC944DEA895C488E0B"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -100,19 +94,19 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_6A4D12850AD64F202776AB3AF6FA3990"
+        "OwnerKey" = "8:_91F7118FA992A27ECB3F9268DB0D2379"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_A6AC7716F0F595D5DD6103E6964BF479"
+        "OwnerKey" = "8:_C811387089AC6555A6605D550FFC549E"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_1AAF665E1A10ACD1897A3607FD4A66DD"
+        "OwnerKey" = "8:_42C324B02E740709F140E69FB53D6578"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -216,20 +210,20 @@
         }
         "File"
         {
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_1AAF665E1A10ACD1897A3607FD4A66DD"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_2201163EE9BDCA10709FF960B3D5778E"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:FileHelpers, Version=3.1.5.0, Culture=neutral, PublicKeyToken=3e0c08d59cc3d657, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:System.Net.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
-                    "_1AAF665E1A10ACD1897A3607FD4A66DD"
+                    "_2201163EE9BDCA10709FF960B3D5778E"
                     {
-                    "Name" = "8:FileHelpers.dll"
+                    "Name" = "8:System.Net.Http.dll"
                     "Attributes" = "3:512"
                     }
                 }
-            "SourcePath" = "8:FileHelpers.dll"
+            "SourcePath" = "8:System.Net.Http.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_91A300081BE04D1F88C6BA7F7D7B8D87"
@@ -247,20 +241,20 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_2201163EE9BDCA10709FF960B3D5778E"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_42C324B02E740709F140E69FB53D6578"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:System.Net.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
+            "AssemblyAsmDisplayName" = "8:FileHelpers, Version=3.1.5.0, Culture=neutral, PublicKeyToken=3e0c08d59cc3d657, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_2201163EE9BDCA10709FF960B3D5778E"
+                    "_42C324B02E740709F140E69FB53D6578"
                     {
-                    "Name" = "8:System.Net.Http.dll"
+                    "Name" = "8:FileHelpers.dll"
                     "Attributes" = "3:512"
                     }
                 }
-            "SourcePath" = "8:System.Net.Http.dll"
+            "SourcePath" = "8:FileHelpers.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_91A300081BE04D1F88C6BA7F7D7B8D87"
@@ -298,14 +292,14 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_6A4D12850AD64F202776AB3AF6FA3990"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_91F7118FA992A27ECB3F9268DB0D2379"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
             "AssemblyAsmDisplayName" = "8:Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_6A4D12850AD64F202776AB3AF6FA3990"
+                    "_91F7118FA992A27ECB3F9268DB0D2379"
                     {
                     "Name" = "8:Newtonsoft.Json.dll"
                     "Attributes" = "3:512"
@@ -329,14 +323,14 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_A6AC7716F0F595D5DD6103E6964BF479"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_C811387089AC6555A6605D550FFC549E"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
             "AssemblyAsmDisplayName" = "8:itextsharp, Version=5.5.12.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_A6AC7716F0F595D5DD6103E6964BF479"
+                    "_C811387089AC6555A6605D550FFC549E"
                     {
                     "Name" = "8:itextsharp.dll"
                     "Attributes" = "3:512"
@@ -358,26 +352,6 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B54DCB6D35B949808DE5366B3A958F82"
-            {
-            "SourcePath" = "8:..\\Reindeer Hunter\\Resources\\reindeer.ico"
-            "TargetName" = "8:reindeer.ico"
-            "Tag" = "8:"
-            "Folder" = "8:_91A300081BE04D1F88C6BA7F7D7B8D87"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
         }
@@ -481,7 +455,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Reindeer Hunter"
         "ProductCode" = "8:{415A772E-3F67-4BE1-A2F0-A559735BFA3E}"
-        "PackageCode" = "8:{521E80DA-AB52-4125-9929-B526019C6AB2}"
+        "PackageCode" = "8:{DB249636-2388-4E3F-AA73-9C9571AC6814}"
         "UpgradeCode" = "8:{DD08C5B6-48FE-4D8F-BA93-8780CCC7804A}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -498,8 +472,8 @@
         "Keywords" = "8:"
         "ARPCOMMENTS" = "8:"
         "ARPURLINFOABOUT" = "8:https://github.com/eAUE"
-        "ARPPRODUCTICON" = "8:"
-        "ARPIconIndex" = "3:0"
+        "ARPPRODUCTICON" = "8:_D17EE9D028C746FC944DEA895C488E0B"
+        "ARPIconIndex" = "3:32512"
         "SearchPath" = "8:"
         "UseSystemSearchPath" = "11:TRUE"
         "TargetPlatform" = "3:1"
@@ -601,32 +575,32 @@
         }
         "Shortcut"
         {
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_1F9C29EBCEE44FA6A1CECA687BEF2F62"
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_61FAC70B88F54199983A7E79D0ECCB20"
             {
             "Name" = "8:Reindeer Hunter"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
-            "IconIndex" = "3:0"
-            "Transitive" = "11:FALSE"
-            "Target" = "8:_D17EE9D028C746FC944DEA895C488E0B"
-            "Folder" = "8:_A671674C8F4E45F59788B23FDB9EAEB1"
-            "WorkingFolder" = "8:_91A300081BE04D1F88C6BA7F7D7B8D87"
-            "Icon" = "8:_B54DCB6D35B949808DE5366B3A958F82"
-            "Feature" = "8:"
-            }
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_D60D4EB177594F25993A82E2EE2E2489"
-            {
-            "Name" = "8:Reindeer Hunter"
-            "Arguments" = "8:"
-            "Description" = "8:"
-            "ShowCmd" = "3:1"
-            "IconIndex" = "3:0"
+            "IconIndex" = "3:32512"
             "Transitive" = "11:FALSE"
             "Target" = "8:_D17EE9D028C746FC944DEA895C488E0B"
             "Folder" = "8:_FCE0FCD56C6F463596202307D944788A"
             "WorkingFolder" = "8:_91A300081BE04D1F88C6BA7F7D7B8D87"
-            "Icon" = "8:_B54DCB6D35B949808DE5366B3A958F82"
+            "Icon" = "8:_D17EE9D028C746FC944DEA895C488E0B"
+            "Feature" = "8:"
+            }
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_65270F49BB1D4282B2CB1CDB9818FB53"
+            {
+            "Name" = "8:Reindeer Hunter"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:32512"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_D17EE9D028C746FC944DEA895C488E0B"
+            "Folder" = "8:_A671674C8F4E45F59788B23FDB9EAEB1"
+            "WorkingFolder" = "8:_91A300081BE04D1F88C6BA7F7D7B8D87"
+            "Icon" = "8:_D17EE9D028C746FC944DEA895C488E0B"
             "Feature" = "8:"
             }
         }
@@ -1030,7 +1004,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_C75AC0EAD6924FA1B0FA1FD7AA105174"
             {
-            "SourcePath" = "8:..\\Reindeer Hunter\\obj\\Debug\\Reindeer Hunter.exe"
+            "SourcePath" = "8:..\\Reindeer Hunter\\obj\\Release\\Reindeer Hunter.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_328F4250AA4C488D8BF54E5D1DA5FEB1"
@@ -1058,7 +1032,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_D17EE9D028C746FC944DEA895C488E0B"
             {
-            "SourcePath" = "8:..\\Reindeer Hunter\\obj\\Debug\\Reindeer Hunter.exe"
+            "SourcePath" = "8:..\\Reindeer Hunter\\obj\\Release\\Reindeer Hunter.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_91A300081BE04D1F88C6BA7F7D7B8D87"

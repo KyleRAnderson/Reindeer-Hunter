@@ -45,8 +45,8 @@ namespace Reindeer_Hunter.Subsystems
          * This is required for when things are saved and both the matches and the
          * match number have to be saved.
          */
-        private Tuple<long, List<Match>> generationInfo;
-        public Tuple<long, List<Match>> GenerationInfo
+        private Tuple<long, List<Match>, string> generationInfo;
+        public Tuple<long, List<Match>, string> GenerationInfo
         {
             get
             {
@@ -195,6 +195,7 @@ namespace Reindeer_Hunter.Subsystems
                 
                 // Set the new current match number
                 _School.CurrMatchNo = GenerationInfo.Item1;
+                _School.RoundEndDate = GenerationInfo.Item3;
 
                 NewMatches.Clear();
                 // Fire the event.

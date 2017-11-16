@@ -143,15 +143,15 @@ namespace Reindeer_Hunter.Subsystems
                 inputtedResults = CSVHandler.Import(CSVHandler.IMPORT_MATCH_RESULTS, 
                     filePath: csvFileDialog.FileName).ElementAt<object[]>(0);
             }
-            catch (System.ArgumentNullException)
+            catch (ArgumentNullException)
             {
                 return;
             }
 
             foreach (ResultStudent student in inputtedResults)
             {
-                student.First = student.First.ToUpper();
-                student.Last = student.Last.ToUpper();
+                student.First = student.First.ToUpper().Trim();
+                student.Last = student.Last.ToUpper().Trim();
                 results.Add(student);
             }
 

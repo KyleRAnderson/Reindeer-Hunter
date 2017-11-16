@@ -45,7 +45,7 @@ namespace Reindeer_Hunter.ThreadMonitors
             try
             {
                 printer = new InstantPrinter(school.GetCurrRoundMatches(),
-                school.GetCurrRoundNo() + 1, Key, comms, school.DataFile.DataLocation);
+                school.GetCurrRoundNo() + 1, Key, comms, school.DataFile.DataLocation, school.RoundEndDate);
             }
             catch (IOException)
             {

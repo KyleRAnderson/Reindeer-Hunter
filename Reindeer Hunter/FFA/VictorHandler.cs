@@ -128,8 +128,8 @@ namespace Reindeer_Hunter.FFA
         public void OnParentPageSet(object sender, EventArgs e)
         {
             // Define the locations of the data
-            winnerDataLoc = DataHandler.winnerDataLoc;
-            victorDataLoc = DataHandler.victorDataLoc;
+            winnerDataLoc = DataFileIO.winnerDataLoc;
+            victorDataLoc = DataFileIO.victorDataLoc;
 
             // Do this to refresh the command
             CalculateVictor.RaiseCanExecuteChanged();

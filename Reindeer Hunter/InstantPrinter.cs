@@ -31,6 +31,9 @@ namespace Reindeer_Hunter
         // Temporary path for stuff
         private string Temp2Location;
 
+        // The end date to be put on the licenses.
+        private string EndDate;
+
         // Queue used for communication
         protected static Queue<PrintMessage> Print_Comms;
 
@@ -55,7 +58,7 @@ namespace Reindeer_Hunter
         public int PageNo = 0;
 
         public InstantPrinter(List<Match> matches,  
-            long roundNo, object key, Queue<PrintMessage> comms, string DataPath)
+            long roundNo, object key, Queue<PrintMessage> comms, string DataPath, string endDate)
         {
             // Set up file locations
             TempLocation = Path.Combine(DataPath, "Duplicate.pdf");
@@ -68,6 +71,8 @@ namespace Reindeer_Hunter
             MatchList = matches;
             RoundNo = roundNo;
             Print_Comms = comms;
+
+            EndDate = endDate;
 
             if (!File.Exists(TemplateLocation))
             {
@@ -109,7 +114,7 @@ namespace Reindeer_Hunter
              * Keep in mind that 4 matches can be fit on each page,
              * Two of every match
              */
-            int pagesNeeded = (int)Math.Ceiling(MatchList.Count() / 4.0);
+            int pagesNeeded = (int)Math.Ceiling(MatchList.Count / 4.0);
 
             // Duplicate as many pages as is necessary
             Document document = new Document();
@@ -122,7 +127,6 @@ namespace Reindeer_Hunter
             copy.Open();
             copy.SetMergeFields();
             document.Open();
-                       
 
             for (int copier = 0; copier < pagesNeeded; copier++)
             {
@@ -168,41 +172,47 @@ namespace Reindeer_Hunter
                     string student1path;
                     string student2path;
                     string roundpath;
+                    string datePath;
 
+                    // If it's the match of the page, there's no underscore and id number
                     if (IndexNo < 2)
                     {
-                        student1path = "Student1P" + PageNo.ToString();
-                        student2path = "Student2P" + PageNo.ToString();
-                        roundpath = "RoundP" + PageNo.ToString();
+                        student1path = string.Format("Student1P{0}", PageNo);
+                        student2path = string.Format("Student2P{0}", PageNo);
+                        roundpath = string.Format("RoundP{0}", PageNo);
+                        datePath = string.Format("DateP{0}", PageNo);
                     }
                     else
                     {
-                        student1path = "Student1_" + IndexNo.ToString() + "P" + PageNo.ToString();
-                        student2path = "Student2_" + IndexNo.ToString() + "P" + PageNo.ToString();
-                        roundpath = "Round_" + IndexNo.ToString() + "P" + PageNo.ToString();
+                        student1path = string.Format("Student1_{0}P{1}", IndexNo, PageNo);
+                        student2path = string.Format("Student2_{0}P{1}", IndexNo, PageNo);
+                        roundpath = string.Format("Round_{0}P{1}", IndexNo, PageNo);
+                        datePath = string.Format("Date_{0}P{1}", IndexNo, PageNo);
                     }
-                    
-                    // Fill in the form fields.
-                    formFields.SetField(student1path, match.First1 + " " +
-                        match.Last1 + " (" + match.Home1.ToString() + ")");
 
-                    // Since the passing match has id2 of 0.
+                    // Fill in the form fields.
+                    formFields.SetField(student1path,
+                        string.Format("{0} ({1})", match.FullName1, match.Home1));
+
+                    // Set the round number.
+                    formFields.SetField(roundpath, match.Round.ToString());
+
+                    // Set the date
+                    formFields.SetField(datePath, EndDate);
+
+                    // Since the passing match has id2 of 0, don't do this for a pass match
                     if (match.Id2 != 0)
                     {
-                        formFields.SetField(student2path, match.First2 + " " +
-                        match.Last2 + " (" + match.Home2.ToString() + ")");
-                        formFields.SetField(roundpath, match.Round.ToString());
-
-                        IndexNo += 1;
+                        formFields.SetField(student2path,
+                            string.Format("{0} ({1})", match.FullName2, match.Home2));
                     }
                     else
                     {
                         formFields.SetField(student2path, "Pass to next round");
-                        formFields.SetField(roundpath, match.Round.ToString());
-
-                        IndexNo += 1;
                     }
-                    
+
+                    IndexNo += 1;
+
 
                 }
 
@@ -257,6 +267,8 @@ namespace Reindeer_Hunter
                 textMessage = "Filling form. Match " + fraction.Item1.ToString() 
                     + "/" + fraction.Item2.ToString();
             }
+
+            // If we're completed.
             else
             {
                 double milisPassed = stopwatch.ElapsedMilliseconds;

@@ -12,6 +12,13 @@ namespace Reindeer_Hunter
     /// </summary>
     public class School
     {
+        // Data Locations withing the misc data
+        private static string TopMatchKey = "TopMatch";
+        private static string RoundNoKey = "RoundNo";
+        private static string IsFFAKey = "IsFFA";
+        private static string EndDateKey = "EndDate";
+
+
         // Event raised when something about matches is changed/updated
         public event EventHandler MatchChangeEvent;
 
@@ -421,7 +428,7 @@ namespace Reindeer_Hunter
                     // If couldn't find student, id would be 0.
                     if (student.Id == 0)
                     {
-                        System.Windows.Forms.MessageBox.Show("Could not find student with name " 
+                        MessageBox.Show("Could not find student with name " 
                             + student.First + " " + student.Last + 
                             ". Nothing will be saved", "Error - No Results Imported",
                             MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -433,6 +440,7 @@ namespace Reindeer_Hunter
                 idStudents.Add(student.Id);
             }
 
+            // Validate all the student ids now that we have them
             foreach (int stuNo in idStudents)
             {
                 if (!student_directory.ContainsKey(stuNo))
@@ -444,13 +452,14 @@ namespace Reindeer_Hunter
                 }
                 else if (student_directory[stuNo].In == false)
                 {
-                    System.Windows.Forms.MessageBox.Show("Student with number " + 
+                    MessageBox.Show("Student with number " + 
                         stuNo.ToString() + " is not alive still. Match results discarded.", 
                         "Error - Student dead.",
                             MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
-
+            
+            // Now that all data is valid, proceed with closing of matches.
             Dictionary<int, Match> relevantMatches = GetOpenMatchesWithStudentIds(idStudents);
 
             // Update match and student data
@@ -963,13 +972,16 @@ namespace Reindeer_Hunter
             Hashtable various_data = new Hashtable
             {
                 // The current match number. Used for creating unique match ids
-                {"TopMatch", 0 },
+                { TopMatchKey, 0 },
 
                 // The current round number. Starts at 0 to indicate no round is in progress.
-                {"RoundNo", 0 },
+                { RoundNoKey, 0 },
 
                 // Boolean representing if we're in the FFA round or not
-                {"IsFFA", false },
+                { IsFFAKey, false },
+
+                // String representing the current round's end date
+                { EndDateKey, "" }
             };
 
             Dictionary<int, Victor> victorList = new Dictionary<int, Victor>();
@@ -977,9 +989,9 @@ namespace Reindeer_Hunter
             // Create the data dictionary
             Hashtable data = new Hashtable
             {
-                { "students", student_Dic },
-                { "matches", matches },
-                {"misc", various_data }
+                { DataFileIO.StudentDataLoc, student_Dic },
+                { DataFileIO.MatchDataLoc, matches },
+                { DataFileIO.MiscDataLoc, various_data }
             };
 
             DataFile.Write(data);
@@ -1095,7 +1107,7 @@ namespace Reindeer_Hunter
             student_directory.Remove(id);
             homeroom_directory[studentToRemove.Homeroom].Remove(studentToRemove);
 
-            string studentName = string.Format("[0] [1]", studentToRemove.First.ToUpper(), studentToRemove.Last.ToUpper());
+            string studentName = string.Format("{0} {1}", studentToRemove.First.ToUpper(), studentToRemove.Last.ToUpper());
             var data = studentName_directory[studentName];
 
             if (data is List<Student>)
@@ -1109,6 +1121,23 @@ namespace Reindeer_Hunter
 
             Save();
         
+        }
+
+        /// <summary>
+        /// The end date of the current round, in no particular format.
+        /// It will be printed as is onto the licenses, no validation.
+        /// </summary>
+        public string RoundEndDate
+        {
+            get
+            {
+                return misc[EndDateKey].ToString();
+            }
+            set
+            {
+                misc[EndDateKey] = value;
+                Save();
+            }
         }
     }
 }

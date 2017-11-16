@@ -7,14 +7,14 @@
     <framework targetVersion="4.6.1" profile="Full" supportedRuntime="4.0.30319" />
   </compatibleFrameworks>
   <dependency>
-    <dependentAssembly dependencyType="install" codebase="Reindeer Hunter.exe.manifest" size="7130">
+    <dependentAssembly dependencyType="install" codebase="Reindeer Hunter.exe.manifest" size="7150">
       <assemblyIdentity name="Reindeer Hunter.exe" version="1.0.0.1" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="msil" type="win32" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>jrQY028dSHHn7NS/cM9HcRN/OYSYqtyHy8qdJJc7a6o=</dsig:DigestValue>
+        <dsig:DigestValue>u2S6h8K3tBCYLtOc6nrKq6zmD3uR5hPYF0RoDznWiNk=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

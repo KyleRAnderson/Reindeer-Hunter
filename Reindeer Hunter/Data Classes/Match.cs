@@ -24,6 +24,22 @@ namespace Reindeer_Hunter.Data_Classes
         public int Id2 { get; set; }
         public bool Pass2 { get; set; }
 
+        public string FullName1
+        {
+            get
+            {
+                return string.Format("{0} {1}", First1, Last1);
+            }
+        }
+
+        public string FullName2
+        {
+            get
+            {
+                return string.Format("{0} {1}", First2, Last2);
+            }
+        }
+
         /// <summary>
         /// The class that contains details of all the matches
         /// </summary>

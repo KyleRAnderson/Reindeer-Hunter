@@ -8,6 +8,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("reindeer.ico")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("resources/reindeersmall.ico")]
 
 

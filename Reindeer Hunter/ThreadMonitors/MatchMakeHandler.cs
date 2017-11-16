@@ -32,6 +32,9 @@ namespace Reindeer_Hunter.ThreadMonitors
 
             int result = selectionDialog.GetResult();
 
+            // Get the end date inputted by the user.
+            string endDate = selectionDialog.EndDate;
+
             if (result == MatchmakeDialog.CANCELLED) return;
 
             subsystem = subsystemInCharge;
@@ -46,17 +49,17 @@ namespace Reindeer_Hunter.ThreadMonitors
             // +1 to current round because we want next round's matches.
             if (result == MatchmakeDialog.GRADES)
             {
-                matcher = new Matcher(school.GetCurrRoundNo() + 1, school.CurrMatchNo, Key,
+                matcher = new Matcher(school.GetCurrRoundNo() + 1, school.CurrMatchNo, Key, endDate,
                     comms, studentsDic: school.GetStudentsByGrade());
             }
             else if (result == MatchmakeDialog.STUDENTS)
             {
-                matcher = new Matcher(school.GetCurrRoundNo() + 1, school.CurrMatchNo, Key,
+                matcher = new Matcher(school.GetCurrRoundNo() + 1, school.CurrMatchNo, Key, endDate,
                     comms, studentList: school.GetAllParticipatingStudents());
             }
             else
             {
-                matcher = new Matcher(school.GetCurrRoundNo() + 1, school.CurrMatchNo, Key,
+                matcher = new Matcher(school.GetCurrRoundNo() + 1, school.CurrMatchNo, Key, endDate,
                     comms, homeroomList: school.GetStudentsByGradeAndHomeroom());
             }
 
@@ -94,8 +97,8 @@ namespace Reindeer_Hunter.ThreadMonitors
                     //  Terminate the thread
                     matchMakeThread.Join();
 
-                    subsystem.GenerationInfo = new Tuple<long, List<Data_Classes.Match>>
-                        (returnValue.Matches[returnValue.Matches.Count - 1].MatchNumber, returnValue.Matches);
+                    subsystem.GenerationInfo = new Tuple<long, List<Data_Classes.Match>, string>
+                        (returnValue.Matches[returnValue.Matches.Count - 1].MatchNumber, returnValue.Matches, returnValue.EndDate);
 
 
                     // Unsubscribe from the rendering event

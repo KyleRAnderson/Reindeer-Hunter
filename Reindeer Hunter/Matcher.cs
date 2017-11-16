@@ -37,6 +37,8 @@ namespace Reindeer_Hunter
 
         private readonly object Key;
 
+        private string EndDate;
+
         /// <summary>
         /// Generates the matches composing of two students against each other.
         /// </summary>
@@ -48,7 +50,7 @@ namespace Reindeer_Hunter
         /// leave it null and provide studentList instead.</param>
         /// <param name="studentList">A list of students in this round. Provide this when 
         /// creating matches between students of possibly different grades.</param>
-        public Matcher(long roundNo, long maxMatchNo, object key, Queue<Message> messenger,
+        public Matcher(long roundNo, long maxMatchNo, object key, string endDate, Queue<Message> messenger,
             Dictionary<int, List<Student>> studentsDic = null, List<Student> studentList = null,
             Dictionary<int, Dictionary<int, List<Student>>> homeroomList = null)
         {
@@ -56,6 +58,8 @@ namespace Reindeer_Hunter
             topMatchNo = maxMatchNo;
             comms = messenger;
 
+            // Set the end date to be sent back after.
+            EndDate = endDate;
 
             Key = key;
 
@@ -90,6 +94,7 @@ namespace Reindeer_Hunter
             // The update message to be sent and the percent.
             string updateMessage = "";
             double decimalPercent = 0;
+            string endDate = "";
 
             if (operation == SETUP) updateMessage += "Pre-operations setup.";
             else if (operation == CREATING_MATCHES)
@@ -97,7 +102,7 @@ namespace Reindeer_Hunter
                 // Make sure the coder doesn't forget to update the progress once the status
                 // is creating matches.
                 if (matchesDone < 0 || matchesToProcess < 0)
-                    throw new System.ArgumentException(
+                    throw new ArgumentException(
                         "Forgot to supply matchesDone or matchesToProcess");
 
                 // Calculate how far we've gone.
@@ -110,6 +115,7 @@ namespace Reindeer_Hunter
                     " (" + percent.ToString() + "% complete).";
             }
 
+            // If we're done.
             else
             {
                 // Get the time and convert to seconds. Stop the stopwatch
@@ -119,10 +125,11 @@ namespace Reindeer_Hunter
 
                 decimalPercent = 1.0;
                 updateMessage = "Complete " + timePassed.ToString() + " seconds.";
+                endDate = EndDate;
 
             }
 
-            Message message = new Message(updateMessage, decimalPercent, matchList);
+            Message message = new Message(updateMessage, decimalPercent, matchList, endDate);
 
             // Lock it so that we have synchronized access.
             lock(Key)
@@ -511,11 +518,14 @@ namespace Reindeer_Hunter
         public double ProgressDecimal { get; }
         // List of matches created, null when process not complete
         public List<Match> Matches { get; }
-        public Message(string text, double progress, List<Match> matchList)
+        public Message(string text, double progress, List<Match> matchList, string endDate)
         {
             MessageText = text;
             ProgressDecimal = progress;
             Matches = matchList;
+            EndDate = endDate;
         }
+
+        public string EndDate { get; } = "";
     }
 }
