@@ -106,7 +106,7 @@ namespace Reindeer_Hunter
                         "Forgot to supply matchesDone or matchesToProcess");
 
                 // Calculate how far we've gone.
-                decimalPercent = 100 * (matchesDone / matchesToProcess);
+                decimalPercent = 100 * ((double)matchesDone / matchesToProcess);
                 int percent = (int)Math.Round(decimalPercent);
 
                 // Create the actual string message to be sent

@@ -171,7 +171,7 @@ namespace Reindeer_Hunter.Subsystems
         public void UpdateOperationStatus(string message, double progressPercent)
         {
             messageDisplayBox.Text = message;
-            progressBar.Value = progressPercent;
+            progressBar.Value = (int) Math.Round(progressPercent * 100);
         }
 
         /// <summary>

@@ -24,7 +24,8 @@ namespace Reindeer_Hunter.Subsystems.Student_Manager
             // Set up this thread
             Thread thread = new Thread(Execute)
             {
-                Name = "Export Thread"
+                Name = "Export Thread",
+                IsBackground = true
             };
 
             thread.Start();

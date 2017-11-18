@@ -41,6 +41,16 @@ namespace Reindeer_Hunter.Subsystems
             return String.Format("{0}%", percent);
         }
 
+        public string TotalNumStudents()
+        {
+            return _School.TotalNumStudents.ToString();
+        }
+
+        public string NumpassMatches()
+        {
+            return _School.NumPassMatches.ToString();
+        }
+
         public Statistics() : base()
         {
         }
@@ -60,7 +70,9 @@ namespace Reindeer_Hunter.Subsystems
             {
                 {new Statistic(RoundNo, "Round")},
                 {new Statistic(NumInStudents, "Students Still In")},
+                {new Statistic(TotalNumStudents, "Total Number of Students") },
                 {new Statistic(NumOpenMatches, "Open Matches") },
+                {new Statistic(NumpassMatches, "Number of Students Passed") },
                 {new Statistic(NumGeneratedMatches, "Total Matches Generated") },
                 {new Statistic(PercentStudentsStillIn, "Percentage of Students Still in")}
             };

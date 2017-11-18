@@ -49,13 +49,15 @@ namespace Reindeer_Hunter.ThreadMonitors
             }
             catch (IOException)
             {
+                IsPrinting = false;
                 return;
             }
 
 
             printThread = new Thread(printer.Print)
             {
-                Name = "Instant Printer"
+                Name = "Instant Printer",
+                IsBackground = true
             };
             printThread.Start();
 
@@ -99,10 +101,10 @@ namespace Reindeer_Hunter.ThreadMonitors
 
                     if (fileDialog.FileName == "")
                     {
-                        path = System.IO.Path.Combine(Environment.GetFolderPath(
+                        path = Path.Combine(Environment.GetFolderPath(
                             Environment.SpecialFolder.Desktop), "FilledLicenses.pdf");
 
-                        System.Windows.Forms.MessageBox.Show("Export location Error. File was outputted to "
+                        MessageBox.Show("Export location Error. File was outputted to "
                             + path, "Export Error",
                             MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }

@@ -35,7 +35,8 @@ namespace Reindeer_Hunter.ThreadMonitors
             // Make a seperate thread for the import process and start it.
             importThread = new Thread(importer.Import)
             {
-                Name = "CSV Importer"
+                Name = "CSV Importer",
+                IsBackground = true
             };
             importThread.Start();
 

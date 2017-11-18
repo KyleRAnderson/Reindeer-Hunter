@@ -70,6 +70,21 @@ namespace Reindeer_Hunter
             }
         }
 
+        public int NumPassMatches
+        {
+            get
+            {
+                int num = 0;
+
+                foreach (Match match in match_directory.Values)
+                {
+                    if (IsPassMatch(match)) num += 1;
+                }
+
+                return num;
+            }
+        }
+
         /// <summary>
         /// Simple function to get the number of matches on file that are either open or closed.
         /// </summary>
@@ -1056,6 +1071,16 @@ namespace Reindeer_Hunter
             if (student.Id.ToString().Length > 6) return false;
 
             return true;
+        }
+
+        /// <summary>
+        /// Determines whether the given match is a pass match
+        /// </summary>
+        /// <param name="match">The match to check.</param>
+        /// <returns>True if it is a pass match, false otherwise.</returns>
+        public static bool IsPassMatch(Match match)
+        {
+            return (match.Id2 == 0 && match.First2 == "Pass" && match.Last2 == "Pass" && match.Home2 == 0);
         }
 
         /// <summary>

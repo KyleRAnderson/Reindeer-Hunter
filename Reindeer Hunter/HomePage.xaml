@@ -88,7 +88,7 @@
             </DataGrid>
             <Button x:Name="SaveButton" Content="Save" Margin="0,0,5,5" Background="#FF2EFF00" Foreground="White" Grid.Column="7" Grid.Row="8" HorizontalContentAlignment="Center" Command="{Binding _SaveDiscard.SaveCommand, Mode=Default}" ToolTip="Ctrl + S"/>
             <Button x:Name="DiscardButton" Content="Discard" Grid.Column="6" Grid.Row="8" Margin="5,0,0,5" HorizontalContentAlignment="Center" Background="Red" Command="{Binding _SaveDiscard.DiscardCommand, Mode=Default}" ToolTip="Ctrl + D" />
-            <ProgressBar x:Name="progressBar" LargeChange="0" Maximum="1" Grid.ColumnSpan="9" Grid.Row="1"/>
+            <ProgressBar x:Name="progressBar" LargeChange="0" Grid.ColumnSpan="9" Grid.Row="1"/>
             <ListBox x:Name="PassingStudentsBox" Grid.RowSpan="6" Grid.Column="8" Margin="5,5,0,5" Grid.Row="4" BorderBrush="#00ABADB3" ItemsSource="{Binding _Passer.PassingStudentsButtons}" Background="#3FFFFFFF" ToolTip="Click on the student to not pass them"/>
             <DockPanel Grid.ColumnSpan="9" LastChildFill="False" Background="#FFF0F0F0">
                 <Menu x:Name="menu" VerticalAlignment="Top" HorizontalAlignment="Left" DockPanel.Dock="Top">

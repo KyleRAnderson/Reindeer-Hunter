@@ -12,7 +12,7 @@ namespace Reindeer_Hunter
     public partial class DataCardWindow : Window
     {
         // A possible close status
-        public static readonly int STUDENT_DELETED;
+        public static readonly int STUDENT_DELETED = 1;
 
         // Reason why the window closed, 0 being because the user closed it.
         public int CloseStatus { get; private set; } = 0;

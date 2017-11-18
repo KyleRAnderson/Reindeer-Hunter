@@ -65,7 +65,8 @@ namespace Reindeer_Hunter.ThreadMonitors
 
             matchMakeThread = new Thread(matcher.Generate)
             {
-                Name = "Matchmaker"
+                Name = "Matchmaker",
+                IsBackground = true
             };
             matchMakeThread.Start();
 

@@ -155,7 +155,8 @@ namespace Reindeer_Hunter
             for (int a = 0; a < StuffToDo; a++)
             {
                 Tuple<int, int> fraction = new Tuple<int, int>(StuffDone, StuffToDo);
-                SendUpdateMessage(StuffDone/StuffToDo, FILLING, fraction);
+                double percent = (double) StuffDone / StuffToDo;
+                SendUpdateMessage(percent, FILLING, fraction);
 
                 Match match = MatchList[a];
 
