@@ -50,6 +50,7 @@ namespace Reindeer_Hunter
         public static int CREATINGPAGES = 1;
         public static int FILLING = 2;
         public static int COMPLETED = 3;
+        public static int GENERATING_LICENSE_OBJECTS = 4;
         public Stopwatch stopwatch;
 
         // Index number is the index value of the form field.
@@ -108,13 +109,19 @@ namespace Reindeer_Hunter
             stopwatch = new Stopwatch();
             stopwatch.Start();
 
+            SendUpdateMessage(0, status: GENERATING_LICENSE_OBJECTS);
+
+            // Make license objects.
+            List<License> licenses = Generate_License_Objects(MatchList, EndDate);
+
             SendUpdateMessage(0, status: SETUP);
 
-            /* Determine how many pages will be necessary. 
-             * Keep in mind that 4 matches can be fit on each page,
-             * Two of every match
+            /* 
+             * Determine how many pages will be necessary. 
+             * Keep in mind that 8 licenses can be fit on each page.
+             * So, we divide the license number by 8.
              */
-            int pagesNeeded = (int)Math.Ceiling(MatchList.Count / 4.0);
+            int pagesNeeded = (int)Math.Ceiling((double)licenses.Count / 8);
 
             // Duplicate as many pages as is necessary
             Document document = new Document();
@@ -149,7 +156,7 @@ namespace Reindeer_Hunter
             AcroFields formFields = stamper.AcroFields;
 
             StuffDone = 0;
-            StuffToDo = MatchList.Count();
+            StuffToDo = licenses.Count;
 
             // Loop through all matches and write the information
             for (int a = 0; a < StuffToDo; a++)
@@ -158,7 +165,7 @@ namespace Reindeer_Hunter
                 double percent = (double) StuffDone / StuffToDo;
                 SendUpdateMessage(percent, FILLING, fraction);
 
-                Match match = MatchList[a];
+                License license = licenses[a];
 
                 // There are eight of the same textboxes a page, so after that increase page no.
                 if (IndexNo > 8)
@@ -167,55 +174,41 @@ namespace Reindeer_Hunter
                     PageNo += 1;
                 }
 
-                // Write things twice per match.
-                for (int b = 0; b < 2; b++)
+                string student1path;
+                string student2path;
+                string roundpath;
+                string datePath;
+
+                // If it's the first license of the page, there's no underscore and id number
+                if (IndexNo < 2)
                 {
-                    string student1path;
-                    string student2path;
-                    string roundpath;
-                    string datePath;
-
-                    // If it's the match of the page, there's no underscore and id number
-                    if (IndexNo < 2)
-                    {
-                        student1path = string.Format("Student1P{0}", PageNo);
-                        student2path = string.Format("Student2P{0}", PageNo);
-                        roundpath = string.Format("RoundP{0}", PageNo);
-                        datePath = string.Format("DateP{0}", PageNo);
-                    }
-                    else
-                    {
-                        student1path = string.Format("Student1_{0}P{1}", IndexNo, PageNo);
-                        student2path = string.Format("Student2_{0}P{1}", IndexNo, PageNo);
-                        roundpath = string.Format("Round_{0}P{1}", IndexNo, PageNo);
-                        datePath = string.Format("Date_{0}P{1}", IndexNo, PageNo);
-                    }
-
-                    // Fill in the form fields.
-                    formFields.SetField(student1path,
-                        string.Format("{0} ({1})", match.FullName1, match.Home1));
-
-                    // Set the round number.
-                    formFields.SetField(roundpath, match.Round.ToString());
-
-                    // Set the date
-                    formFields.SetField(datePath, EndDate);
-
-                    // Since the passing match has id2 of 0, don't do this for a pass match
-                    if (match.Id2 != 0)
-                    {
-                        formFields.SetField(student2path,
-                            string.Format("{0} ({1})", match.FullName2, match.Home2));
-                    }
-                    else
-                    {
-                        formFields.SetField(student2path, "Pass to next round");
-                    }
-
-                    IndexNo += 1;
-
-
+                    student1path = string.Format("Student1P{0}", PageNo);
+                    student2path = string.Format("Student2P{0}", PageNo);
+                    roundpath = string.Format("RoundP{0}", PageNo);
+                    datePath = string.Format("DateP{0}", PageNo);
                 }
+                else
+                {
+                    student1path = string.Format("Student1_{0}P{1}", IndexNo, PageNo);
+                    student2path = string.Format("Student2_{0}P{1}", IndexNo, PageNo);
+                    roundpath = string.Format("Round_{0}P{1}", IndexNo, PageNo);
+                    datePath = string.Format("Date_{0}P{1}", IndexNo, PageNo);
+                }
+
+                // Fill in the form fields.
+                formFields.SetField(student1path,
+                    license.Student1Field);
+
+                // Set the round number.
+                formFields.SetField(roundpath, license.Round.ToString());
+
+                // Set the date
+                formFields.SetField(datePath, EndDate);
+
+                formFields.SetField(student2path,
+                    license.Student2Field);
+
+                IndexNo += 1;
 
                 StuffDone += 1;
             }
@@ -245,6 +238,101 @@ namespace Reindeer_Hunter
         }
 
         /// <summary>
+        /// Creates all the licenses as well as fake licenses so we only get
+        /// one grade per page.
+        /// </summary>
+        /// <param name="matches">The matches to create the licenses with</param>
+        /// <param name="date">The date to put on the licenses.</param>
+        /// <returns>The list of licenses generated</returns>
+        private List<License> Generate_License_Objects(List<Match> matches, string date)
+        {
+            List<License> licenses = new List<License>();
+
+            foreach (Match match in matches) licenses.AddRange(License.CreateFromMatch(match, date));
+
+            licenses = FormatLicenseList(licenses);
+
+            return licenses;
+        }
+
+        /// <summary>
+        /// Handles sorting the licenses by grade and adding the fake licenses.
+        /// </summary>
+        /// <param name="licenses">The list of licenses to sort and format.</param>
+        /// <returns>The properly formatted list of licenses.</returns>
+        private List<License> FormatLicenseList(List<License> licenses)
+        {
+            List<License> sortedLicenses;
+
+            sortedLicenses = licenses.
+                OrderBy(x => x.Homeroom1).ToList();
+
+            List<Tuple<int, int>> indexesToAddFakeLicensesTo = new List<Tuple<int, int>>();
+
+            int lastGrade = sortedLicenses[0].Grade;
+            foreach (License license in sortedLicenses)
+            {
+                if (license.Grade != lastGrade && license.Grade != 0)
+                {
+                    // Figure out the index in the list where the grade changed.
+                    int insertIndex = sortedLicenses.IndexOf(license);
+
+                    // Add it to the list and move on
+                    indexesToAddFakeLicensesTo.Add(new Tuple<int, int>(insertIndex, lastGrade));
+
+                    // Set the new last grade.
+                    lastGrade = license.Grade;
+
+                }
+            }
+
+            // The adder is needed because as we add these fake licenses, the indexes change.
+            int adder = 0;
+
+            // Now make the fake licenses.
+            foreach (Tuple<int, int> info in indexesToAddFakeLicensesTo)
+            {
+                // Figure out what grade we are doing right now.
+                int grade = info.Item2;
+
+                /* Figure out the index of the last license of that grade, by adding the adder.
+                 * The adder is needed because as we add these fake licenses, the indexes change.
+                 */
+                int index = info.Item1 + adder;
+
+                // 8 licenses per page, so the 8 - the remainer is how many we need to make.
+                int numLicensesToMake = 8 - (sortedLicenses.Count(license => license.Grade == grade) % 8);
+
+                // Add to the adder so that next time, the index is increased properly.
+                adder += numLicensesToMake;
+
+                // Create fake licenses and add them to the sorted licenses at the proper index (info.Item1)
+                sortedLicenses.InsertRange(info.Item1, Create_Fake_Licenses(numLicensesToMake));
+            }
+            
+
+            return sortedLicenses;
+        }
+
+        /// <summary>
+        /// Creates the given number of empty, fake licenses.
+        /// Fake licenses are used as a space filler 
+        /// </summary>
+        /// <param name="num">The number of fake licenses to generate</param>
+        /// <returns>A list of the given number of fake licenses</returns>
+        private License[] Create_Fake_Licenses(int num)
+        {
+            License[] fake_licenses = new License[num];
+
+            for (int a = 0; a < num; a++)
+            {
+                fake_licenses.SetValue(new License(), a);
+            }
+
+            return fake_licenses;
+        }
+
+        /// <summary>
         /// Function that sends updates to the main thread whenever requested.
         /// </summary>
         /// <param name="percent">Decimal percent done</param>
@@ -255,9 +343,13 @@ namespace Reindeer_Hunter
         {
             string textMessage;
 
-            if (status == SETUP)
+            if (status == GENERATING_LICENSE_OBJECTS)
             {
-                textMessage = "Setup operations.";
+                textMessage = "Making License Objects";
+            }
+            else if (status == SETUP)
+            {
+                textMessage = "Getting Ready";
             }
             else if (status == CREATINGPAGES)
             {
@@ -265,7 +357,7 @@ namespace Reindeer_Hunter
             }
             else if (status == FILLING)
             {
-                textMessage = "Filling form. Match " + fraction.Item1.ToString() 
+                textMessage = "Filling form. License " + fraction.Item1.ToString() 
                     + "/" + fraction.Item2.ToString();
             }
 

@@ -111,6 +111,7 @@
     </ApplicationDefinition>
     <Compile Include="CommandManager.cs" />
     <Compile Include="Data Classes\DataRow.cs" />
+    <Compile Include="Data Classes\License.cs" />
     <Compile Include="Data Classes\NewMatches_EventArgs.cs" />
     <Compile Include="Data Classes\Victor.cs" />
     <Compile Include="DataCards\MatchCard.xaml.cs">
