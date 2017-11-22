@@ -4,6 +4,7 @@ using System.Linq;
 using FileHelpers;
 using System.Windows.Forms;
 using Reindeer_Hunter.Data_Classes;
+using System.Text;
 
 namespace Reindeer_Hunter
 {
@@ -31,7 +32,10 @@ namespace Reindeer_Hunter
                     if (path == "") return null;
 
                     // Begin processing the data
-                    var engine = new FileHelperEngine<RawStudent>();
+                    FileHelperEngine<RawStudent> engine = new FileHelperEngine<RawStudent>
+                    {
+                        Encoding = Encoding.UTF8
+                    };
 
                     try
                     {
@@ -69,7 +73,10 @@ namespace Reindeer_Hunter
             // If importing match results
             else if (id == IMPORT_MATCH_RESULTS)
             {
-                var engine = new FileHelperEngine<ResultStudent>();
+                FileHelperEngine<ResultStudent> engine = new FileHelperEngine<ResultStudent>
+                {
+                    Encoding = Encoding.UTF8
+                };
 
                 if (filePath == "") return null;
                 try
@@ -114,7 +121,11 @@ namespace Reindeer_Hunter
         /// <param name="exportLocation"></param>
         public static void ExportStudents(List<RawStudent> students, string exportLocation)
         {
-            var engine = new FileHelperEngine<RawStudent>();
+            var engine = new FileHelperEngine<RawStudent>
+            {
+                Encoding = Encoding.UTF8
+            };
+
             engine.HeaderText = engine.GetFileHeader();
 
             engine.WriteFile(exportLocation, students);
