@@ -7,8 +7,12 @@
              mc:Ignorable="d" >
     <Viewbox Stretch="Uniform">
         <Grid Width="614" Height="455" >
-            <Button x:Name="import_button" Content="Import .csv file" HorizontalAlignment="Left" Margin="256,215.5,0,0" VerticalAlignment="Top" FontSize="14" FontWeight="Bold" Click="Import_button_Click"/>
+            <Grid.Background>
+                <ImageBrush Stretch="Uniform" ImageSource="Resources/Reindeer.ico"/>
+            </Grid.Background>
+            <Button x:Name="import_button" Content="Import students" HorizontalAlignment="Left" Margin="256,215.5,0,0" VerticalAlignment="Top" FontSize="14" FontWeight="Bold" Click="Import_button_Click"/>
             <Button x:Name="Open_User_manual" Content="Open User Manual" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="503,50,0,0" Background="#FFF50000" Foreground="White" Click="Open_User_manual_Click"/>
+            <Button x:Name="Import_Button" Content="Import Previous Data" HorizontalAlignment="Left" Margin="35,50,0,0" VerticalAlignment="Top" Click="Import_Button_Click_1" FontWeight="Bold"/>
         </Grid>
     </Viewbox>
 </UserControl>

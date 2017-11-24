@@ -5,19 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Reindeer_Hunter"
              xmlns:Data_Classes="clr-namespace:Reindeer_Hunter.Data_Classes" x:Class="Reindeer_Hunter.HomePage"
-             mc:Ignorable="d" Foreground="White">
-    <UserControl.Background>
-        <ImageBrush ImageSource="reindeer.ico" Stretch="Uniform">
-            <ImageBrush.RelativeTransform>
-                <TransformGroup>
-                    <ScaleTransform CenterY="0.5" CenterX="0.5" ScaleY="0.75" ScaleX="0.75"/>
-                    <SkewTransform CenterY="0.5" CenterX="0.5"/>
-                    <RotateTransform CenterY="0.5" CenterX="0.5"/>
-                    <TranslateTransform X="-0.21" Y="0.075"/>
-                </TransformGroup>
-            </ImageBrush.RelativeTransform>
-        </ImageBrush>
-    </UserControl.Background>
+             mc:Ignorable="d" Foreground="White" Background="#FFEEEEEE">
     <UserControl.DataContext>
         <local:CommandManager/>
     </UserControl.DataContext>
@@ -51,7 +39,19 @@
             <TextBox x:Name="search_box" Margin="10,0,0,0" TextWrapping="Wrap" AutomationProperties.HelpText="Search for students or matches..." Text="Search &quot;S + [Student Id]&quot;, &quot;[Homeroom]&quot;, &quot;[Match Number]&quot;" VerticalContentAlignment="Center" Grid.ColumnSpan="5" Grid.Row="2" CharacterCasing="Upper" ToolTip="Search &quot;S + [Student Id]&quot;, &quot;[Homeroom]&quot;, &quot;[Match Number]&quot;">
             </TextBox>
             <TextBox x:Name="progressDisplayBox" Margin="0" TextWrapping="Wrap" Background="Transparent" BorderBrush="#00ABADB3" IsEnabled="False" FontSize="10" Grid.ColumnSpan="2" Grid.Column="6" Grid.RowSpan="2" Grid.Row="2"/>
-            <DataGrid x:Name="MainDisplay" Margin="10,0,0,10" AlternationCount="2" AlternatingRowBackground="#BFA8A8A8" CanUserAddRows="False" SelectionMode="Single" AutoGenerateColumns="False" Grid.ColumnSpan="6" Grid.Row="3" Grid.RowSpan="7" SelectionUnit="Cell" IsReadOnly="True" ItemsSource="{Binding _FiltersAndSearch.MainDisplay_Display_List}" IsSynchronizedWithCurrentItem="True" Background="#BFF0F0F0" Foreground="#7F000000" ToolTip="Ctrl + P">
+            <DataGrid x:Name="MainDisplay" Margin="10,0,0,10" AlternationCount="2" AlternatingRowBackground="#E56E6A6A" CanUserAddRows="False" SelectionMode="Single" AutoGenerateColumns="False" Grid.ColumnSpan="6" Grid.Row="3" Grid.RowSpan="7" SelectionUnit="Cell" IsReadOnly="True" ItemsSource="{Binding _FiltersAndSearch.MainDisplay_Display_List}" IsSynchronizedWithCurrentItem="True" Foreground="#7F000000" ToolTip="Ctrl + P" RowBackground="#E5FFFFFF">
+                <DataGrid.Background>
+                    <ImageBrush ImageSource="Resources/Reindeer.ico" Stretch="Uniform">
+                        <ImageBrush.RelativeTransform>
+                            <TransformGroup>
+                                <ScaleTransform CenterY="0.5" CenterX="0.5"/>
+                                <SkewTransform CenterY="0.5" CenterX="0.5"/>
+                                <RotateTransform CenterY="0.5" CenterX="0.5"/>
+                                <TranslateTransform Y="0.03"/>
+                            </TransformGroup>
+                        </ImageBrush.RelativeTransform>
+                    </ImageBrush>
+                </DataGrid.Background>
                 <DataGrid.Columns>
                     <DataGridCheckBoxColumn Binding="{Binding Pass1}" ClipboardContentBinding="{x:Null}" Header="Pass"/>
                     <DataGridTextColumn Binding="{Binding First1}" ClipboardContentBinding="{x:Null}" Header="First" Width="*" IsReadOnly="True">
@@ -89,7 +89,7 @@
             <Button x:Name="SaveButton" Content="Save" Margin="0,0,5,5" Background="#FF2EFF00" Foreground="White" Grid.Column="7" Grid.Row="8" HorizontalContentAlignment="Center" Command="{Binding _SaveDiscard.SaveCommand, Mode=Default}" ToolTip="Ctrl + S"/>
             <Button x:Name="DiscardButton" Content="Discard" Grid.Column="6" Grid.Row="8" Margin="5,0,0,5" HorizontalContentAlignment="Center" Background="Red" Command="{Binding _SaveDiscard.DiscardCommand, Mode=Default}" ToolTip="Ctrl + D" />
             <ProgressBar x:Name="progressBar" LargeChange="0" Grid.ColumnSpan="9" Grid.Row="1"/>
-            <ListBox x:Name="PassingStudentsBox" Grid.RowSpan="6" Grid.Column="8" Margin="5,5,0,5" Grid.Row="4" BorderBrush="#00ABADB3" ItemsSource="{Binding _Passer.PassingStudentsButtons}" Background="#3FFFFFFF" ToolTip="Click on the student to not pass them"/>
+            <ListBox x:Name="PassingStudentsBox" Grid.RowSpan="6" Grid.Column="8" Margin="5,5,0,5" Grid.Row="4" BorderBrush="{x:Null}" ItemsSource="{Binding _Passer.PassingStudentsButtons}" Background="{x:Null}" ToolTip="Click on the student to not pass them"/>
             <DockPanel Grid.ColumnSpan="9" LastChildFill="False" Background="#FFF0F0F0">
                 <Menu x:Name="menu" VerticalAlignment="Top" HorizontalAlignment="Left" DockPanel.Dock="Top">
                     <MenuItem Header="File">
@@ -128,7 +128,7 @@
                     </MenuItem>
                 </Menu>
             </DockPanel>
-            <DataGrid x:Name="StatisticsDisplay" Grid.ColumnSpan="2" Grid.Column="6" Margin="5" Grid.Row="4" Grid.RowSpan="4" Background="{x:Null}" IsReadOnly="True" HeadersVisibility="None" BorderBrush="{x:Null}" Foreground="#FF4D4D4D" ItemsSource="{Binding _Stats.DisplayList}" AutoGenerateColumns="False" SelectionMode="Single" SelectionUnit="Cell" BorderThickness="1" GridLinesVisibility="None">
+            <DataGrid x:Name="StatisticsDisplay" Grid.ColumnSpan="2" Grid.Column="6" Margin="5" Grid.Row="4" Grid.RowSpan="4" Background="{x:Null}" IsReadOnly="True" HeadersVisibility="None" BorderBrush="{x:Null}" Foreground="#FF4D4D4D" ItemsSource="{Binding _Stats.DisplayList}" AutoGenerateColumns="False" SelectionMode="Single" SelectionUnit="Cell" BorderThickness="1" GridLinesVisibility="None" RowBackground="#FFEEEEEE">
                 <DataGrid.Columns>
                     <DataGridTextColumn Binding="{Binding Title, Mode=OneWay}" ClipboardContentBinding="{x:Null}" Width="3*">
                         <DataGridTextColumn.ElementStyle>
