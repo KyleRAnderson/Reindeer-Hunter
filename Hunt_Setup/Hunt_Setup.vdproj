@@ -15,32 +15,32 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_2201163EE9BDCA10709FF960B3D5778E"
-        "OwnerKey" = "8:_C75AC0EAD6924FA1B0FA1FD7AA105174"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_2201163EE9BDCA10709FF960B3D5778E"
-        "OwnerKey" = "8:_D17EE9D028C746FC944DEA895C488E0B"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_42C324B02E740709F140E69FB53D6578"
-        "OwnerKey" = "8:_C75AC0EAD6924FA1B0FA1FD7AA105174"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_42C324B02E740709F140E69FB53D6578"
-        "OwnerKey" = "8:_D17EE9D028C746FC944DEA895C488E0B"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_512E8705EEF04C2A8B2450158082E45D"
+        "MsmKey" = "8:_0FB99A99BA624A28895E4B635A614D66"
         "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_2201163EE9BDCA10709FF960B3D5778E"
+        "OwnerKey" = "8:_C75AC0EAD6924FA1B0FA1FD7AA105174"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_2201163EE9BDCA10709FF960B3D5778E"
+        "OwnerKey" = "8:_D17EE9D028C746FC944DEA895C488E0B"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_42C324B02E740709F140E69FB53D6578"
+        "OwnerKey" = "8:_C75AC0EAD6924FA1B0FA1FD7AA105174"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_42C324B02E740709F140E69FB53D6578"
+        "OwnerKey" = "8:_D17EE9D028C746FC944DEA895C488E0B"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -88,19 +88,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_D17EE9D028C746FC944DEA895C488E0B"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_91F7118FA992A27ECB3F9268DB0D2379"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_C811387089AC6555A6605D550FFC549E"
+        "OwnerKey" = "8:_2201163EE9BDCA10709FF960B3D5778E"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -112,7 +100,19 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_2201163EE9BDCA10709FF960B3D5778E"
+        "OwnerKey" = "8:_C811387089AC6555A6605D550FFC549E"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_91F7118FA992A27ECB3F9268DB0D2379"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_D17EE9D028C746FC944DEA895C488E0B"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -210,6 +210,26 @@
         }
         "File"
         {
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0FB99A99BA624A28895E4B635A614D66"
+            {
+            "SourcePath" = "8:E:\\Google Drive\\Grade 11\\Council\\Reindeer Hunter\\User Manuals\\User_ManualV3.pdf"
+            "TargetName" = "8:User_Manual.pdf"
+            "Tag" = "8:"
+            "Folder" = "8:_91A300081BE04D1F88C6BA7F7D7B8D87"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_2201163EE9BDCA10709FF960B3D5778E"
             {
             "AssemblyRegister" = "3:1"
@@ -260,26 +280,6 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_512E8705EEF04C2A8B2450158082E45D"
-            {
-            "SourcePath" = "8:..\\Reindeer Hunter\\Resources\\User_Manual.pdf"
-            "TargetName" = "8:User_Manual.pdf"
-            "Tag" = "8:"
-            "Folder" = "8:_91A300081BE04D1F88C6BA7F7D7B8D87"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_91F7118FA992A27ECB3F9268DB0D2379"
@@ -434,15 +434,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Reindeer Hunter"
-        "ProductCode" = "8:{F3185D06-CFF3-41D2-9C69-731127A39F12}"
-        "PackageCode" = "8:{0DB5B250-3E6C-4A23-9F63-267F6947152C}"
+        "ProductCode" = "8:{D945B365-F53A-4605-87FF-A5454C8D8B75}"
+        "PackageCode" = "8:{FC00A0D8-00DB-4050-8010-0B742AE44BF6}"
         "UpgradeCode" = "8:{DD08C5B6-48FE-4D8F-BA93-8780CCC7804A}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.0.4"
+        "ProductVersion" = "8:1.0.5"
         "Manufacturer" = "8:Kyle Anderson"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:https://github.com/eAUE/Reindeer-Hunter/wiki"

@@ -300,8 +300,8 @@ namespace Reindeer_Hunter
                  */
                 int index = info.Item1 + adder;
 
-                // 8 licenses per page, so the 8 - the remainer is how many we need to make.
-                int numLicensesToMake = 8 - (sortedLicenses.Count(license => license.Grade == grade) % 8);
+                // 8 licenses per page, so the 8 - the remainder is how many we need to make.
+                int numLicensesToMake = (8 - (sortedLicenses.Count(license => license.Grade == grade) % 8)) % 8;
 
                 // Add to the adder so that next time, the index is increased properly.
                 adder += numLicensesToMake;
