@@ -14,7 +14,10 @@ namespace Reindeer_Hunter.Subsystems.ProcessButtonCommands
         public static readonly int STUDENTS = 2;
         public static readonly int CANCELLED = 3;
 
-        bool Cancelled = false;
+        /// <summary>
+        /// True when the submit button is pressed, false otherwise.
+        /// </summary>
+        bool Submitted = false;
 
         public RelayCommand OkCommand { get; } = new RelayCommand();
         public RelayCommand CancelCommand { get; } = new RelayCommand
@@ -41,19 +44,20 @@ namespace Reindeer_Hunter.Subsystems.ProcessButtonCommands
         // Just close the window. Status should take care of itself
         private void OkFunc(object parameter)
         {
+            Submitted = true;
             Close();
         }
 
         // Just close the window.
         private void CancelFunc(object parameter)
         {
-            Cancelled = true;
+            Submitted = false;
             Close();
         }
 
         public int GetResult()
         {
-            if (Cancelled) return CANCELLED;
+            if (!Submitted) return CANCELLED;
             else if (Homerooms.IsChecked == true) return HOMEROOMS;
             else if (Grades.IsChecked == true) return GRADES;
             else if (Students.IsChecked == true) return STUDENTS;

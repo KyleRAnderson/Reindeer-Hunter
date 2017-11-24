@@ -13,7 +13,7 @@
             <RadioButton x:Name="Students" Content="Matchmake between all students" HorizontalAlignment="Left" Margin="22,55,0,0" VerticalAlignment="Top" GroupName="selection" FontSize="14" Click="RaiseCanExecuteChanged" FontFamily="Comic Sans MS"/>
             <Button x:Name="Cancel" Content="Cancel" HorizontalAlignment="Left" Margin="22,104,0,0" VerticalAlignment="Top" Width="75" Command="{Binding CancelCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MatchmakeDialog}}}" FontFamily="Arial Black" Background="Black" Foreground="Red"/>
             <Button x:Name="Ok" Content="Ok" HorizontalAlignment="Left" Margin="202,104,0,0" VerticalAlignment="Top" Width="76" Command="{Binding OkCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MatchmakeDialog}}}" FontFamily="Arial Black" Foreground="Black" Background="#FF00FF0C"/>
-            <TextBox x:Name="DateBox" Margin="89,78,22,0" TextWrapping="Wrap" ToolTip="The Round's End Date" VerticalAlignment="Top" SpellCheck.IsEnabled="True" MaxLength="20"/>
+            <TextBox x:Name="DateBox" Margin="89,78,22,0" TextWrapping="Wrap" ToolTip="The Round's End Date" VerticalAlignment="Top" SpellCheck.IsEnabled="True" MaxLength="50" FontFamily="Comic Sans MS"/>
             <Label x:Name="DateLabel" Content="End Date" HorizontalAlignment="Left" Margin="22,74,0,0" VerticalAlignment="Top" Width="62" FontWeight="Bold" FontFamily="Comic Sans MS" FontSize="11" ToolTip="The Round's End Date"/>
         </Grid>
     </Viewbox>
