@@ -11,11 +11,15 @@ namespace Reindeer_Hunter.Subsystems
     /// <summary>
     /// Subsystem in charge of importing students and match results.
     /// </summary>
-    public class Student_ManagerSubsystem : Subsystem
+    public class Manager_Subsystem : Subsystem
     {
         public RelayCommand ImportStudents { get; } = new RelayCommand();
         public RelayCommand ImportMatchResults { get; } = new RelayCommand();
         public RelayCommand ExportStudents { get; } = new RelayCommand();
+        public RelayCommand ImportPDF { get; } = new RelayCommand
+        {
+            CanExecuteDeterminer = (() => true)
+        };
 
         private StartupWindow MasterWindow;
 
@@ -30,6 +34,8 @@ namespace Reindeer_Hunter.Subsystems
             ImportMatchResults.CanExecuteDeterminer = Can_Import_Results;
             ExportStudents.CanExecuteDeterminer = Can_Export_Students;
             ExportStudents.FunctionToExecute = Export_Students;
+
+            ImportPDF.FunctionToExecute = Import_PDF;
 
             MasterWindow = Manager.Home.MasterWindow;
 
@@ -116,6 +122,23 @@ namespace Reindeer_Hunter.Subsystems
             // If there are no matches, there is no importing results for matches.
             if (_School.NumOpenMatches <= 0) return false;
             else return true;
+        }
+
+        /// <summary>
+        /// Function to import a new template pdf file. 
+        /// </summary>
+        /// <param name="parameter"></param>
+        public void Import_PDF(object parameter)
+        {
+            // Just tell the data file to import it, and catch the error
+            try
+            {
+                _School.DataFile.Import_Template_PDF();
+            }
+            catch (IOException)
+            {
+                return;
+            }
         }
 
         /// <summary>

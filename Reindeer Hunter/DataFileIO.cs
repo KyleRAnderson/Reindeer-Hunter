@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.IO;
 using System.Collections;
@@ -378,6 +376,54 @@ namespace Reindeer_Hunter
         {
             Application.Current.Shutdown();
         }
+
+        public void Import_Template_PDF()
+        {
+            // Get the pdf that the user wants to import.
+            OpenFileDialog templateOpenDialog = new OpenFileDialog
+            {
+
+                // Open the file dialog to the user's directory
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+
+                // Filter only for comma-seperated value files. 
+                Filter = "pdf files (*.pdf)|*.pdf",
+                FilterIndex = 2,
+                RestoreDirectory = true
+            };
+
+            templateOpenDialog.ShowDialog();
+
+            if (templateOpenDialog.FileName == "" || templateOpenDialog.FileName == null)
+            {
+                throw new IOException("User Cancelled");
+            }
+
+            // Delete the old one and replace it with the new one. 
+            if (TemplatePDFExists) File.Delete(TemplatePDFLoc);
+            File.Copy(templateOpenDialog.FileName, TemplatePDFLoc);
+        }
+
+        public string TemplatePDFLoc
+        {
+            get
+            {
+                return Path.Combine(DataLocation, TemplatePDFName);
+            }
+        }
+
+        public bool TemplatePDFExists
+        {
+            get
+            {
+                return File.Exists(TemplatePDFLoc);
+            }
+        }
+
+        /// <summary>
+        /// The name, as in the last part of the path, of the template pdf file. 
+        /// </summary>
+        public static string TemplatePDFName = "TemplatePDF.pdf";
     }
 
     /// <summary>

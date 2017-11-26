@@ -135,7 +135,7 @@
     <Compile Include="ImportStudents.cs" />
     <Compile Include="Subsystems\Help.cs" />
     <Compile Include="Subsystems\DataDealer.cs" />
-    <Compile Include="Subsystems\Student_ManagerSubsystem.cs" />
+    <Compile Include="Subsystems\Manager_Subsystem.cs" />
     <Compile Include="Subsystems\PasserSubsystem.cs" />
     <Compile Include="Subsystems\ProcessButtonCommands\MatchmakeDialog.xaml.cs">
       <DependentUpon>MatchmakeDialog.xaml</DependentUpon>

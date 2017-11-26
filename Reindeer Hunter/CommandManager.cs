@@ -20,7 +20,7 @@ namespace Reindeer_Hunter
         public PasserSubsystem _Passer { get; }
         public DataDealer _ImportExport { get; }
         public Statistics _Stats { get; }
-        public Student_ManagerSubsystem _Importer { get; }
+        public Manager_Subsystem _Importer { get; }
         public Help _Help { get; }
         
         // The homepage object.
@@ -58,7 +58,7 @@ namespace Reindeer_Hunter
             {
                 ManagerProperty = this
             };
-            _Importer = new Student_ManagerSubsystem
+            _Importer = new Manager_Subsystem
             {
                 ManagerProperty = this
             };

@@ -65,40 +65,14 @@ namespace Reindeer_Hunter
             TempLocation = Path.Combine(DataPath, "Duplicate.pdf");
             OutputLocation = Path.Combine(DataPath, "FilledLicenses.pdf");
             Temp2Location = Path.Combine(DataPath, "Temporary.pdf");
-            TemplateLocation = Path.Combine(DataPath, "TemplatePDF.pdf");
+            TemplateLocation = Path.Combine(DataPath, DataFileIO.TemplatePDFName);
 
 
             Key = key;
             MatchList = matches;
             RoundNo = roundNo;
             Print_Comms = comms;
-
-            EndDate = endDate;
-
-            if (!File.Exists(TemplateLocation))
-            {
-                // Get template location
-                OpenFileDialog templateOpenDialog = new OpenFileDialog
-                {
-
-                    // Open the file dialog to the user's directory
-                    InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-
-                    // Filter only for comma-seperated value files. 
-                    Filter = "pdf files (*.pdf)|*.pdf",
-                    FilterIndex = 2,
-                    RestoreDirectory = true
-                };
-
-                templateOpenDialog.ShowDialog();
-                string path = templateOpenDialog.FileName;
-
-                if (path == "" || !templateOpenDialog.CheckFileExists) throw new IOException("User canceled.");
-                else
-                {
-                    File.Copy(path, TemplateLocation);
-                }
-            }            
+            EndDate = endDate;           
         }
 
         /// <summary>

@@ -96,6 +96,8 @@
                         <MenuItem Header="Import Data" Command="{Binding _ImportExport.Import, Mode=OneWay}" ToolTip="Import a Reindeer Hunt from a file"/>
                         <MenuItem Header="Export Data" Command="{Binding _ImportExport.Export, Mode=OneWay}" ToolTip="Export this Reindeer Hunt to file"/>
                         <MenuItem Header="Erase Data" Command="{Binding _ImportExport.Erase, Mode=OneWay}" ToolTip="Wipe the program data"/>
+                        <Separator/>
+                        <MenuItem x:Name="ImportPDFButton" Header="Import Template PDF" ToolTip="Import a new template PDF. Replaces the current one." Command="{Binding _Importer.ImportPDF, Mode=OneWay}"/>
                     </MenuItem>
                     <MenuItem Header="Manage">
                         <MenuItem x:Name="Import_Students_Button" Header="Import Students" Command="{Binding _Importer.ImportStudents, Mode=OneWay}" ToolTip="Import more students Into the application">

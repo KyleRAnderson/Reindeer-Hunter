@@ -40,18 +40,25 @@ namespace Reindeer_Hunter.ThreadMonitors
             // Instantiate school object for simplicity
             this.school = school;
 
+            // Make sure the template PDF file exists by the time printing begins. 
+            if (!school.DataFile.TemplatePDFExists)
+            {
+                try
+                {
+                    school.DataFile.Import_Template_PDF();
+                }
+                catch (IOException)
+                {
+                    IsPrinting = false;
+                    return;
+                }
+            }
+
             // Create the matchmaker and then assign the thread target to it
             // +1 to current round because we want next round's matches.
-            try
-            {
-                printer = new InstantPrinter(school.GetCurrRoundMatches(),
-                school.GetCurrRoundNo() + 1, Key, comms, school.DataFile.DataLocation, school.RoundEndDate);
-            }
-            catch (IOException)
-            {
-                IsPrinting = false;
-                return;
-            }
+            printer = new InstantPrinter(school.GetCurrRoundMatches(),
+            school.GetCurrRoundNo() + 1, Key, comms, school.DataFile.DataLocation, school.RoundEndDate);
+
 
 
             printThread = new Thread(printer.Print)
@@ -72,7 +79,7 @@ namespace Reindeer_Hunter.ThreadMonitors
                 if (comms.Count() <= 0) return;
 
                 // Convert queue to list and retrieve last value
-                List<PrintMessage> returnList = comms.ToList<PrintMessage>();
+                List<PrintMessage> returnList = comms.ToList();
                 PrintMessage returnValue = returnList[returnList.Count() - 1];
 
                 // Clear queue
