@@ -238,6 +238,7 @@ namespace Reindeer_Hunter
                         Id1 = student.Id,
                         First1 = student.First,
                         Last1 = student.Last,
+                        Grade1 = student.Grade,
                         Round = student.LastRoundParticipated
                     };
 
@@ -323,6 +324,7 @@ namespace Reindeer_Hunter
                 Id1 = student.Id,
                 First1 = student.First,
                 Last1 = student.Last,
+                Grade1 = student.Grade,
                 MatchId = "",
                 Round = student.LastRoundParticipated,
                 Id2 = 0,
@@ -1012,6 +1014,12 @@ namespace Reindeer_Hunter
             DataFile.Write(data);
         }
 
+        /// <summary>
+        /// Returns a dictionary of grades which contains a dictionary of the 
+        /// students in that grade by homeroom.
+        /// </summary>
+        /// <returns>A dictionary of grades which contains a dictionary of the 
+        /// students in that grade by homeroom.</returns>
         public Dictionary<int, Dictionary<int, List<Student>>> GetStudentsByGradeAndHomeroom()
         {
             Dictionary<int, List<Student>> homeroomList = new Dictionary<int, List<Student>>();
@@ -1029,7 +1037,10 @@ namespace Reindeer_Hunter
             Dictionary<int, Dictionary<int, List<Student>>> gradeHomeroomList = new Dictionary<int, Dictionary<int, List<Student>>>();
 
             foreach (KeyValuePair<int, List<Student>> hmrm_students in homeroomList) {
-                int grade = hmrm_students.Value[0].Grade;
+
+                // Get the grade using the homeroom number.
+                int grade = GetHomeroomsGrade(hmrm_students.Key);
+
                 if (!gradeHomeroomList.ContainsKey(grade)) gradeHomeroomList.Add(grade, new Dictionary<int, List<Student>>());
                 gradeHomeroomList[grade].Add(hmrm_students.Key, hmrm_students.Value);
             }
@@ -1163,6 +1174,29 @@ namespace Reindeer_Hunter
                 misc[EndDateKey] = value;
                 Save();
             }
+        }
+
+        /// <summary>
+        /// Gets the grade of the homeroom using the maximum grade number in that homeroom.
+        /// </summary>
+        /// <param name="homeroom">The list of students in the homeroom</param>
+        /// <returns>The grade that the homeroom is a part of.</returns>
+        public static int GetHomeroomsGrade(List<Student> homeroom)
+        {
+            List<int> grades = homeroom.Select(student => student.Grade).ToList();
+
+            return grades.Max();
+        }
+
+        /// <summary>
+        /// Gets the grade of the homeroom by assuming it follows this format: [grade][homeroomNum]
+        /// Example: homeroom 1203 would be a grade 12 homeroom.
+        /// </summary>
+        /// <param name="homeroomNo">The homeroom's number</param>
+        /// <returns>The grade  of the homeroom</returns>
+        public static int GetHomeroomsGrade(int homeroomNo)
+        {
+            return (int)Math.Floor((double)homeroomNo / 100);
         }
     }
 }

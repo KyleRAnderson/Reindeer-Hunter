@@ -201,7 +201,8 @@ namespace Reindeer_Hunter
             else
             {
 
-                /* Get the list such that it will be [{904: (students in 904), 905: (students in 905)}, {1004: (students in 1004)}]. 
+                /* 
+                 * Get the list such that it will be [{904: (students in 904)}, {905: (students in 905)}, {1004: (students in 1004)}]. 
                  * Each grade has a different place in the list, and that place in the list will contain a dictionary
                  * of the homerooms in that grade.
                  */
@@ -358,22 +359,19 @@ namespace Reindeer_Hunter
             if (homeroomList.Count > 0) leftoverHomeroom = homeroomList[0];
             else leftoverHomeroom = new List<Student>();
 
-            if (leftoverHomeroom.Count > 0 && leftOverStudents.Count > 0)
+            while (leftoverHomeroom.Count > 0 && leftOverStudents.Count > 0)
             {
-                while (leftoverHomeroom.Count > 0 && leftOverStudents.Count > 0)
-                {
-                    // Get two students
-                    Student student1 = leftoverHomeroom[rndm.Next(0, leftoverHomeroom.Count)];
-                    leftoverHomeroom.Remove(student1);
-                    Student student2 = leftOverStudents[rndm.Next(0, leftOverStudents.Count)];
-                    leftOverStudents.Remove(student2);
+                // Get two students
+                Student student1 = leftoverHomeroom[rndm.Next(0, leftoverHomeroom.Count)];
+                leftoverHomeroom.Remove(student1);
+                Student student2 = leftOverStudents[rndm.Next(0, leftOverStudents.Count)];
+                leftOverStudents.Remove(student2);
 
-                    // Increase the top match number
-                    topMatchNo += 1;
+                // Increase the top match number
+                topMatchNo += 1;
 
-                    // Generate and add the match
-                    matchesMade.Add(GenerateMatch(student1, student2, topMatchNo));
-                }
+                // Generate and add the match
+                matchesMade.Add(GenerateMatch(student1, student2, topMatchNo));
             }
 
             // If there are still people left in the homeroom list
@@ -467,6 +465,8 @@ namespace Reindeer_Hunter
                 Closed = true,
                 Home1 = lucky_guy.Homeroom,
                 Home2 = 0,
+                Grade1 = lucky_guy.Grade,
+                Grade2 = 0,
 
                 // Pass the lucky student
                 Pass1 = true
@@ -495,10 +495,12 @@ namespace Reindeer_Hunter
                 Last1 = student1.Last,
                 Id1 = student1.Id,
                 Home1 = student1.Homeroom,
+                Grade1 = student1.Grade,
                 First2 = student2.First,
                 Last2 = student2.Last,
                 Id2 = student2.Id,
                 Home2 = student2.Homeroom,
+                Grade2 = student2.Grade,
                 Round = round,
                 Closed = false
             };

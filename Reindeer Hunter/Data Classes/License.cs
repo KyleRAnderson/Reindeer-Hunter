@@ -12,14 +12,7 @@ namespace Reindeer_Hunter.Data_Classes
         public int Homeroom2 { get; set; } = 0;
         public string Date { get; set; } = "";
         public long Round { get; set; } = 0;
-
-        public int Grade
-        {
-            get
-            {
-                return (int)Math.Floor((double)Homeroom1 / 100);
-            }
-        }
+        public int Grade { get; set; } = 0;
 
         public string Student1Field
         {
@@ -67,7 +60,8 @@ namespace Reindeer_Hunter.Data_Classes
                 Homeroom1 = match.Home1,
                 Homeroom2 = match.Home2,
                 Round = match.Round,
-                Date = date
+                Date = date,
+                Grade = match.Grade1
             }, 0);
 
             // Don't do student 2 if it is a pass match, since student2 is the passer.
@@ -82,6 +76,7 @@ namespace Reindeer_Hunter.Data_Classes
                     Homeroom1 = match.Home2,
                     Homeroom2 = match.Home1,
                     Round = match.Round,
+                    Grade = match.Grade2,
                     Date = date
                 }, 1);
             }
