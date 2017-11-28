@@ -61,9 +61,9 @@ namespace Reindeer_Hunter
             long roundNo, object key, Queue<PrintMessage> comms, string DataPath, string endDate)
         {
             // Set up file locations
-            TempLocation = Path.Combine(DataPath, "Duplicate.pdf");
-            OutputLocation = Path.Combine(DataPath, "FilledLicenses.pdf");
-            Temp2Location = Path.Combine(DataPath, "Temporary.pdf");
+            TempLocation = Path.Combine(DataPath, "Duplicate.tmp");
+            OutputLocation = Path.Combine(DataPath, "FilledLicenses.tmp");
+            Temp2Location = Path.Combine(DataPath, "Temporary.tmp");
             TemplateLocation = Path.Combine(DataPath, DataFileIO.TemplatePDFName);
 
 

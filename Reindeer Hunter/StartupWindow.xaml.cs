@@ -5,6 +5,8 @@ using Reindeer_Hunter.FFA;
 using System;
 using Microsoft.Win32;
 using Reindeer_Hunter.ThreadMonitors;
+using System.Reflection;
+using System.Deployment.Application;
 
 namespace Reindeer_Hunter
 {

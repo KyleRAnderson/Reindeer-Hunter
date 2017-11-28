@@ -138,7 +138,7 @@ namespace Reindeer_Hunter
             }
 
             CreateStudentDirs();
-            match_directory = (Dictionary <string,  Match > )data["matches"];
+            match_directory = (Dictionary<string, Match>)data["matches"];
             misc = (Hashtable)data["misc"];
         }
 
@@ -186,7 +186,7 @@ namespace Reindeer_Hunter
                 // If the homeroom list doesn't exist, add it.
                 if (!homeroom_directory.ContainsKey(student.Homeroom))
                     homeroom_directory.Add(student.Homeroom, new List<Student>());
-                
+
                 // Add the student to the right homeroom
                 homeroom_directory[student.Homeroom].Add(student);
             }
@@ -217,7 +217,7 @@ namespace Reindeer_Hunter
             // If match id is provided, get that match's info if it exists, else error.
             if (query.MatchId != "")
             {
-                if (match_directory.ContainsKey(query.MatchId) 
+                if (match_directory.ContainsKey(query.MatchId)
                     && CompliesWithFilters(match_directory[query.MatchId], filter)) resultsList.
                         Add(match_directory[query.MatchId].Clone());
                 else return null;
@@ -296,7 +296,8 @@ namespace Reindeer_Hunter
                         // Make a fake match for the student if they have not yet had a match
                         resultsList.Add(CreateFakeMatch(student));
                     }
-                    else {
+                    else
+                    {
                         foreach (string matchId in student.MatchesParticipated)
                         {
                             // Check for filter compliance. If it complies, return it. 
@@ -305,7 +306,7 @@ namespace Reindeer_Hunter
                         }
                     }
                 }
-                
+
             }
 
             return resultsList;
@@ -340,7 +341,7 @@ namespace Reindeer_Hunter
             // True when there is discovered data.
             bool isData = false;
             Dictionary<int, List<Student>> grades = GetStudentsByGrade();
-            
+
             foreach (KeyValuePair<int, List<Student>> pair in grades)
             {
                 List<Student> grade = pair.Value;
@@ -382,12 +383,12 @@ namespace Reindeer_Hunter
 
                 // Seems not needed, but in case two people are passed then it's needed.
                 student_directory[matchResult.StuID].In = true;
-                
+
                 // if the victor is student 1, mark student 2 as not in and pass student 1
                 if (matchResult.StuID == match.Id1)
                 {
                     // If this match has already been closed, then the other student must have been passed too.
-                    if (!match.Closed) student_directory[match.Id2].In = false; 
+                    if (!match.Closed) student_directory[match.Id2].In = false;
                     match.Pass1 = true;
                 }
                 // Otherwise, mark student 1 as out and pass student 2
@@ -417,7 +418,7 @@ namespace Reindeer_Hunter
             match.Closed = false;
             match.Pass1 = false;
             match.Pass2 = false;
-            student_directory[match.Id1].In = true;student_directory[match.Id2].In = true;
+            student_directory[match.Id1].In = true; student_directory[match.Id2].In = true;
 
             // Save and call match change event.
             Save();
@@ -445,8 +446,8 @@ namespace Reindeer_Hunter
                     // If couldn't find student, id would be 0.
                     if (student.Id == 0)
                     {
-                        MessageBox.Show("Could not find student with name " 
-                            + student.First + " " + student.Last + 
+                        MessageBox.Show("Could not find student with name "
+                            + student.First + " " + student.Last +
                             ". Nothing will be saved", "Error - No Results Imported",
                             MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
@@ -469,13 +470,13 @@ namespace Reindeer_Hunter
                 }
                 else if (student_directory[stuNo].In == false)
                 {
-                    MessageBox.Show("Student with number " + 
-                        stuNo.ToString() + " is not alive still. Match results discarded.", 
+                    MessageBox.Show("Student with number " +
+                        stuNo.ToString() + " is not alive still. Match results discarded.",
                         "Error - Student dead.",
                             MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
-            
+
             // Now that all data is valid, proceed with closing of matches.
             Dictionary<int, Match> relevantMatches = GetOpenMatchesWithStudentIds(idStudents);
 
@@ -521,7 +522,7 @@ namespace Reindeer_Hunter
             foreach (Match match in openMatches)
             {
                 // If student 1 passes, add him/her
-                if (studentIds.Contains(match.Id1)) 
+                if (studentIds.Contains(match.Id1))
                 {
                     relevantMatches.Add(match.Id1, match);
                 }
@@ -551,10 +552,10 @@ namespace Reindeer_Hunter
 
             foreach (Match match in matchList)
             {
-                if (((match.Closed && filter.Closed) || (!match.Closed && filter.Open)) 
+                if (((match.Closed && filter.Closed) || (!match.Closed && filter.Open))
                     && filter.Round.Contains(match.Round))
                 {
-                    returnList.Add(match);   
+                    returnList.Add(match);
                 }
             }
 
@@ -574,7 +575,7 @@ namespace Reindeer_Hunter
         private int GetStudentId(string first, string last, int homeroom)
         {
             var nameEntry = studentName_directory[first + " " + last];
-            
+
             // If a student with that name doesn't exist.
             if (nameEntry == null) return 0;
             // If there is only one entry for that name
@@ -720,7 +721,7 @@ namespace Reindeer_Hunter
                 // Add the student to their appropriate grade.
                 studentDic[studentKeyValue.Value.Grade].Add(studentKeyValue.Value);
             }
-           
+
             return studentDic;
         }
 
@@ -733,7 +734,8 @@ namespace Reindeer_Hunter
         {
             Dictionary<int, List<Student>> studentDic = new Dictionary<int, List<Student>>();
             foreach (Student student in student_directory.Values)
-            {;
+            {
+                ;
                 if (student.In)
                 {
                     // If that grade has not been put in the student dictionary, add the grade.
@@ -776,7 +778,7 @@ namespace Reindeer_Hunter
             // So that we can rollback any changes.
             Dictionary<int, Student> safeStudent_directory = new Dictionary<int, Student>(student_directory);
             Hashtable safeStudentName_directory = new Hashtable(studentName_directory);
-            Dictionary<int, List<Student>> safeHomeroom_directory = new Dictionary<int, List<Student>>(homeroom_directory); 
+            Dictionary<int, List<Student>> safeHomeroom_directory = new Dictionary<int, List<Student>>(homeroom_directory);
 
             // Used in case of an error message to communicate which student ID exists already
             int id = 0;
@@ -833,7 +835,7 @@ namespace Reindeer_Hunter
             }
             catch (System.ArgumentException)
             {
-                System.Windows.Forms.MessageBox.Show("A student with ID " + id.ToString() + 
+                System.Windows.Forms.MessageBox.Show("A student with ID " + id.ToString() +
                     " already exists, or two students with that id were just imported.",
                     "Duplicate Student ID", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
@@ -854,11 +856,11 @@ namespace Reindeer_Hunter
         /// backup onto the master.
         /// </summary>
         /// <param name="newStudentDic">The backup that was made.</param>
-        private void ReplaceOldStuDicWithNewOne(Dictionary<int, Student> newStudentDic, 
+        private void ReplaceOldStuDicWithNewOne(Dictionary<int, Student> newStudentDic,
             Dictionary<int, List<Student>> newStudentHmrmDic, Hashtable newStudentNameDic)
         {
             data[StudentKey] = new Dictionary<int, Student>(newStudentDic);
-            student_directory = (Dictionary < int, Student > )data[StudentKey];
+            student_directory = (Dictionary<int, Student>)data[StudentKey];
             studentName_directory = newStudentNameDic;
             homeroom_directory = newStudentHmrmDic;
         }
@@ -878,7 +880,7 @@ namespace Reindeer_Hunter
                 match_directory.Add(match.MatchId, match);
 
                 // Update the first student object
-                student_directory[match.Id1].CurrMatchID = match.MatchId;            
+                student_directory[match.Id1].CurrMatchID = match.MatchId;
 
                 /* Because there will be no student with id = 0, this is the id of a "pass" student
                  * We don't want to try to find a nonexistent "pass" student, so do this */
@@ -904,7 +906,7 @@ namespace Reindeer_Hunter
             // Since this only happens once per round, also increase the round number
             IncreaseCurrRoundNo();
         }
-        
+
         /// <summary>
         /// Determines if all students have been passed through a round once, and if so returns true.
         /// This is important because in small reindeer hunts, it is possible for 
@@ -1022,27 +1024,61 @@ namespace Reindeer_Hunter
         /// students in that grade by homeroom.</returns>
         public Dictionary<int, Dictionary<int, List<Student>>> GetStudentsByGradeAndHomeroom()
         {
+
+            // Step 1: Sort all students into one big gradeless homeroom list. Make sure students are clones.
+
+
             Dictionary<int, List<Student>> homeroomList = new Dictionary<int, List<Student>>();
 
             // Duplicate all the students in the homeroom directory so they're not modified externally.
-            foreach(KeyValuePair<int, List<Student>> studentKV in homeroom_directory)
+            foreach (KeyValuePair<int, List<Student>> studentKV in homeroom_directory)
             {
-                homeroomList.Add(studentKV.Key, new List<Student>());
+                List<Student> homeroom = new List<Student>();
+
                 for (int a = 0; a < studentKV.Value.Count; a++)
                 {
-                    homeroomList[studentKV.Key].Add(studentKV.Value[a].Clone());
+                    homeroom.Add(studentKV.Value[a].Clone());
                 }
+
+                // Add it to the list
+                homeroomList.Add(studentKV.Key, homeroom);
             }
+
+            /* 
+             * Step 2: Take that homeroom list and sort the homerooms into a grades dictionary.
+             * 
+             * For students from a different grade than the homeroom is for, make an entry for
+             * that homeroom in those students' grades and put them in it. In this manner. 
+             * 
+             * For example, say you have homeroom 1005 with Gr9Student1, Gr9Student2, Gr10Student1, Gr10Student2, Gr10Student3.
+             * Two lists would be made for the homeroom: {1005 : [Gr9Student1, Gr9Student2]} and {1005, [Gr10Student1, Gr10Student2, Gr10Student3]}
+             * The first list would go in the grade 9's dictionary entry while the second would go in the grade 10's. 
+             */
 
             Dictionary<int, Dictionary<int, List<Student>>> gradeHomeroomList = new Dictionary<int, Dictionary<int, List<Student>>>();
 
-            foreach (KeyValuePair<int, List<Student>> hmrm_students in homeroomList) {
+            foreach (KeyValuePair<int, List<Student>> hmrm_students in homeroomList)
+            {
 
-                // Get the grade using the homeroom number.
-                int grade = GetHomeroomsGrade(hmrm_students.Key);
+                /* 
+                 * Seperate the students into different homeroom 
+                 * lists of the same homeroom by grade
+                 */
+                List<List<Student>> sorted = hmrm_students.Value
+                     .GroupBy(student => student.Grade)
+                     .Select(grp => grp.ToList())
+                     .ToList();
 
-                if (!gradeHomeroomList.ContainsKey(grade)) gradeHomeroomList.Add(grade, new Dictionary<int, List<Student>>());
-                gradeHomeroomList[grade].Add(hmrm_students.Key, hmrm_students.Value);
+                // Make it into dictionary and add to master list
+                foreach (List<Student> student_list in sorted)
+                {
+                    // Get the grade by checking the grade of the first student.
+                    int grade = student_list[0].Grade;
+
+                    if (!gradeHomeroomList.ContainsKey(grade)) gradeHomeroomList.Add(grade, new Dictionary<int, List<Student>>());
+                    gradeHomeroomList[grade].Add(hmrm_students.Key, student_list);
+                }
+
             }
 
             return gradeHomeroomList;
@@ -1115,7 +1151,7 @@ namespace Reindeer_Hunter
         /// </summary>
         /// <param name="studentId"></param>
         /// <param name="student"></param>
-        public void DeleteStudent(int studentId = 0, Student student = null) 
+        public void DeleteStudent(int studentId = 0, Student student = null)
         {
             int id;
             if (studentId == 0 && student == null)
@@ -1156,7 +1192,7 @@ namespace Reindeer_Hunter
             }
 
             Save();
-        
+
         }
 
         /// <summary>
@@ -1174,29 +1210,6 @@ namespace Reindeer_Hunter
                 misc[EndDateKey] = value;
                 Save();
             }
-        }
-
-        /// <summary>
-        /// Gets the grade of the homeroom using the maximum grade number in that homeroom.
-        /// </summary>
-        /// <param name="homeroom">The list of students in the homeroom</param>
-        /// <returns>The grade that the homeroom is a part of.</returns>
-        public static int GetHomeroomsGrade(List<Student> homeroom)
-        {
-            List<int> grades = homeroom.Select(student => student.Grade).ToList();
-
-            return grades.Max();
-        }
-
-        /// <summary>
-        /// Gets the grade of the homeroom by assuming it follows this format: [grade][homeroomNum]
-        /// Example: homeroom 1203 would be a grade 12 homeroom.
-        /// </summary>
-        /// <param name="homeroomNo">The homeroom's number</param>
-        /// <returns>The grade  of the homeroom</returns>
-        public static int GetHomeroomsGrade(int homeroomNo)
-        {
-            return (int)Math.Floor((double)homeroomNo / 100);
         }
     }
 }
