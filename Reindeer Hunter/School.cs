@@ -130,6 +130,8 @@ namespace Reindeer_Hunter
 
             // Declare these for simplicity and ease of use.
             student_directory = (Dictionary<int, Student>)data[StudentKey];
+
+            // Fix any problems that occurred during save.
             foreach (Student student in student_directory.Values)
             {
                 /* The first value is null when the student has not yet participated in any matches later. 
@@ -140,6 +142,19 @@ namespace Reindeer_Hunter
             CreateStudentDirs();
             match_directory = (Dictionary<string, Match>)data["matches"];
             misc = (Hashtable)data["misc"];
+
+            /* Keep compatibility with older versions of the program by ensuring that
+             * the older data format is upgraded
+             */
+            bool changed = false;
+            foreach (Match match in match_directory.Values)
+            {
+                if (match.Grade1 == 0) match.Grade1 = student_directory[match.Id1].Grade;
+                if (!IsPassMatch(match) && match.Grade2 == 0) match.Grade2 = student_directory[match.Id2].Grade;
+
+                changed = true;
+            }
+            if (changed) Save();
         }
 
         public int GetNumStudentsStillIn()
