@@ -29,14 +29,14 @@ namespace Reindeer_Hunter
         public event EventHandler StudentsImported;
 
         // This dictionary will contain all data for the program
-        protected static Hashtable data;
-        protected static Dictionary<int, Student> student_directory;
+        protected Hashtable data;
+        protected Dictionary<int, Student> student_directory;
 
         // Students with keys of "Firstname + " " + Lastname"
-        protected static Hashtable studentName_directory;
+        protected Hashtable studentName_directory;
 
         // Students with keys of "homeroom#"
-        protected static Dictionary<int, List<Student>> homeroom_directory;
+        protected Dictionary<int, List<Student>> homeroom_directory;
 
         public int NumInStudents
         {
@@ -172,7 +172,7 @@ namespace Reindeer_Hunter
             foreach (Student student in student_directory.Values)
             {
                 // Start with the name
-                string name = student.First.ToUpper() + " " + student.Last.ToUpper();
+                string name = GetStudentNameKey(student);
                 try
                 {
                     studentName_directory.Add(name, student);
@@ -1211,6 +1211,70 @@ namespace Reindeer_Hunter
         }
 
         /// <summary>
+        /// Function to update the properties and matches of the given student
+        /// after changes are made to that student.
+        /// </summary>
+        /// <param name="updated_student">The updated copy of the student object.</param>
+        public void UpdateStudent(Student updated_student)
+        {
+            /* Update the student, including the key of the student in the name
+             * directory and position in the homeroom directory.
+             */
+            Student oldStudent = student_directory[updated_student.Id];
+
+            // Update the student in the name directory
+            studentName_directory.Remove(GetStudentNameKey(oldStudent));
+            studentName_directory.Add(GetStudentNameKey(updated_student), updated_student);
+
+
+
+            // Update the student in the homeroom directory
+            // Remove
+            homeroom_directory[oldStudent.Homeroom].Remove(oldStudent);
+            // If the homeroom now has no one, remove it.
+            if (homeroom_directory[oldStudent.Homeroom].Count == 0) homeroom_directory.Remove(oldStudent.Homeroom);
+
+            // Add
+            // If the homeroom doesn't exist in the homeroom directory, create it.
+            if (!homeroom_directory.ContainsKey(updated_student.Homeroom)) homeroom_directory.Add(updated_student.Homeroom, new List<Student>());
+            // Add the student to their homeroom
+            homeroom_directory[updated_student.Homeroom].Add(updated_student);
+
+
+
+            // Update the student in the master student directory
+            student_directory[updated_student.Id] = updated_student;
+            
+            // Update the matches that they're in.
+            foreach (string matchId in updated_student.MatchesParticipated)
+            {
+                Match match = match_directory[matchId];
+
+                // Figure out if they're student 1 or 2, and update accordingly.
+                if (match.Id1 == updated_student.Id)
+                {
+                    match.First1 = updated_student.First;
+                    match.Last1 = updated_student.Last;
+                    match.Home1 = updated_student.Homeroom;
+                    match.Grade1 = updated_student.Grade;
+                }
+                else
+                {
+                    match.First2 = updated_student.First;
+                    match.Last2 = updated_student.Last;
+                    match.Home2 = updated_student.Homeroom;
+                    match.Grade2 = updated_student.Grade;
+                }
+            }
+
+            // Call the matches changed event
+            MatchChangeEvent?.Invoke(this, new EventArgs());
+
+            // Save changes
+            Save();
+        }
+
+        /// <summary>
         /// The end date of the current round, in no particular format.
         /// It will be printed as is onto the licenses, no validation.
         /// </summary>
@@ -1225,6 +1289,16 @@ namespace Reindeer_Hunter
                 misc[EndDateKey] = value;
                 Save();
             }
+        }
+
+        /// <summary>
+        /// Gets the key of the student in the name directory
+        /// </summary>
+        /// <param name="student">The student to get the key of</param>
+        /// <returns>The string key of the student in the student name directory</returns>
+        public static string GetStudentNameKey(Student student)
+        {
+            return string.Format("{0} {1}", student.First, student.Last).ToUpper();
         }
     }
 }

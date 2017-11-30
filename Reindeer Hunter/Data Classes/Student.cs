@@ -48,15 +48,6 @@ namespace Reindeer_Hunter.Data_Classes
         // True until not true.
         public bool In { get; set; }
 
-        /// <summary>
-        /// Returns the name of the student as a tuple
-        /// </summary>
-        /// <returns>The student's (FIRSTNAME, LASTNAME)</returns>
-        public Tuple<string, string> GetName()
-        {
-            return new Tuple<string, string>(First, Last);
-        }
-
         public Student Clone()
         {
             return new Student
@@ -77,5 +68,14 @@ namespace Reindeer_Hunter.Data_Classes
         /// If the student is passed through a round, this is set to true; 
         /// </summary>
         public bool HasBeenPassed { get; set; } = false;
+        
+        public string Status
+        {
+            get
+            {
+                if (In) return "In";
+                else return "Out";
+            }
+        }
     }
 }

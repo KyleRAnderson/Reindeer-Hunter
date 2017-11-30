@@ -1,19 +1,10 @@
 ﻿using Reindeer_Hunter.Data_Classes;
+using Reindeer_Hunter.Subsystems;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Reindeer_Hunter.DataCards
 {
@@ -24,106 +15,24 @@ namespace Reindeer_Hunter.DataCards
     {
         public event EventHandler StudentDeleted;
 
-        // The DataRow classes
-        private DataRow D_StudentId = new DataRow { Property = "Id", Value = "" };
-        private DataRow D_LastRound = new DataRow { Property = "Last Round", Value = "" };
-        private DataRow D_Homeroom = new DataRow { Property = "Homeroom", Value = "" };
-        private DataRow D_Grade = new DataRow { Property = "Grade", Value = "" };
-        private DataRow D_First = new DataRow { Property = "First", Value = "" };
-        private DataRow D_Last = new DataRow { Property = "Last", Value = "" };
-        private DataRow Status = new DataRow { Property = "Status", Value = "" };
-        private DataRow D_CurrentMatch = new DataRow { Property = "Match", Value = "" };
+        // Command used to submit changes made to the student.
+        public RelayCommand UpdateCommand { get; } = new RelayCommand();
+
+        // The list of the one student to display
+        private List<Student> DisplayList = new List<Student>();
 
         public void Refresh()
         {
-            DataGrid.Items.Refresh();
-        }
+            DisplayList.Clear();
 
-        // The visible properties.
-        public int StudentId
-        {
-            get
+            // If the student is not null, add them to display
+            if (_DisplayStudent != null)
             {
-                return int.Parse(D_StudentId.Value);
+                DisplayList.Add(_DisplayStudent);
+                ParticipatedMatches = _DisplayStudent.MatchesParticipated;
             }
-            set
-            {
-                D_StudentId.Value = value.ToString();
-            }
-        }
-        public long LastRound
-        {
-            get
-            {
-                return long.Parse(D_LastRound.Value);
-            }
-            set
-            {
-                D_LastRound.Value = value.ToString();
-            }
-        }
-        public int Homeroom
-        {
-            get
-            {
-                return int.Parse(D_Homeroom.Value);
-            }
-            set
-            {
-                D_Homeroom.Value = value.ToString();
-            }
-        }
-        public int Grade
-        {
-            get
-            {
-                return int.Parse(D_Grade.Value);
-            }
-            set
-            {
-                D_Grade.Value = value.ToString();
-            }
-        }
-        public string First
-        {
-            get
-            {
-                return D_First.Value;
-            }
-            set
-            {
-                D_First.Value = value;
-            }
-        }
-        public string Last
-        {
-            get
-            {
-                return D_Last.Value;
-            }
-            set
-            {
-                D_Last.Value = value;
-            }
-        }
-        public bool In
-        {
-            set
-            {
-                if (value) Status.Value = "In";
-                else Status.Value = "Out";
-            }
-        }
-        public string CurrentMatch
-        {
-            get
-            {
-                return D_CurrentMatch.Value;
-            }
-            set
-            {
-                D_CurrentMatch.Value = value;
-            }
+
+            PropertyDisplay.Items.Refresh();
         }
 
         // The public one that everyone else views.
@@ -135,31 +44,30 @@ namespace Reindeer_Hunter.DataCards
             }
         }
 
-        // Stuff for to help the displaying
-        private List<DataRow> DisplayList;
-
         private DataCardWindow MasterWindow;
+
+        public Student _DisplayStudent { get; set; }
+
+        private bool DataGridEdited { get; set; }  = false;
 
         public StudentCard(DataCardWindow window, long RoundNo)
         {
             InitializeComponent();
             MasterWindow = window;
 
-            // Make the DataGrid rows
-            DisplayList = new List<DataRow>
-            {   {D_First},
-                {D_Last },
-                {D_StudentId },
-                {D_Grade },
-                {D_Homeroom },
-                {D_CurrentMatch },
-                {D_LastRound }                
-            };
+            // Make a new, empty list for the itemssource.
+            PropertyDisplay.ItemsSource = DisplayList;
 
-            DataGrid.ItemsSource = DisplayList;
+            // Set the command for the update button
+            Update_Button.Command = UpdateCommand;            
 
             // The delete button should only be enabled when the round number is 0.
             Delete_Button.IsEnabled = RoundNo == 0;
+
+
+            // Give the update command the parameters it needs to run properly.
+            UpdateCommand.CanExecuteDeterminer = CanUpdate;
+            UpdateCommand.FunctionToExecute = UpdateStudent;
         }
 
         // To change to a match display box.
@@ -179,10 +87,40 @@ namespace Reindeer_Hunter.DataCards
             // If the user doesn't confirm the action, return.
             if (confirmation != MessageBoxResult.Yes) return;
 
-            MasterWindow.DeleteStudent(StudentId);
+            MasterWindow.DeleteStudent(_DisplayStudent.Id);
 
             // Raise the event 
             StudentDeleted?.Invoke(this, new EventArgs());
+        }
+
+        /// <summary>
+        /// Determines whether or not the update command can be edited.
+        /// </summary>
+        /// <returns></returns>
+        private bool CanUpdate()
+        {
+            return DataGridEdited;
+        }
+
+        /// <summary>
+        /// Function that the update command calls to perform the student update.
+        /// Student id should never be changed.
+        /// </summary>
+        /// <param name="parameter"></param>
+        private void UpdateStudent(object parameter)
+        {
+            MasterWindow._School.UpdateStudent(_DisplayStudent);
+            DataGridEdited = false;
+
+            UpdateCommand.RaiseCanExecuteChanged();
+        }
+
+        private void PropertyDisplay_RowEditEnding(object sender, DataGridRowEditEndingEventArgs e)
+        {
+            DataGridEdited = true;
+
+            // Update the executability of the update command.
+            UpdateCommand.RaiseCanExecuteChanged();
         }
     }
 }

@@ -5,4 +5,4 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Reindeer_Hunter"
         mc:Ignorable="d"
-        Title="Properties" ResizeMode="CanResizeWithGrip" Icon="/Reindeer Hunter;component/Resources/student.ico" Width="585" Height="450"/>
+        Title="Properties" ResizeMode="CanResizeWithGrip" Icon="/Reindeer Hunter;component/Resources/student.ico" Width="585" Height="450" SizeToContent="Height"/>

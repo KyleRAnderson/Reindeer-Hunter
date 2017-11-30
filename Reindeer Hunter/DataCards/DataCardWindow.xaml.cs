@@ -17,7 +17,7 @@ namespace Reindeer_Hunter
         // Reason why the window closed, 0 being because the user closed it.
         public int CloseStatus { get; private set; } = 0;
 
-        private School _School;
+        public School _School { get; private set; }
         private MatchCard _MatchCard;
         private StudentCard _StudentCard;
 
@@ -110,15 +110,7 @@ namespace Reindeer_Hunter
         /// <param name="student">The student data object to set things up with.</param>
         private void SetStudentContent(Student student)
         {
-            StudentPage.StudentId = student.Id;
-            StudentPage.LastRound = student.LastRoundParticipated;
-            StudentPage.Homeroom = student.Homeroom;
-            StudentPage.Grade = student.Grade;
-            StudentPage.First = student.First;
-            StudentPage.Last = student.Last;
-            StudentPage.In = student.In;
-            StudentPage.CurrentMatch = student.CurrMatchID;
-            StudentPage.ParticipatedMatches = student.MatchesParticipated;
+            StudentPage._DisplayStudent = student;
 
             StudentPage.Refresh();
         }
