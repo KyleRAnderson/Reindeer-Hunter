@@ -54,7 +54,7 @@ namespace Reindeer_Hunter.Subsystems
         public bool Can_Import_Students()
         {
             // You can only import during round 0. or during Free For all
-            bool result = (_School != null && (_School.GetCurrRoundNo() == 0 || _School.IsFFARound));
+            bool result = (_School != null && !_School.IsFFARound);
             return result;
         }
 

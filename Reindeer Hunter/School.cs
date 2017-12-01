@@ -1,7 +1,9 @@
 ﻿using Reindeer_Hunter.Data_Classes;
+using Reindeer_Hunter.Subsystems.Manager;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -449,6 +451,11 @@ namespace Reindeer_Hunter
             // List of result students with supplied id
             List<int> idStudents = new List<int>();
 
+            // True as soon as there is a problem.
+            bool error = false;
+
+            MatchResultImportLogger logger = 
+                new MatchResultImportLogger(DataFile, GetCurrRoundNo());
 
             // Start with looking for the student numbers, since that's faster
             foreach (ResultStudent student in resultsStudents)
@@ -461,16 +468,15 @@ namespace Reindeer_Hunter
                     // If couldn't find student, id would be 0.
                     if (student.Id == 0)
                     {
-                        MessageBox.Show("Could not find student with name "
-                            + student.First + " " + student.Last +
-                            ". Nothing will be saved", "Error - No Results Imported",
-                            MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
+                        logger.AddLine("Could not find student with name "
+                            + student.First + " " + student.Last);
+                        error = true;
                     }
                 }
 
                 // Add the now known id to the list
-                idStudents.Add(student.Id);
+                if (student.Id != 0) idStudents.Add(student.Id);
+
             }
 
             // Validate all the student ids now that we have them
@@ -478,18 +484,26 @@ namespace Reindeer_Hunter
             {
                 if (!student_directory.ContainsKey(stuNo))
                 {
-                    System.Windows.Forms.MessageBox.Show("Student with number " +
-                    stuNo.ToString() + " does not exist. Match results discarded.",
-                    "Error - Student Inexistent.",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    logger.AddLine("Student with number " +
+                        stuNo.ToString() + " does not exist.");
                 }
                 else if (student_directory[stuNo].In == false)
                 {
-                    MessageBox.Show("Student with number " +
-                        stuNo.ToString() + " is not alive still. Match results discarded.",
-                        "Error - Student dead.",
-                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    logger.AddLine("Student with number " +
+                        stuNo.ToString() + " is already out of the hunt.");
                 }
+            }
+            
+            if (error)
+            {
+                logger.SaveAndClose();
+                MessageBox.Show("Errors importing match results. See log file",
+                    "Error - Nothing imported", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                // Open up the file explorer to the log.
+                Process.Start(logger.LogLocation);
+
+                return;
             }
 
             // Now that all data is valid, proceed with closing of matches.

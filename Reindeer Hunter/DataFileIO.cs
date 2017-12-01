@@ -14,6 +14,9 @@ namespace Reindeer_Hunter
 {
     public class DataFileIO
     {
+        /// <summary>
+        /// The location (should be the user's AppData folder) where the data for the user will be saved.
+        /// </summary>
         public string DataLocation { get; private set; } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Reindeer Hunter Data");
         public static readonly string ProgramLocation = Environment.CurrentDirectory;
 
@@ -332,6 +335,10 @@ namespace Reindeer_Hunter
             // In case they cancel.
             if (copyLoc == null || copyLoc == "") return;
 
+            // If the file exists already, delete it, else we get errors.
+            if (File.Exists(copyLoc)) File.Delete(copyLoc);
+
+            // Copy the data file over
             File.Copy(dataFileLocation, copyLoc);
 
             // Open the file and add the checksum.
@@ -356,7 +363,7 @@ namespace Reindeer_Hunter
             foreach (FileInfo file in filesInSaveDir)
             {
                 // In case there's other stuff there.
-                if (file.Extension == ".pdf" || file.Extension == ".json") file.Delete();
+                if (file.Extension == ".pdf" || file.Extension == ".json" || file.Extension == ".txt") file.Delete();
             }
         }
 

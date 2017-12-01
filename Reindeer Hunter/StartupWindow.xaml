@@ -5,6 +5,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Reindeer_Hunter"
         mc:Ignorable="d"
-        Title="Reindeer Hunter V1.0.14" Height="497" Width="694" ResizeMode="CanResizeWithGrip" Icon="Resources/Reindeer.ico">
+        Title="Reindeer Hunter V1.0.17" Height="497" Width="694" ResizeMode="CanResizeWithGrip" Icon="Resources/Reindeer.ico">
     <Grid/>
 </Window>
