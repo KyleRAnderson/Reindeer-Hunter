@@ -66,11 +66,11 @@ namespace Reindeer_Hunter.Subsystems.SearchAndFilters
             int studentNo = 0;
             int homeroomNo = 0;
 
-            // Check for student name. Only student name has spaces in it after trim.
-            if (UserInput.Count(Char.IsWhiteSpace) > 0) studentName = UserInput;
+            // If it's empty, it's garbage
+            if (UserInput.Length == 0) return null;
 
             // Check for matchId. Only match id has 3 strings then number.
-            else if (UserInput.Substring(0, 3) == "MAR" && int.TryParse(UserInput.Substring(3, 1), out int roundNo)) matchId = UserInput;
+            else if (UserInput.Length > 2 && UserInput.Substring(0, 3) == "MAR" && int.TryParse(UserInput.Substring(3, 1), out int roundNo)) matchId = UserInput;
 
             // Check for student number
             else if (UserInput.Substring(0, 1) == "S" && int.TryParse(UserInput.Substring(1, UserInput.Length - 1), out studentNo)) { }
@@ -78,8 +78,8 @@ namespace Reindeer_Hunter.Subsystems.SearchAndFilters
             // Check for homeroom number
             else if (int.TryParse(UserInput, out homeroomNo)) { }
 
-            // If any of those variables are still their default value, return null
-            else return null;
+            // If nothing else is caught, try a student name.
+            else studentName = UserInput;
 
             return new SearchQuery
             {

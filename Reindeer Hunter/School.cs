@@ -291,37 +291,25 @@ namespace Reindeer_Hunter
             // The only remaining possibility is that a name was inputted. Find it, else error.
             else
             {
-                if (!studentName_directory.ContainsKey(query.StudentName)) return null;
+                List<string> relevantKeys = new List<string>();
 
-                // If there is more than one student with that name, it will be a list. Return a fake match for each student.
-                if (studentName_directory[query.StudentName] is List<Student>)
+                // Find all substrings that match the inputted name.
+                foreach (string key in studentName_directory.Keys)
                 {
-                    foreach (Student student in (List<Student>)studentName_directory[query.StudentName])
-                    {
-                        resultsList.Add(CreateFakeMatch(student));
-                    }
+                    if (key.Contains(query.StudentName)) relevantKeys.Add(key);
                 }
 
-                // Otherwise it was a single student, add the matches they've participated in.
-                else
-                {
-                    Student student = (Student)studentName_directory[query.StudentName];
+                if (relevantKeys.Count == 0) return null;
 
-                    // In case they haven't had a match yet
-                    if (student.MatchesParticipated.Count() == 0 || student.MatchesParticipated[0] == null)
-                    {
-                        // Make a fake match for the student if they have not yet had a match
-                        resultsList.Add(CreateFakeMatch(student));
-                    }
-                    else
-                    {
-                        foreach (string matchId in student.MatchesParticipated)
-                        {
-                            // Check for filter compliance. If it complies, return it. 
-                            if (CompliesWithFilters(match_directory[matchId], filter))
-                                resultsList.Add(match_directory[matchId].Clone());
-                        }
-                    }
+                foreach (string key in relevantKeys)
+                {
+                    // If there are more than one students at that key, add them all
+                    if (studentName_directory[key] is List<Student>)
+                        foreach (Student student in (List<Student>)studentName_directory[key])
+                            resultsList.Add(CreateFakeMatch(student));
+
+                    // If it's just one student, add them.
+                    else resultsList.Add(CreateFakeMatch((Student)studentName_directory[key]));
                 }
 
             }
