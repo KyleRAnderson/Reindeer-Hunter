@@ -427,19 +427,43 @@ namespace Reindeer_Hunter
         /// <summary>
         /// Function for reopening the given match. Make sure that the match isn't a pass match!
         /// </summary>
-        /// <param name="MatchId">The id of the match to reopen.</param>
-        public void ReopenMatch(string MatchId)
+        /// <param name="matchId">The id of the match to reopen.</param>
+        public void ReopenMatch(string matchId)
         {
             // Reset required match and student parameters
-            Match match = match_directory[MatchId];
+            Match match = match_directory[matchId];
             match.Closed = false;
             match.Pass1 = false;
             match.Pass2 = false;
-            student_directory[match.Id1].In = true; student_directory[match.Id2].In = true;
+
+            // Bring the students back in.
+            student_directory[match.Id1].In = true;
+            student_directory[match.Id2].In = true;
 
             // Save and call match change event.
             Save();
-            MatchChangeEvent(this, new EventArgs());
+            MatchChangeEvent?.Invoke(this, new EventArgs());
+        }
+
+        /// <summary>
+        /// Function to close the given match and eliminate both students in it.
+        /// </summary>
+        /// <param name="matchId">The id of the match to close.</param>
+        public void CloseMatch(string matchId)
+        {
+            // Get the match object, and make sure it has the right values
+            Match match = match_directory[matchId];
+            match.Closed = true;
+            match.Pass1 = false;
+            match.Pass2 = false;
+
+            // Put both students out.
+            student_directory[match.Id1].In = false;
+            if (!IsPassMatch(match)) student_directory[match.Id2].In = false;
+
+            // Save and call the event
+            Save();
+            MatchChangeEvent?.Invoke(this, new EventArgs());
         }
 
         /// <summary>

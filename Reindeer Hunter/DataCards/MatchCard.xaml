@@ -24,7 +24,8 @@
                     <DataGridTextColumn Binding ="{Binding Value}" Width="*"/>
                 </DataGrid.Columns>
             </DataGrid>
-            <Button x:Name="Reopen_Button" Content="Reopen" Margin="310,215,0,0" Grid.Row="2" Background="Black" Foreground="#FFFB3434" Click="Reopen_Button_Click"/>
+            <Button x:Name="Reopen_Button" Content="Reopen" Margin="300,215,10,0" Grid.Row="2" Background="Black" Foreground="#FFFB3434" Click="Reopen_Button_Click" FontFamily="SimSun-ExtB" FontSize="14"/>
+            <Button x:Name="CloseMatchButton" Content="Close and Eliminate Students" Margin="10,215,0,0" Grid.Row="2" ToolTip="Closes the match, eliminating both students." HorizontalAlignment="Left" FontSize="14" FontFamily="SimSun-ExtB" Height="25" Background="#FFDDDDDD" Click="CloseMatchButton_Click"/>
 
         </Grid>
     </Viewbox>

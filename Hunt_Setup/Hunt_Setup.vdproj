@@ -15,18 +15,6 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_1AAF665E1A10ACD1897A3607FD4A66DD"
-        "OwnerKey" = "8:_C75AC0EAD6924FA1B0FA1FD7AA105174"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_1AAF665E1A10ACD1897A3607FD4A66DD"
-        "OwnerKey" = "8:_D17EE9D028C746FC944DEA895C488E0B"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_2201163EE9BDCA10709FF960B3D5778E"
         "OwnerKey" = "8:_C75AC0EAD6924FA1B0FA1FD7AA105174"
         "MsmSig" = "8:_UNDEFINED"
@@ -39,25 +27,25 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_6A4D12850AD64F202776AB3AF6FA3990"
+        "MsmKey" = "8:_42C324B02E740709F140E69FB53D6578"
         "OwnerKey" = "8:_C75AC0EAD6924FA1B0FA1FD7AA105174"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_6A4D12850AD64F202776AB3AF6FA3990"
+        "MsmKey" = "8:_42C324B02E740709F140E69FB53D6578"
         "OwnerKey" = "8:_D17EE9D028C746FC944DEA895C488E0B"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_A6AC7716F0F595D5DD6103E6964BF479"
+        "MsmKey" = "8:_91F7118FA992A27ECB3F9268DB0D2379"
         "OwnerKey" = "8:_C75AC0EAD6924FA1B0FA1FD7AA105174"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_A6AC7716F0F595D5DD6103E6964BF479"
+        "MsmKey" = "8:_91F7118FA992A27ECB3F9268DB0D2379"
         "OwnerKey" = "8:_D17EE9D028C746FC944DEA895C488E0B"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -75,6 +63,18 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_C811387089AC6555A6605D550FFC549E"
+        "OwnerKey" = "8:_C75AC0EAD6924FA1B0FA1FD7AA105174"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_C811387089AC6555A6605D550FFC549E"
+        "OwnerKey" = "8:_D17EE9D028C746FC944DEA895C488E0B"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_D17EE9D028C746FC944DEA895C488E0B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -88,31 +88,31 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_2201163EE9BDCA10709FF960B3D5778E"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_1AAF665E1A10ACD1897A3607FD4A66DD"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_A6AC7716F0F595D5DD6103E6964BF479"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_6A4D12850AD64F202776AB3AF6FA3990"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_D17EE9D028C746FC944DEA895C488E0B"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_91F7118FA992A27ECB3F9268DB0D2379"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_C811387089AC6555A6605D550FFC549E"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_42C324B02E740709F140E69FB53D6578"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_2201163EE9BDCA10709FF960B3D5778E"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -210,32 +210,6 @@
         }
         "File"
         {
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_1AAF665E1A10ACD1897A3607FD4A66DD"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:FileHelpers, Version=3.1.5.0, Culture=neutral, PublicKeyToken=3e0c08d59cc3d657, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                }
-            "SourcePath" = "8:FileHelpers.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_91A300081BE04D1F88C6BA7F7D7B8D87"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_2201163EE9BDCA10709FF960B3D5778E"
             {
             "AssemblyRegister" = "3:1"
@@ -243,6 +217,11 @@
             "AssemblyAsmDisplayName" = "8:System.Net.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
+                    "_2201163EE9BDCA10709FF960B3D5778E"
+                    {
+                    "Name" = "8:System.Net.Http.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.Net.Http.dll"
             "TargetName" = "8:"
@@ -262,15 +241,20 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_6A4D12850AD64F202776AB3AF6FA3990"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_42C324B02E740709F140E69FB53D6578"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:FileHelpers, Version=3.1.5.0, Culture=neutral, PublicKeyToken=3e0c08d59cc3d657, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_42C324B02E740709F140E69FB53D6578"
+                    {
+                    "Name" = "8:FileHelpers.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
-            "SourcePath" = "8:Newtonsoft.Json.dll"
+            "SourcePath" = "8:FileHelpers.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_91A300081BE04D1F88C6BA7F7D7B8D87"
@@ -288,15 +272,20 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_A6AC7716F0F595D5DD6103E6964BF479"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_91F7118FA992A27ECB3F9268DB0D2379"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:itextsharp, Version=5.5.12.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_91F7118FA992A27ECB3F9268DB0D2379"
+                    {
+                    "Name" = "8:Newtonsoft.Json.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
-            "SourcePath" = "8:itextsharp.dll"
+            "SourcePath" = "8:Newtonsoft.Json.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_91A300081BE04D1F88C6BA7F7D7B8D87"
@@ -332,6 +321,37 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_C811387089AC6555A6605D550FFC549E"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:itextsharp, Version=5.5.12.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_C811387089AC6555A6605D550FFC549E"
+                    {
+                    "Name" = "8:itextsharp.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:itextsharp.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_91A300081BE04D1F88C6BA7F7D7B8D87"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
         }
@@ -434,15 +454,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Reindeer Hunter"
-        "ProductCode" = "8:{8C4EAB47-CC29-4D02-A3F5-240A69389922}"
-        "PackageCode" = "8:{4982ABDE-4EF0-4E89-B44F-4FFBFD12E925}"
+        "ProductCode" = "8:{144D334B-8F53-4095-ABBE-BB1A2F2F456C}"
+        "PackageCode" = "8:{D18C99A3-5B35-4FF4-BC07-B965421BC95B}"
         "UpgradeCode" = "8:{DD08C5B6-48FE-4D8F-BA93-8780CCC7804A}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.0.17"
+        "ProductVersion" = "8:1.0.18"
         "Manufacturer" = "8:Kyle Anderson"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:https://github.com/eAUE/Reindeer-Hunter/wiki"

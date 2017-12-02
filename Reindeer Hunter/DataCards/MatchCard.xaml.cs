@@ -1,18 +1,8 @@
 ﻿using Reindeer_Hunter.Data_Classes;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Reindeer_Hunter.DataCards
 {
@@ -210,6 +200,9 @@ namespace Reindeer_Hunter.DataCards
                 // Make sure that the match is of the current round, is closed and is not a pass
                 // match before reopening.
                 Reopen_Button.IsEnabled = (Round == CurrRound && Closed && Id2 != 0);
+
+                // You can only close a match if it's now already closed and it's of the current round.
+                CloseMatchButton.IsEnabled = (Round == CurrRound && !Closed);
             }
         }
 
@@ -241,7 +234,7 @@ namespace Reindeer_Hunter.DataCards
                 {new DataRow{Property = "", Value = ""} },
                 {D_Id2 },
                 {D_First2 },
-                { D_Last2 },
+                {D_Last2 },
                 {D_Home2 },
                 {D_Status2 }
             };
@@ -274,6 +267,15 @@ namespace Reindeer_Hunter.DataCards
             MasterWindow.ReopenMatch(MatchId);
 
             // Quick ol' refresh
+            DataGrid.Items.Refresh();
+        }
+
+        private void CloseMatchButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Just close the match, which will also cause the refresh of the data
+            MasterWindow.CloseMatch(MatchId);
+
+            // Refresh the datagrid.
             DataGrid.Items.Refresh();
         }
     }

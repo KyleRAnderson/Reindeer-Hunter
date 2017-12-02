@@ -118,14 +118,27 @@ namespace Reindeer_Hunter
         /// <summary>
         /// Function for reopening the given match
         /// </summary> 
-        /// <param name="MatchId">The match to reopen.</param>
-        public void ReopenMatch(string MatchId)
+        /// <param name="matchId">The id of the match to reopen.</param>
+        public void ReopenMatch(string matchId)
         {
             // Make school do the change
-            _School.ReopenMatch(MatchId);
+            _School.ReopenMatch(matchId);
 
             // Reload the match data card
-            Display(matchId: MatchId);
+            Display(matchId: matchId);
+        }
+
+        /// <summary>
+        /// Function for closing the given match, eliminating both students.
+        /// </summary>
+        /// <param name="matchId">The id of the match to close.</param>
+        public void CloseMatch(string matchId)
+        {
+            // Make school object do the change.
+            _School.CloseMatch(matchId);
+
+            // Reload the match data card
+            Display(matchId: matchId);
         }
 
         public void DeleteStudent(int studentId)
