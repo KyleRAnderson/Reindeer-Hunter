@@ -225,19 +225,12 @@ namespace Reindeer_Hunter
 
                     /* Reflect the positions over the middle of the page, so that the
                      * QR code is on the back of the proper license.
+                     * 
+                     * Essentially, in doing these calculations, we're moving the origin
+                     * point from the bottom left of the page to the bottom right.
                      */
-                    float pageCentre = pageWidth / 2;
-                    if (IndexNo % 2 == 1)
-                    {
-
-                        posx = pageCentre + 10;
-                        posy = pos.position.Bottom - 20;
-                    }
-                    else
-                    {
-                        posx = pageCentre - size - 10;
-                        posy = pos.position.Bottom - 20;
-                    }
+                    posx = pageWidth - pos.position.Right;
+                    posy = pos.position.Bottom - 20;
 
                     // Make the QR code
                     Image qr = GenerateQRCode(license.First1, license.Last1, license.Homeroom1, license.Id1,
