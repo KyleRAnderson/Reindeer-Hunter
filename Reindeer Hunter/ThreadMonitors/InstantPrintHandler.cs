@@ -125,7 +125,19 @@ namespace Reindeer_Hunter.ThreadMonitors
                     CompositionTarget.Rendering -= PrintMonitor;
 
                     // In case the user tries to overwrite another file
-                    if (File.Exists(path)) File.Delete(path);
+                    try
+                    {
+                        if (File.Exists(path)) File.Delete(path);
+                    }
+                    catch (IOException)
+                    {
+                        path = Path.Combine(Environment.GetFolderPath(
+                           Environment.SpecialFolder.Desktop), "FilledLicenses.pdf");
+                        MessageBox.Show("Export location Error. That file is being used by another process. " +
+                            "File was outputted to "
+                            + path, "Export Error",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
 
                     // Move the temporary file out of the code's folder.
                     File.Move(returnValue.Path, path);

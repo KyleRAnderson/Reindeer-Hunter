@@ -218,8 +218,26 @@ namespace Reindeer_Hunter
 
                     int size = (int)Math.Round(topOfLicense - bottomOfLicense) + 50;
 
-                    float posx = pos.position.Left;
-                    float posy = pos.position.Bottom - 20;
+                    float pageWidth = reader.GetPageSize(actualPageNo).Width;
+
+                    float posx;
+                    float posy;
+
+                    /* Reflect the positions over the middle of the page, so that the
+                     * QR code is on the back of the proper license.
+                     */
+                    float pageCentre = pageWidth / 2;
+                    if (IndexNo % 2 == 1)
+                    {
+
+                        posx = pageCentre + 10;
+                        posy = pos.position.Bottom - 20;
+                    }
+                    else
+                    {
+                        posx = pageCentre - size - 10;
+                        posy = pos.position.Bottom - 20;
+                    }
 
                     // Make the QR code
                     Image qr = GenerateQRCode(license.First1, license.Last1, license.Homeroom1, license.Id1,

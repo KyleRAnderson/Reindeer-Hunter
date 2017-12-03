@@ -71,7 +71,6 @@ namespace Reindeer_Hunter.Subsystems.ProcessButtonCommands
 
                 // Fix up the string, to have the proper parts. 
                 relevantBuilder.Remove(startIndex, endIndex - startIndex);
-                // TODO better
                 relevantBuilder.Insert(startIndex, string.Format("{0}{1}{2}", "{", stringFormatIndex, "}"));
 
                 // Update the workable
