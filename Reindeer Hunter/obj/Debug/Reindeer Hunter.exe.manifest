@@ -79,14 +79,26 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Reindeer Hunter.exe" size="595912">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Reindeer Hunter.exe" size="603080">
       <assemblyIdentity name="Reindeer Hunter" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>oHRVyONtwwtmDUo8Jot08GxRXYE7cJy3ZFpXAxxn7sE=</dsig:DigestValue>
+        <dsig:DigestValue>fAzw0sN7Ye6j0sK80wdHjiztKTP8LJWf6V99kRU8lW0=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ZKWeb.System.Drawing.dll" size="360448">
+      <assemblyIdentity name="ZKWeb.System.Drawing" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>LEmsA8pYyQJzJmnxCsvcSxAZNgrJ8aFOaHszV9dNSa4=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

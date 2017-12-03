@@ -104,6 +104,9 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="WindowsFormsIntegration" />
+    <Reference Include="ZKWeb.System.Drawing, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ZKWeb.System.Drawing.4.0.0\lib\net45\ZKWeb.System.Drawing.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -134,6 +137,9 @@
       <DependentUpon>FreeForAll.xaml</DependentUpon>
     </Compile>
     <Compile Include="ImportStudents.cs" />
+    <Compile Include="Subsystems\DataDealer\URLChangeDialog.xaml.cs">
+      <DependentUpon>URLChangeDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Subsystems\Help.cs" />
     <Compile Include="Subsystems\DataDealer.cs" />
     <Compile Include="Subsystems\Manager_Subsystem.cs" />
@@ -217,6 +223,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="DataCards\DataCardWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Subsystems\DataDealer\URLChangeDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

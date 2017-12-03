@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using Microsoft.Win32;
+using Reindeer_Hunter.Subsystems.ProcessButtonCommands;
 
 namespace Reindeer_Hunter.Subsystems
 {
@@ -10,6 +11,8 @@ namespace Reindeer_Hunter.Subsystems
         public RelayCommand Import { get; private set; }
         public RelayCommand Export { get; private set; }
         public RelayCommand Erase { get; private set; }
+        public RelayCommand ChangeFormURL { get; private set; }
+        public RelayCommand ResetURL { get; private set; }
 
         public DataDealer() : base()
         {
@@ -30,6 +33,48 @@ namespace Reindeer_Hunter.Subsystems
                 FunctionToExecute = EraseFunc,
                 CanExecuteDeterminer = () => true
             };
+
+            ChangeFormURL = new RelayCommand
+            {
+                FunctionToExecute = ChangeForm,
+                CanExecuteDeterminer = () => true
+            };
+            ResetURL = new RelayCommand
+            {
+                FunctionToExecute = ResetForm,
+
+                // If it's already reset, don't execute.
+                CanExecuteDeterminer = () => _School.FormURL != string.Empty
+            };
+        }
+    
+        /// <summary>
+        /// Function to change the URL of the form that instant print uses.
+        /// </summary>
+        /// <param name="parameter"></param>
+        private void ChangeForm(object parameter)
+        {
+            URLChangeDialog dialog = new URLChangeDialog();
+
+            dialog.ShowDialog();
+
+            string newURL = dialog.URL;
+            
+            // If it's emtpy, return.
+            if (newURL == string.Empty) return;
+            else
+            {
+                _School.FormURL = newURL;
+            }
+        }
+
+        /// <summary>
+        /// Just resets and disables the form URL.
+        /// </summary>
+        /// <param name="parameter"></param>
+        private void ResetForm(object parameter)
+        {
+            _School.FormURL = "";
         }
 
         /// <summary>

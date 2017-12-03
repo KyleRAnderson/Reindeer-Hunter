@@ -1,0 +1,17 @@
+﻿<Window x:Class="Reindeer_Hunter.Subsystems.ProcessButtonCommands.URLChangeDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Reindeer_Hunter.Subsystems.ProcessButtonCommands"
+        mc:Ignorable="d"
+        Title="Change Form URL" Height="300" Width="600">
+    <Viewbox Stretch="Uniform">
+        <Grid Height="150" Width="300">
+            <Button x:Name="Cancel" Content="Cancel" HorizontalAlignment="Left" Margin="22,122,0,0" VerticalAlignment="Top" Width="75" Command="{Binding CancelCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:URLChangeDialog}}}" FontFamily="Arial Black" Background="Black" Foreground="Red"/>
+            <Button x:Name="Ok" Content="Ok" HorizontalAlignment="Left" Margin="202,122,0,0" VerticalAlignment="Top" Width="76" Command="{Binding OkCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:URLChangeDialog}}}" FontFamily="Arial Black" Foreground="Black" Background="#FF00FF0C"/>
+            <TextBox x:Name="URLBox" Margin="76,1,22,0" TextWrapping="WrapWithOverflow" ToolTip="The Round's End Date" VerticalAlignment="Top" SpellCheck.IsEnabled="True" FontFamily="Comic Sans MS" Height="102" FontSize="8" TextChanged="RaiseCanExecuteChanged"/>
+            <Label x:Name="URLLabel" Content="Form URL" HorizontalAlignment="Left" Margin="22,3,0,0" VerticalAlignment="Top" Width="49" FontWeight="Bold" FontFamily="Comic Sans MS" FontSize="9" ToolTip="The Round's End Date" Padding="2"/>
+        </Grid>
+    </Viewbox>
+</Window>

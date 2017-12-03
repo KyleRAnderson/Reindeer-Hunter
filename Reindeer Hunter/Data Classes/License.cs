@@ -4,8 +4,9 @@ namespace Reindeer_Hunter.Data_Classes
 {
     public class License
     {
-        private string First1 { get; set; } = "";
-        private string Last1 { get; set; } = "";
+        public string First1 { get; private set; } = "";
+        public string Last1 { get; private set; } = "";
+        public int Id1 { get; private set; }
         private string First2 { get; set; } = "";
         private string Last2 { get; set; } = "";
         public int Homeroom1 { get; set; } = 0;
@@ -61,7 +62,8 @@ namespace Reindeer_Hunter.Data_Classes
                 Homeroom2 = match.Home2,
                 Round = match.Round,
                 Date = date,
-                Grade = match.Grade1
+                Grade = match.Grade1,
+                Id1 = match.Id1
             }, 0);
 
             // Don't do student 2 if it is a pass match, since student2 is the passer.

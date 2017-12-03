@@ -57,7 +57,8 @@ namespace Reindeer_Hunter.ThreadMonitors
             // Create the matchmaker and then assign the thread target to it
             // +1 to current round because we want next round's matches.
             printer = new InstantPrinter(school.GetCurrRoundMatches(),
-            school.GetCurrRoundNo() + 1, Key, comms, school.DataFile.DataLocation, school.RoundEndDate);
+                school.GetCurrRoundNo() + 1, Key, comms, school.DataFile.DataLocation, 
+                school.RoundEndDate, school.FormURL);
 
 
 

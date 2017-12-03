@@ -88,19 +88,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_2201163EE9BDCA10709FF960B3D5778E"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_42C324B02E740709F140E69FB53D6578"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_C811387089AC6555A6605D550FFC549E"
+        "OwnerKey" = "8:_D17EE9D028C746FC944DEA895C488E0B"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -112,7 +100,19 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_D17EE9D028C746FC944DEA895C488E0B"
+        "OwnerKey" = "8:_C811387089AC6555A6605D550FFC549E"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_42C324B02E740709F140E69FB53D6578"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_2201163EE9BDCA10709FF960B3D5778E"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -434,15 +434,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Reindeer Hunter"
-        "ProductCode" = "8:{A4315DBE-19B6-4F3E-A1B6-FC176A2588C7}"
-        "PackageCode" = "8:{BC495205-6EDF-45A3-B948-BDEDD0540D5A}"
+        "ProductCode" = "8:{6E6A56A0-3E0B-4B2B-ADC7-7AE6939EE616}"
+        "PackageCode" = "8:{7C166356-C80E-4A58-AB08-38BAE0D38D92}"
         "UpgradeCode" = "8:{DD08C5B6-48FE-4D8F-BA93-8780CCC7804A}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.0.19"
+        "ProductVersion" = "8:1.1.22"
         "Manufacturer" = "8:Kyle Anderson"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:https://github.com/eAUE/Reindeer-Hunter/wiki"

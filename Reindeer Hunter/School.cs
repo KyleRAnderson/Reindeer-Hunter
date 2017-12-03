@@ -19,6 +19,7 @@ namespace Reindeer_Hunter
         private static string RoundNoKey = "RoundNo";
         private static string IsFFAKey = "IsFFA";
         private static string EndDateKey = "EndDate";
+        private static string FormKey = "Form";
 
 
         // Event raised when something about matches is changed/updated
@@ -61,6 +62,20 @@ namespace Reindeer_Hunter
             get
             {
                 return GetOpenMatchesList().Count;
+            }
+        }
+
+        public string FormURL
+        {
+            get
+            {
+                return misc[FormKey].ToString();
+            }
+
+            set
+            {
+                misc[FormKey] = value;
+                Save();
             }
         }
 
@@ -145,9 +160,14 @@ namespace Reindeer_Hunter
             match_directory = (Dictionary<string, Match>)data["matches"];
             misc = (Hashtable)data["misc"];
 
-            /* Keep compatibility with older versions of the program by ensuring that
+
+
+            /* 
+             * Keep compatibility with older versions of the program by ensuring that
              * the older data format is upgraded
              */
+
+            // Make sure all matches have the proper properties
             bool changed = false;
             foreach (Match match in match_directory.Values)
             {
@@ -156,6 +176,14 @@ namespace Reindeer_Hunter
 
                 changed = true;
             }
+
+            // Make sure that the FormKey exists.
+            if (!misc.ContainsKey(FormKey))
+            {
+                misc.Add(FormKey, "");
+                changed = true;
+            }
+
             if (changed) Save();
         }
 
@@ -1041,7 +1069,10 @@ namespace Reindeer_Hunter
                 { IsFFAKey, false },
 
                 // String representing the current round's end date
-                { EndDateKey, "" }
+                { EndDateKey, "" },
+
+                // String URL of the form
+                {FormKey, "" }
             };
 
             Dictionary<int, Victor> victorList = new Dictionary<int, Victor>();

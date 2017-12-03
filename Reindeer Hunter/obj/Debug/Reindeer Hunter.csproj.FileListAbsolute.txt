@@ -88,3 +88,6 @@ E:\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\Subsyst
 E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\Subsystems\ProcessButtonCommands\MatchmakeDialog.g.cs
 E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\Subsystems\ProcessButtonCommands\MatchmakeDialog.baml
 E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\Reindeer Hunter.csprojResolveAssemblyReference.cache
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\bin\Debug\ZKWeb.System.Drawing.dll
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\Subsystems\DataDealer\URLChangeDialog.g.cs
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\Subsystems\DataDealer\URLChangeDialog.baml

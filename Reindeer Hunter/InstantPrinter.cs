@@ -34,12 +34,15 @@ namespace Reindeer_Hunter
         private string EndDate;
 
         // Queue used for communication
-        protected static Queue<PrintMessage> Print_Comms;
+        private Queue<PrintMessage> Print_Comms;
+
+        // The URL of the form
+        private string FormURL = "";
 
         protected readonly object Key;
 
-        protected int StuffDone;
-        protected int StuffToDo;
+        private int StuffDone;
+        private int StuffToDo;
 
         // The round number
         protected static long RoundNo;
@@ -52,13 +55,24 @@ namespace Reindeer_Hunter
         public static int GENERATING_LICENSE_OBJECTS = 4;
         public Stopwatch stopwatch;
 
+        /// <summary>
+        /// Whether or not the form url will be used.
+        /// </summary>
+        private bool UsingFormURL
+        {
+            get
+            {
+                return FormURL != string.Empty;
+            }
+        }
+
         // Index number is the index value of the form field.
         public int IndexNo = 1;
         // Page number is the current page we're creating .
         public int PageNo = 0;
 
         public InstantPrinter(List<Match> matches,  
-            long roundNo, object key, Queue<PrintMessage> comms, string DataPath, string endDate)
+            long roundNo, object key, Queue<PrintMessage> comms, string DataPath, string endDate, string formURL)
         {
             // Set up file locations
             TempLocation = Path.Combine(DataPath, "Duplicate.tmp");
@@ -71,7 +85,8 @@ namespace Reindeer_Hunter
             MatchList = matches;
             RoundNo = roundNo;
             Print_Comms = comms;
-            EndDate = endDate;           
+            EndDate = endDate;
+            FormURL = formURL;
         }
 
         /// <summary>
@@ -169,6 +184,8 @@ namespace Reindeer_Hunter
                 }
 
                 // Fill in the form fields.
+
+                // Set the first student's info.
                 formFields.SetField(student1path,
                     license.Student1Field);
 
@@ -178,8 +195,39 @@ namespace Reindeer_Hunter
                 // Set the date
                 formFields.SetField(datePath, EndDate);
 
+                // Set the second student's info.
                 formFields.SetField(student2path,
                     license.Student2Field);
+
+                // Now deal with inserting the QR code, if it is possible
+
+                if (UsingFormURL)
+                {
+                    // Since the formfield pages start at 0, and we want better than that.
+                    int actualPageNo = formFields.GetFieldPositions(roundpath)[0].page + 1;
+
+                    // Add a new, empty page, but only the first time.
+                    if (IndexNo < 2) stamper.InsertPage(actualPageNo, PageSize.LETTER);
+
+                    // Get the location of the QR.
+                    AcroFields.FieldPosition pos = formFields.GetFieldPositions(datePath)[0];
+
+                    // The approximate top and bottom of the license. Since this is the smaller size, set it to the QR size.
+                    float topOfLicense = formFields.GetFieldPositions(student1path)[0].position.Top;
+                    float bottomOfLicense = pos.position.Bottom;
+
+                    int size = (int)Math.Round(topOfLicense - bottomOfLicense) + 50;
+
+                    float posx = pos.position.Left;
+                    float posy = pos.position.Bottom - 20;
+
+                    // Make the QR code
+                    Image qr = GenerateQRCode(license.First1, license.Last1, license.Homeroom1, license.Id1,
+                        posx, posy, size, size);
+
+                    // Add the QR code to the PDF.
+                    stamper.GetOverContent(actualPageNo).AddImage(qr);
+                }
 
                 IndexNo += 1;
 
@@ -208,6 +256,22 @@ namespace Reindeer_Hunter
 
             stamper.Close();
             return reader;
+        }
+
+        private Image GenerateQRCode(string student1first, string student1last, int student1_homeroom, int student1id, 
+            float posx, float posy, int width, int height)
+        {
+            // If the form url is empty, do not proceed.
+            if (FormURL == "") return null;
+
+            // Generate the proper url. TODO make URL easy to change.
+            string url = string.Format(FormURL, student1first, student1last, student1_homeroom, student1id);
+
+            BarcodeQRCode qRCode = new BarcodeQRCode(url, width, height, null);
+            Image qr = qRCode.GetImage();
+            qr.SetAbsolutePosition(posx, posy);
+
+            return qr;
         }
 
         /// <summary>
