@@ -105,8 +105,8 @@
                     </MenuItem>
                     <MenuItem Header="Tools">
                         <MenuItem x:Name="Edit_Matches" Header="Edit Matches" ToolTip="Edit the matches in the match edit queue." Command="{Binding _Tools.EditMatchesCommand, Mode=OneWay}"/>
-                        <MenuItem x:Name="Close_All_Matches" Header="Close All" ToolTip="Close all the currently open matches." Command="{Binding _Importer.CloseAll, Mode=OneWay}"/>
-                        <MenuItem x:Name="Close_Selected" Header="Close Matches Selected" ToolTip="Close the matches in the Match Edit queue" Command="{Binding _Importer.CloseSelected, Mode=OneWay}"/>
+                        <MenuItem x:Name="Close_All_Matches" Header="Close All" ToolTip="Close all the currently open matches." Command="{Binding _Tools.CloseAll, Mode=OneWay}"/>
+                        <MenuItem x:Name="Close_Selected" Header="Close Matches Selected" ToolTip="Close the matches in the Match Edit queue" Command="{Binding _Tools.CloseSelected, Mode=OneWay}"/>
                         <Separator/>
                         <MenuItem x:Name="Print_Selected" Header="Instant Print Selected" ToolTip="Instant print the matches in the Match Edit queue" Command="{Binding _Tools.PrintSelected, Mode=OneWay}"/>
                     </MenuItem>

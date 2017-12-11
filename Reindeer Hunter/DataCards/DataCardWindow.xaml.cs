@@ -102,6 +102,8 @@ namespace Reindeer_Hunter.DataCards
 
             // The current round data
             MatchPage.CurrentRound = _School.GetCurrRoundNo();
+
+            MatchPage.Refresh();
         }
 
         /// <summary>

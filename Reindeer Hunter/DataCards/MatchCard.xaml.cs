@@ -275,7 +275,12 @@ namespace Reindeer_Hunter.DataCards
             // Just close the match, which will also cause the refresh of the data
             MasterWindow.CloseMatch(MatchId);
 
-            // Refresh the datagrid.
+            // Refresh
+            Refresh();
+        }
+
+        public void Refresh()
+        {
             DataGrid.Items.Refresh();
         }
     }

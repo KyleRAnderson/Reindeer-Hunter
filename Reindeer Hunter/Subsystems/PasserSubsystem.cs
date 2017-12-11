@@ -291,7 +291,7 @@ namespace Reindeer_Hunter.Subsystems
         private void AddMatchToQueue(object sender, Match match)
         {
             // If we're not in the right status, return.
-            if ((Status != DOING_NOTHING && Status != HANDLING_MATCHES) || 
+            if ((Status != DOING_NOTHING && Status != HANDLING_MATCHES) || match.MatchId == null ||
                 MatchEditQueue.ContainsKey(match.MatchId)) return;
 
             MatchButton matchButton = new MatchButton(match);

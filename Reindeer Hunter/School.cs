@@ -199,6 +199,11 @@ namespace Reindeer_Hunter
                 misc.Add(VersionKey, StartupWindow.ApplicationVersionNumber);
                 changed = true;
             }
+            else if (!((string)misc[VersionKey]).Equals(StartupWindow.ApplicationVersionNumber))
+            {
+                misc[VersionKey] = StartupWindow.ApplicationVersionNumber;
+                changed = true;
+            }
 
             string[] fileVersion = ((string)misc[VersionKey]).Split('.');
             int fileBuildNo = int.Parse(fileVersion[fileVersion.Length - 1]);
@@ -1080,6 +1085,8 @@ namespace Reindeer_Hunter
         /// <param name="matchesToAdd"></param>
         public async Task AddEditedMatches(List<Match> matchesToAdd)
         {
+            AddMatches(matchesToAdd, true, false);
+
             // Loop around and make sure that all the students that should be in are in.
             foreach (Match match in matchesToAdd)
             {
@@ -1089,7 +1096,7 @@ namespace Reindeer_Hunter
                     Student student1 = student_directory[match.Id1];
                     student1.In = true;
 
-                    match_directory[student1.CurrMatchID].Closed = true;
+                    match_directory[student1.MatchesParticipated[student1.MatchesParticipated.Count - 2]].Closed = true;
                 }
 
                 if (student_directory.ContainsKey(match.Id2))
@@ -1097,11 +1104,9 @@ namespace Reindeer_Hunter
                     Student student2 = student_directory[match.Id2];
                     student2.In = true;
 
-                    match_directory[student2.CurrMatchID].Closed = true;
+                    match_directory[student2.MatchesParticipated[student2.MatchesParticipated.Count - 2]].Closed = true;
                 }
             }
-
-            AddMatches(matchesToAdd, true, false);
 
             Save();
 
