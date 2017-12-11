@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
 using Reindeer_Hunter.Subsystems;
 
 namespace Reindeer_Hunter
@@ -22,6 +17,7 @@ namespace Reindeer_Hunter
         public Statistics _Stats { get; }
         public Manager_Subsystem _Importer { get; }
         public Help _Help { get; }
+        public Tools _Tools { get; }
         
         // The homepage object.
         public HomePage Home { get; private set; }
@@ -63,6 +59,10 @@ namespace Reindeer_Hunter
                 ManagerProperty = this
             };
             _Help = new Help
+            {
+                ManagerProperty = this
+            };
+            _Tools = new Tools
             {
                 ManagerProperty = this
             };

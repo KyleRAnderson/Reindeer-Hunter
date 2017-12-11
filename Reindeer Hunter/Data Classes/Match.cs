@@ -15,7 +15,7 @@ namespace Reindeer_Hunter.Data_Classes
 
         // To be displayed on the MainDisplay DataGrid
 
-        public bool Pass1 { get; set; }
+        public bool Pass1 { get; set; } = false;
         public string First1 { get; set; }
         public string Last1 { get; set; }
         public int Id1 { get; set; }
@@ -23,7 +23,7 @@ namespace Reindeer_Hunter.Data_Classes
         public string First2 { get; set; }
         public string Last2 { get; set; }
         public int Id2 { get; set; }
-        public bool Pass2 { get; set; }
+        public bool Pass2 { get; set; } = false;
         public int Grade2 { get; set; }
 
         public string FullName1
@@ -40,16 +40,6 @@ namespace Reindeer_Hunter.Data_Classes
             {
                 return string.Format("{0} {1}", First2, Last2);
             }
-        }
-
-        /// <summary>
-        /// The class that contains details of all the matches
-        /// </summary>
-        public Match()
-        {
-            // Set true when student is passed to next round, false otherwise.
-            Pass1 = false;
-            Pass2 = false;
         }
 
         /// <summary>

@@ -29,7 +29,16 @@ namespace Reindeer_Hunter.ThreadMonitors
         /// </summary>
         public bool IsPrinting { get; set; }
 
-        public InstantPrintHandler(School school, ProcessButtonSubsystem subsystemInCharge)
+        /// <summary>
+        /// The thread monitorer for the instant printer.
+        /// Updates the GUI elements as needed, and carries out the proper actions.
+        /// </summary>
+        /// <param name="school">The school object to get information from.</param>
+        /// <param name="subsystemInCharge">The ProcessButtonSubsystem who's methods are used
+        /// to update the GUI elements.</param>
+        /// <param name="matchesToPrint">List of matches to print. If left null, the current
+        /// round's matches will be printed.</param>
+        public InstantPrintHandler(School school, ProcessButtonSubsystem subsystemInCharge, List<Match> matchesToPrint = null)
         {
             IsPrinting = true;
             subsystem = subsystemInCharge;
@@ -54,9 +63,10 @@ namespace Reindeer_Hunter.ThreadMonitors
                 }
             }
 
+            if (matchesToPrint == null) matchesToPrint = school.GetCurrRoundMatches();
             // Create the matchmaker and then assign the thread target to it
             // +1 to current round because we want next round's matches.
-            printer = new InstantPrinter(school.GetCurrRoundMatches(),
+            printer = new InstantPrinter(matchesToPrint,
                 school.GetCurrRoundNo() + 1, Key, comms, school.DataFile.DataLocation, 
                 school.RoundEndDate, school.FormURL);
 

@@ -8,6 +8,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("resources/clothespin.ico")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("resources/delete.ico")]
 
 

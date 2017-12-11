@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
 using Microsoft.Win32;
-using Reindeer_Hunter.Subsystems.ProcessButtonCommands;
+using Reindeer_Hunter.Subsystems.DataDealerCommands;
 
 namespace Reindeer_Hunter.Subsystems
 {

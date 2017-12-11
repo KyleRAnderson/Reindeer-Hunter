@@ -137,7 +137,7 @@
       <DependentUpon>FreeForAll.xaml</DependentUpon>
     </Compile>
     <Compile Include="ImportStudents.cs" />
-    <Compile Include="Subsystems\DataDealer\URLChangeDialog.xaml.cs">
+    <Compile Include="Subsystems\DataDealerCommands\URLChangeDialog.xaml.cs">
       <DependentUpon>URLChangeDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Subsystems\Help.cs" />
@@ -145,6 +145,12 @@
     <Compile Include="Subsystems\Manager_Subsystem.cs" />
     <Compile Include="Subsystems\Manager\MatchResultImportLogger.cs" />
     <Compile Include="Subsystems\PasserSubsystem.cs" />
+    <Compile Include="Subsystems\ToolsCommands\Editor\Editor.cs" />
+    <Compile Include="Subsystems\ToolsCommands\Editor\EditStudent.cs" />
+    <Compile Include="Subsystems\ToolsCommands\MatchButton.cs" />
+    <Compile Include="Subsystems\ToolsCommands\Editor\MatchEditor.xaml.cs">
+      <DependentUpon>MatchEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Subsystems\ProcessButtonCommands\MatchmakeDialog.xaml.cs">
       <DependentUpon>MatchmakeDialog.xaml</DependentUpon>
     </Compile>
@@ -194,6 +200,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Subsystems\Tools.cs" />
     <Compile Include="ThreadMonitors\ImportHandler.cs" />
     <Compile Include="ThreadMonitors\InstantPrintHandler.cs" />
     <Compile Include="ThreadMonitors\MatchMakeHandler.cs" />
@@ -226,7 +233,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Subsystems\DataDealer\URLChangeDialog.xaml">
+    <Page Include="Subsystems\DataDealerCommands\URLChangeDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Subsystems\ToolsCommands\Editor\MatchEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -288,6 +299,15 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\clothesPin.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Checkmark.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Printer.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Delete.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

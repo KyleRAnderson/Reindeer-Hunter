@@ -5,7 +5,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Windows.Forms;
+using System.Threading.Tasks;
+using System.Windows;
 
 namespace Reindeer_Hunter
 {
@@ -15,11 +16,12 @@ namespace Reindeer_Hunter
     public class School
     {
         // Data Locations withing the misc data
-        private static string TopMatchKey = "TopMatch";
-        private static string RoundNoKey = "RoundNo";
-        private static string IsFFAKey = "IsFFA";
-        private static string EndDateKey = "EndDate";
-        private static string FormKey = "Form";
+        private static readonly string TopMatchKey = "TopMatch";
+        private static readonly string RoundNoKey = "RoundNo";
+        private static readonly string IsFFAKey = "IsFFA";
+        private static readonly string EndDateKey = "EndDate";
+        private static readonly string FormKey = "Form";
+        private static readonly string VersionKey = "Version";
 
 
         // Event raised when something about matches is changed/updated
@@ -161,14 +163,63 @@ namespace Reindeer_Hunter
             misc = (Hashtable)data["misc"];
 
 
-
+            #region Compatibility Check
             /* 
              * Keep compatibility with older versions of the program by ensuring that
-             * the older data format is upgraded
+             * the older data format is upgraded.
+             * 
+             * Catch any sort of errors and quit when they occur.
              */
+            try
+            {
+                CheckCompatibility();
+            }
+            catch (Exception)
+            {
+                DataFile.QuitApplication();
+            }
+            #endregion
+        }
+
+        /// <summary>
+        /// Method to ensure that the datafile is compatible with this version
+        /// of the application.
+        /// 
+        /// Upgrades the datafile if it isn't.
+        /// </summary>
+        private void CheckCompatibility()
+        {
+            bool changed = false;
+
+            // If the version numbers match, return.
+            if (misc.ContainsKey(VersionKey) && ((string)misc[VersionKey]).Equals(StartupWindow.ApplicationVersionNumber)) return;
+
+            if (!misc.ContainsKey(VersionKey))
+            {
+                misc.Add(VersionKey, StartupWindow.ApplicationVersionNumber);
+                changed = true;
+            }
+
+            string[] fileVersion = ((string)misc[VersionKey]).Split('.');
+            int fileBuildNo = int.Parse(fileVersion[fileVersion.Length - 1]);
+
+            string[] currVersion = StartupWindow.ApplicationVersionNumber.Split('.');
+            int currBuildNo = int.Parse(currVersion[currVersion.Length - 1]);
+
+            // Make sure that the file isn't for an even more recent build.
+            if (fileBuildNo >  currBuildNo)
+            {
+                // Show error message.
+                MessageBox.Show(string.Format("The data file in use is for a more recent version of the application." +
+                    "\nDataFile version: {0}\nApplication Version: {1}", string.Join(".", fileVersion), string.Join(".", currVersion)), 
+                    "Error - Incompatible DataFile",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+
+
+                throw new Exception("The version of the data file is greater than that of this application.");
+            }
 
             // Make sure all matches have the proper properties
-            bool changed = false;
             foreach (Match match in match_directory.Values)
             {
                 if (match.Grade1 == 0) match.Grade1 = student_directory[match.Id1].Grade;
@@ -465,10 +516,12 @@ namespace Reindeer_Hunter
         /// Function to close the given match and eliminate both students in it.
         /// </summary>
         /// <param name="matchId">The id of the match to close.</param>
-        public void CloseMatch(string matchId)
+        public void CloseMatch(string matchId, bool multiThread = false)
         {
             // Get the match object, and make sure it has the right values
             Match match = match_directory[matchId];
+            // If the match is closed already, don't touch it.
+            if (match.Closed) return;
             match.Closed = true;
             match.Pass1 = false;
             match.Pass2 = false;
@@ -477,9 +530,51 @@ namespace Reindeer_Hunter
             student_directory[match.Id1].In = false;
             if (!IsPassMatch(match)) student_directory[match.Id2].In = false;
 
-            // Save and call the event
+            if (multiThread)
+            {
+                // Just call the event for multi-thread, don't save.
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    MatchChangeEvent.Invoke(this, new EventArgs());
+                });
+            }
+            else
+            {
+                // Save and call the event
+                Save();
+                MatchChangeEvent?.Invoke(this, new EventArgs());
+            }
+        }
+
+        /// <summary>
+        /// Closes all the given matches
+        /// </summary>
+        /// <param name="matchesToClose">The list of matches to close</param>
+        public async Task CloseMatches(List<Match> matchesToClose)
+        {
+            foreach (Match match in matchesToClose)
+            {
+                CloseMatch(match.MatchId, multiThread: true);
+            }
+
+            // Save since close match won't do that anymore.
             Save();
-            MatchChangeEvent?.Invoke(this, new EventArgs());
+            await Task.Delay(0);
+        }
+
+        /// <summary>
+        /// Closes all open matches.
+        /// </summary>
+        public async Task CloseAllMatches()
+        {
+            List<Match> matchesToClose = GetOpenMatchesList();
+            foreach (Match match in matchesToClose)
+            {
+                CloseMatch(match.MatchId, multiThread: true);
+            }
+            // Save, since CloseMatch won't do it for us now.
+            Save();
+            await Task.Delay(0);
         }
 
         /// <summary>
@@ -538,7 +633,7 @@ namespace Reindeer_Hunter
             {
                 logger.SaveAndClose();
                 MessageBox.Show("Errors importing match results. See log file",
-                    "Error - Nothing imported", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    "Error - Nothing imported", MessageBoxButton.OK, MessageBoxImage.Error);
 
                 // Open up the file explorer to the log.
                 Process.Start(logger.LogLocation);
@@ -902,11 +997,11 @@ namespace Reindeer_Hunter
                     }
                 }
             }
-            catch (System.ArgumentException)
+            catch (ArgumentException)
             {
-                System.Windows.Forms.MessageBox.Show("A student with ID " + id.ToString() +
+                MessageBox.Show("A student with ID " + id.ToString() +
                     " already exists, or two students with that id were just imported.",
-                    "Duplicate Student ID", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    "Duplicate Student ID", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
 
@@ -938,10 +1033,13 @@ namespace Reindeer_Hunter
         /// Function to add created matches and save them.
         /// </summary>
         /// <param name="matchesToAdd">List of matches to add to the match dictionary</param>
-        public void AddMatches(List<Match> matchesToAdd)
+        /// <param name="multiThread">Set to true when accessing this from a thread other
+        /// than the main one.</param>
+        /// <param name="increaseRoundNo">Whether or not to increase the current round number as well. Defaults to true, set false to not.</param>
+        public void AddMatches(List<Match> matchesToAdd, bool multiThread = false, bool increaseRoundNo = true)
         {
             // Update the match numbers.
-            CurrMatchNo = matchesToAdd[matchesToAdd.Count() - 1].MatchNumber;
+            CurrMatchNo = matchesToAdd[matchesToAdd.Count - 1].MatchNumber;
 
             foreach (Match match in matchesToAdd)
             {
@@ -969,11 +1067,81 @@ namespace Reindeer_Hunter
              * we need to reset the property so they can be passed again. */
             if (HasEveryOneBeenPassedOnce()) ResetPassers();
 
-            Save();
+            if (!multiThread) Save();
 
 
             // Since this only happens once per round, also increase the round number
-            IncreaseCurrRoundNo();
+            if (increaseRoundNo) IncreaseCurrRoundNo();
+        }
+
+        /// <summary>
+        /// Adds the given edited matches to the match list, and saves.
+        /// </summary>
+        /// <param name="matchesToAdd"></param>
+        public async Task AddEditedMatches(List<Match> matchesToAdd)
+        {
+            // Loop around and make sure that all the students that should be in are in.
+            foreach (Match match in matchesToAdd)
+            {
+                // Make sure the students are in, and close their matches.
+                if (student_directory.ContainsKey(match.Id2))
+                {
+                    Student student1 = student_directory[match.Id1];
+                    student1.In = true;
+
+                    match_directory[student1.CurrMatchID].Closed = true;
+                }
+
+                if (student_directory.ContainsKey(match.Id2))
+                {
+                    Student student2 = student_directory[match.Id2];
+                    student2.In = true;
+
+                    match_directory[student2.CurrMatchID].Closed = true;
+                }
+            }
+
+            AddMatches(matchesToAdd, true, false);
+
+            Save();
+
+            // Just call the event for multi-thread, don't save.
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                MatchChangeEvent.Invoke(this, new EventArgs());
+            });
+
+            await Task.Delay(0);
+        }
+
+        /// <summary>
+        /// Eliminates the given students and closes their matches.
+        /// </summary>
+        /// <param name="studentsToEliminate">The students to eliminate.</param>
+        public async Task EliminateStudents(List<Student> studentsToEliminate)
+        {
+            foreach (Student student in studentsToEliminate)
+            {
+                EliminateStudent(student);
+            }
+
+            Save();
+            await Task.Delay(0);
+        }
+
+        public void EliminateStudent(Student studentToEliminate)
+        {
+            // Make sure the student exists.
+            if (!student_directory.ContainsKey(studentToEliminate.Id)) return;
+
+
+            Student student = student_directory[studentToEliminate.Id];
+
+            // Eliminate the student.
+            student.In = false;
+
+            // Close the match
+            match_directory[student.CurrMatchID].Closed = true;
         }
 
         /// <summary>
@@ -1072,7 +1240,10 @@ namespace Reindeer_Hunter
                 { EndDateKey, "" },
 
                 // String URL of the form
-                {FormKey, "" }
+                {FormKey, "" },
+
+                // The current version number of the application
+                {VersionKey, StartupWindow.ApplicationVersionNumber }
             };
 
             Dictionary<int, Victor> victorList = new Dictionary<int, Victor>();

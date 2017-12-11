@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Reindeer_Hunter
 {
@@ -70,7 +71,7 @@ namespace Reindeer_Hunter
 
             if (students_grade_dic == null && students_list == null && grade_homeroom_dic == null)
             {
-                throw new Exception("Cannot have all keyword arguments null for Matcher.");
+                throw new ArgumentException("Cannot have all keyword arguments null for Matcher.");
             }
 
         }
@@ -238,7 +239,7 @@ namespace Reindeer_Hunter
             List<Student> student_list = new List<Student>(students);
 
             // Handling for odd numbers of students
-            if (student_list.Count() % 2 > 0)
+            if (student_list.Count % 2 > 0)
             {
                 // Add to the match count
                 topMatchNo += 1;
@@ -255,7 +256,7 @@ namespace Reindeer_Hunter
                 student_list.Remove(lucky_guy);
 
                 // Pass the student and add the passmatch to the match list
-                matchesCreated.Add(PassStudent(lucky_guy, topMatchNo));
+                matchesCreated.Add(PassStudent(lucky_guy, topMatchNo, round));
             }
             // Begin the selection 
             while (student_list.Count() > 0)
@@ -279,7 +280,7 @@ namespace Reindeer_Hunter
                 topMatchNo += 1;
 
                 // Generate and add the new match to the list
-                matchesCreated.Add(GenerateMatch(student1, student2, topMatchNo));
+                matchesCreated.Add(GenerateMatch(student1, student2, topMatchNo, round));
 
                 // Add to the number of matches created
                 numMatchesCreated += 1;
@@ -336,7 +337,7 @@ namespace Reindeer_Hunter
                     // Add to topmatch number
                     topMatchNo += 1;
                     // Generate the match and add it to the list
-                    matchesMade.Add(GenerateMatch(student1, student2, topMatchNo));
+                    matchesMade.Add(GenerateMatch(student1, student2, topMatchNo, round));
                     // Increase our count of number of matches made.
                     numMatchesCreated += 1;
 
@@ -371,7 +372,7 @@ namespace Reindeer_Hunter
                 topMatchNo += 1;
 
                 // Generate and add the match
-                matchesMade.Add(GenerateMatch(student1, student2, topMatchNo));
+                matchesMade.Add(GenerateMatch(student1, student2, topMatchNo, round));
             }
 
             // If there are still people left in the homeroom list
@@ -389,7 +390,7 @@ namespace Reindeer_Hunter
                     topMatchNo += 1;
 
                     // Make and add the passmatch
-                    matchesMade.Add(PassStudent(lucky_guy, topMatchNo));
+                    matchesMade.Add(PassStudent(lucky_guy, topMatchNo, round));
                 }
 
                 while (leftoverHomeroom.Count > 0 )
@@ -404,7 +405,7 @@ namespace Reindeer_Hunter
                     topMatchNo += 1;
 
                     // Generate and add the match
-                    matchesMade.Add(GenerateMatch(student1, student2, topMatchNo));
+                    matchesMade.Add(GenerateMatch(student1, student2, topMatchNo, round));
                 }
             }
 
@@ -422,7 +423,7 @@ namespace Reindeer_Hunter
                     topMatchNo += 1;
 
                     // Make and add the passmatch
-                    matchesMade.Add(PassStudent(lucky_guy, topMatchNo));
+                    matchesMade.Add(PassStudent(lucky_guy, topMatchNo, round));
                 }
 
                 while (leftOverStudents.Count > 0 )
@@ -437,7 +438,7 @@ namespace Reindeer_Hunter
                     topMatchNo += 1;
 
                     // Generate and add the match
-                    matchesMade.Add(GenerateMatch(student1, student2, topMatchNo));
+                    matchesMade.Add(GenerateMatch(student1, student2, topMatchNo, round));
                 }
             }
 
@@ -451,7 +452,7 @@ namespace Reindeer_Hunter
         /// <param name="lucky_guy">The student to make a passmatch for.</param>
         /// <param name="topMatchNo">The match number to make the id with</param>
         /// <returns></returns>
-        private Match PassStudent(Student lucky_guy, long topMatchNo) {
+        public static Match PassStudent(Student lucky_guy, long topMatchNo, long round) {
             // Make the lucky guy a pass match
             Match passmatch = new Match
             {
@@ -485,7 +486,7 @@ namespace Reindeer_Hunter
         /// <param name="student2">The second student in the match</param>
         /// <param name="topMatchNo">The highest match number, used for creating the match id.</param>
         /// <returns></returns>
-        private Match GenerateMatch(Student student1, Student student2, long topMatchNo)
+        public static Match GenerateMatch(Student student1, Student student2, long topMatchNo, long round)
         {
             Match match = new Match
             {
@@ -508,6 +509,68 @@ namespace Reindeer_Hunter
             match.GenerateID(topMatchNo);
 
             return match;
+        }
+
+        /// <summary>
+        /// A general method for making matches 
+        /// from a list of students.
+        /// </summary>
+        /// <param name="students">The students to make the matches with.</param>
+        /// <param name="topMatchNo">The current highest match number.</param>
+        /// <param name="round">The round number.</param>
+        /// <returns>A lit of the newly generated matches.</returns>
+        public static async Task<List<Match>> MakeMatches(List<Student> students, long topMatchNo, long round)
+        {
+            List<Match> matchesCreated = new List<Match>();
+            List<Student> student_list = new List<Student>(students);
+
+            Random rndm = new Random();
+
+            // Handling for odd numbers of students
+            if (student_list.Count % 2 > 0)
+            {
+                // Add to the match count
+                topMatchNo++;
+
+                Student lucky_guy;
+                do
+                {
+                    // Lucky because he gets passed with no effort.
+                    lucky_guy = student_list[rndm.Next(0, student_list.Count())];
+                }
+                // If the student has been passed already, don't pass them again.
+                while (lucky_guy.HasBeenPassed);
+
+                student_list.Remove(lucky_guy);
+
+                // Pass the student and add the passmatch to the match list
+                matchesCreated.Add(Matcher.PassStudent(lucky_guy, topMatchNo, round));
+            }
+            // Begin the selection 
+            while (student_list.Count() > 0)
+            {
+                Student student1 = student_list[rndm.Next(0, student_list.Count())];
+                Student student2 = student_list[rndm.Next(0, student_list.Count())];
+
+                // Make sure we don't pair someone with him/herself.
+                while (student2 == student1)
+                {
+                    student2 = student_list[rndm.Next(0, student_list.Count())];
+                }
+
+                // Remove these students from the student list
+                student_list.Remove(student1);
+                student_list.Remove(student2);
+
+                // Add to the match id number
+                topMatchNo += 1;
+
+                // Generate and add the new match to the list
+                matchesCreated.Add(Matcher.GenerateMatch(student1, student2, topMatchNo, round));
+            }
+
+            await Task.Delay(0);
+            return matchesCreated;
         }
     }
 

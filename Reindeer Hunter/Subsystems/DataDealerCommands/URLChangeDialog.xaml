@@ -1,9 +1,9 @@
-﻿<Window x:Class="Reindeer_Hunter.Subsystems.ProcessButtonCommands.URLChangeDialog"
+﻿<Window x:Class="Reindeer_Hunter.Subsystems.DataDealerCommands.URLChangeDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Reindeer_Hunter.Subsystems.ProcessButtonCommands"
+        xmlns:local="clr-namespace:Reindeer_Hunter.Subsystems.DataDealerCommands"
         mc:Ignorable="d"
         Title="Change Form URL" Height="300" Width="600">
     <Viewbox Stretch="Uniform">

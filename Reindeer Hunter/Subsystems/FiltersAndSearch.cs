@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.ComponentModel;
 using System.Windows.Input;
 using System.Windows;
+using Reindeer_Hunter.DataCards;
 
 namespace Reindeer_Hunter.Subsystems
 {
@@ -15,6 +16,13 @@ namespace Reindeer_Hunter.Subsystems
     /// </summary>
     public class FiltersAndSearch : Subsystem, INotifyPropertyChanged
     {
+        /// <summary>
+        /// Fired when a match is added to the editing queue. Contains the match added.
+        /// </summary>
+        public event EventHandler<Match> MatchAddedToQueue;
+
+        public event EventHandler<Tuple<Student, Match>> StudentAddedToPassQueue;
+
         // The filter object that will contain the filters.
         public Filter CurrentFilters { get; set; } = new Filter();
 
@@ -57,7 +65,7 @@ namespace Reindeer_Hunter.Subsystems
             // Create the commands.
             ClearFiltersCommand = new ClearFiltersAndSearch(this);
             Searcher = new SearchCommand(this);
-            PropertiesPopup.FunctionToExecute = DoubleClickRelayCommander;
+            PropertiesPopup.FunctionToExecute = PropertiesPopuper;
         }
 
         /// <summary>
@@ -93,8 +101,10 @@ namespace Reindeer_Hunter.Subsystems
             // Subscribe to increased round event
             _School.RoundIncreased += ResetFilters;
 
-            // Subscribe to double click event
-            MainDisplay.MouseDoubleClick += DoubleClickPopup;
+            // Subscribe to click events
+            MainDisplay.MouseRightButtonDown += PopupProperties;
+            MainDisplay.MouseDoubleClick += AddMatchToEditQueue;
+            MainDisplay.SelectedCellsChanged += SelectedCellsChanged;
 
             /* Subscribe to more events that merit re-loading of the itemssource,
              * namely MatchesMade and PassingStudentsSaved.
@@ -111,6 +121,42 @@ namespace Reindeer_Hunter.Subsystems
 
             // Give the SearchCommand the School object
             Searcher._School = _School;
+        }
+
+        /* An integer used because, in the function below the stuff that we do
+         * Calls the event again, and this would run everything infinitely, so we use a counter */
+        private int SelectionCounter = 0;
+        private void SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
+        {
+            // If Invalid or passmatch, return.
+            if (!MainDisplay.CurrentCell.IsValid || School.IsPassMatch((Match)MainDisplay.CurrentItem)) return;
+
+            SelectionCounter++;
+            if (SelectionCounter % 2 == 0) return;
+
+            Match match = (Match)MainDisplay.CurrentItem;
+
+            bool isStudent1 = MainDisplay.CurrentCell.Column.DisplayIndex == 0;
+            bool isStudent2 = MainDisplay.CurrentCell.Column.DisplayIndex == 6;
+
+            Student student;
+            if (isStudent1)
+            {
+                student = _School.GetStudent(match.Id1);
+            }
+            else if (isStudent2)
+            {
+                student = _School.GetStudent(match.Id2);
+            }
+            else return;
+
+            /* Clear the selection. When this happens, the SelectedCellsChanged event is called
+             * again and so therefore we need the Selection counter to make 
+             * sure we don't do all this twice.
+             */
+            MainDisplay.SelectedCells.Clear();
+
+            StudentAddedToPassQueue?.Invoke(this, new Tuple<Student, Match>(student, match));
         }
 
         private void Search_Box_Got_Focus(object sender, RoutedEventArgs e)
@@ -138,6 +184,11 @@ namespace Reindeer_Hunter.Subsystems
 
             // Reload the matches
             LoadContent();
+        }
+
+        public void RefreshDisplay()
+        {
+            MainDisplay.Items.Refresh();
         }
 
         /// <summary>
@@ -243,7 +294,7 @@ namespace Reindeer_Hunter.Subsystems
         /// Used as a relay for the relay command to trigger the DoubleClickPopup function
         /// </summary>
         /// <param name="parameter"></param>
-        private void DoubleClickRelayCommander(object parameter) { DoubleClickPopup(); }
+        private void PropertiesPopuper(object parameter) { PopupProperties(); }
 
         /// <summary>
         /// Called by the MainDisplay mouse double click event.
@@ -251,7 +302,7 @@ namespace Reindeer_Hunter.Subsystems
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public void DoubleClickPopup(object sender = null, MouseButtonEventArgs e = null)
+        public void PopupProperties(object sender = null, MouseButtonEventArgs e = null)
         {
             // Do nothing if no cell is selected.
             if (!MainDisplay.CurrentCell.IsValid) return;
@@ -318,6 +369,31 @@ namespace Reindeer_Hunter.Subsystems
             // Get the new matches from the EventArgs and tell the GUI that the property changed
             MainDisplay_Display_List = e.NewMatches;
             PropertyChanged(this, new PropertyChangedEventArgs("MainDisplay_Display_List"));
+        }
+
+        /// <summary>
+        /// Adds the match to the match edit queue
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void AddMatchToEditQueue(object sender, MouseButtonEventArgs e)
+        {
+            // Do nothing if no cell is selected.
+            if (!MainDisplay.CurrentCell.IsValid || MainDisplay.CurrentCell.Column.DisplayIndex != 3) return;
+
+            // This error is produced when the user presses the sort buttons repeatedly, so avoid crash. 
+            Match match;
+            try
+            {
+                match = (Match)MainDisplay.CurrentCell.Item;
+            }
+            catch (InvalidCastException)
+            {
+                return;
+            }
+
+            // If all is good, call the event.
+            MatchAddedToQueue?.Invoke(this, match);
         }
     }
 }

@@ -77,5 +77,13 @@ namespace Reindeer_Hunter.Data_Classes
                 else return "Out";
             }
         }
+
+        public string FullName
+        {
+            get
+            {
+                return First + " " + Last;
+            }
+        }
     }
 }

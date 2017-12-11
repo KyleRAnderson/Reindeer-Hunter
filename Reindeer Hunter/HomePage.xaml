@@ -89,7 +89,7 @@
             <Button x:Name="SaveButton" Content="Save" Margin="0,0,5,5" Background="#FF2EFF00" Foreground="White" Grid.Column="7" Grid.Row="8" HorizontalContentAlignment="Center" Command="{Binding _SaveDiscard.SaveCommand, Mode=Default}" ToolTip="Ctrl + S"/>
             <Button x:Name="DiscardButton" Content="Discard" Grid.Column="6" Grid.Row="8" Margin="5,0,0,5" HorizontalContentAlignment="Center" Background="Red" Command="{Binding _SaveDiscard.DiscardCommand, Mode=Default}" ToolTip="Ctrl + D" />
             <ProgressBar x:Name="progressBar" LargeChange="0" Grid.ColumnSpan="9" Grid.Row="1"/>
-            <ListBox x:Name="PassingStudentsBox" Grid.RowSpan="6" Grid.Column="8" Margin="5,5,0,5" Grid.Row="4" BorderBrush="{x:Null}" ItemsSource="{Binding _Passer.PassingStudentsButtons}" Background="{x:Null}" ToolTip="Click on the student to not pass them"/>
+            <ListBox x:Name="ListDisplayBox" Grid.RowSpan="7" Grid.Column="8" Margin="5,10,0,10" Grid.Row="2" BorderBrush="{x:Null}" ItemsSource="{Binding _Passer.DisplayButtons}" Background="{x:Null}" ToolTip="Click on the student to not pass them"/>
             <DockPanel Grid.ColumnSpan="9" LastChildFill="False" Background="#FFF0F0F0">
                 <Menu x:Name="menu" VerticalAlignment="Top" HorizontalAlignment="Left" DockPanel.Dock="Top">
                     <MenuItem Header="File">
@@ -102,6 +102,13 @@
                             <MenuItem x:Name="FormURLButton" Header="Change Form URL" ToolTip="Change the URL that the QR code in instant print goes to." Command="{Binding _ImportExport.ChangeFormURL, Mode=OneWay}"/>
                             <MenuItem x:Name="ResetURLButton" Header="Reset URL" ToolTip="Reset the URL, and disable the form QR printing." Command="{Binding _ImportExport.ResetURL, Mode=OneWay}"/>
                         </MenuItem>
+                    </MenuItem>
+                    <MenuItem Header="Tools">
+                        <MenuItem x:Name="Edit_Matches" Header="Edit Matches" ToolTip="Edit the matches in the match edit queue." Command="{Binding _Tools.EditMatchesCommand, Mode=OneWay}"/>
+                        <MenuItem x:Name="Close_All_Matches" Header="Close All" ToolTip="Close all the currently open matches." Command="{Binding _Importer.CloseAll, Mode=OneWay}"/>
+                        <MenuItem x:Name="Close_Selected" Header="Close Matches Selected" ToolTip="Close the matches in the Match Edit queue" Command="{Binding _Importer.CloseSelected, Mode=OneWay}"/>
+                        <Separator/>
+                        <MenuItem x:Name="Print_Selected" Header="Instant Print Selected" ToolTip="Instant print the matches in the Match Edit queue" Command="{Binding _Tools.PrintSelected, Mode=OneWay}"/>
                     </MenuItem>
                     <MenuItem Header="Manage">
                         <MenuItem x:Name="Import_Students_Button" Header="Import Students" Command="{Binding _Importer.ImportStudents, Mode=OneWay}" ToolTip="Import more students Into the application">
@@ -152,6 +159,7 @@
                     </DataGridTextColumn>
                 </DataGrid.Columns>
             </DataGrid>
+            <Button x:Name="ClearQueueButton" Content="Clear" Grid.Column="8" Margin="9,21,10,10" Grid.Row="9" Command="{Binding _Passer.ClearQueueCommand, Mode=OneWay}" FontSize="18"/>
         </Grid>
     </Viewbox>
     <UserControl.InputBindings>

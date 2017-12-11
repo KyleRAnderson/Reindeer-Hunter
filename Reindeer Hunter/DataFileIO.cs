@@ -84,7 +84,7 @@ namespace Reindeer_Hunter
 
         public DataFileIO()
         {
-            if (!Directory.Exists(DataLocation)) DataLocation = Environment.CurrentDirectory;
+            if (Debugger.IsAttached || !Directory.Exists(DataLocation)) DataLocation = Environment.CurrentDirectory;
 
             dataFileLocation = Path.Combine(DataLocation, "data.json");
 

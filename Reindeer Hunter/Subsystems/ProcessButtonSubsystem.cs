@@ -11,6 +11,8 @@ namespace Reindeer_Hunter.Subsystems
 {
     public class ProcessButtonSubsystem : Subsystem
     {
+        public static ProcessButtonSubsystem CurrentInstance = null;
+
         public event EventHandler<NewMatches_EventArgs> MatchesMade;
         public event EventHandler MatchesDiscarded;
         public event EventHandler WentToFFA;
@@ -92,6 +94,8 @@ namespace Reindeer_Hunter.Subsystems
         {
             ProcessCommand.ProcessButtonSubsystem = this;
             StatusChanged += OnStatusChange;
+
+            CurrentInstance = this;
         }
 
 

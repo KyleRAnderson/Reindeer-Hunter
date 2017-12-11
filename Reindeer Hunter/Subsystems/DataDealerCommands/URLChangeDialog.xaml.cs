@@ -2,7 +2,7 @@
 using System.Text;
 using System.Windows;
 
-namespace Reindeer_Hunter.Subsystems.ProcessButtonCommands
+namespace Reindeer_Hunter.Subsystems.DataDealerCommands
 {
     /// <summary>
     /// Interaction logic for MatchmakeDialog.xaml

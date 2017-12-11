@@ -28,7 +28,7 @@ namespace Reindeer_Hunter.Data_Classes
             ResultButton = new Button
             {
                 Content = Name,
-                Width = Double.NaN, // Not a number for auto width
+                Width = double.NaN, // Not a number for auto width
                 Height = 20,
                 FontSize = 10,
                 Background = Brushes.Black,

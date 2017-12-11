@@ -4,7 +4,7 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace Reindeer_Hunter
+namespace Reindeer_Hunter.DataCards
 {
     /// <summary>
     /// Interaction logic for StudentDataCard.xaml

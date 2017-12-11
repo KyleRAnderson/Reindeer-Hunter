@@ -27,22 +27,28 @@ namespace Reindeer_Hunter.Subsystems
         {
             base.OnHomePageSet(sender, e);
 
+            #region Setting Up RelayCommands
             // Set functions for the Relay Commands
             ImportStudents.FunctionToExecute = Import_Students;
             ImportStudents.CanExecuteDeterminer = Can_Import_Students;
+
             ImportMatchResults.FunctionToExecute = Import_Results;
             ImportMatchResults.CanExecuteDeterminer = Can_Import_Results;
+
             ExportStudents.CanExecuteDeterminer = Can_Export_Students;
             ExportStudents.FunctionToExecute = Export_Students;
 
             ImportPDF.FunctionToExecute = Import_PDF;
 
             MasterWindow = Manager.Home.MasterWindow;
+            #endregion
 
+            #region Subscribing to events
             // Subscribe to events that will merit refresh
             _School.MatchChangeEvent += Refresh;
             _School.RoundIncreased += Refresh;
             Manager._ProcessButtonSubsystem.WentToFFA += Refresh;
+            #endregion
 
             Refresh();
         }

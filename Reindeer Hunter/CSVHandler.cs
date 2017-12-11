@@ -5,6 +5,7 @@ using FileHelpers;
 using System.Windows.Forms;
 using Reindeer_Hunter.Data_Classes;
 using System.Text;
+using System.IO;
 
 namespace Reindeer_Hunter
 {
@@ -40,7 +41,7 @@ namespace Reindeer_Hunter
                     try
                     {
                         // Make result into an array of Student
-                        var result = engine.ReadFile(path);
+                        RawStudent[] result = engine.ReadFile(path);
                         // If the user imports a csv with no students in it, error message.
                         if (result.Count() <= 0)
                         {
@@ -73,16 +74,16 @@ namespace Reindeer_Hunter
             // If importing match results
             else if (id == IMPORT_MATCH_RESULTS)
             {
+                if (filePath == "") return null;
                 FileHelperEngine<ResultStudent> engine = new FileHelperEngine<ResultStudent>
                 {
                     Encoding = Encoding.UTF8
                 };
 
-                if (filePath == "") return null;
                 try
                 {
                     // Make result into an array of Student
-                    var result = engine.ReadFile(filePath);
+                    ResultStudent[] result = engine.ReadFile(filePath);
                     // If the user imports a csv with no students in it, error message.
                     if (result.Count() <= 0)
                     {
@@ -105,6 +106,21 @@ namespace Reindeer_Hunter
                 {
                     MessageBox.Show(String.Format("The file you imported is invalid.\nCheck line {0} column {1} of the file.\nCould not convert \"{2}\" properly.",
                         e.LineNumber, e.ColumnNumber, e.FieldStringValue),
+                        "Error - Nothing imported.",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return null;
+                }
+                catch (FileHelpersException e)
+                {
+                    MessageBox.Show(String.Format("The file you imported is invalid. FileHelpers Exception:\n{0}", e.Message),
+                        "Error - Nothing imported.",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return null;
+                }
+                catch (IOException e)
+                {
+                    MessageBox.Show(String.Format("Problem accessing the file. Might be in used by another process." +
+                        "\nMessage:{0}", e.Message),
                         "Error - Nothing imported.",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return null;

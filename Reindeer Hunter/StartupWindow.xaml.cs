@@ -11,7 +11,6 @@ namespace Reindeer_Hunter
     /// </summary>
     public partial class StartupWindow : Window
     {
-
         public School _School { get; set; }
         private HomePage home;
         public HomePage Home
@@ -20,6 +19,17 @@ namespace Reindeer_Hunter
             {
                 if (home == null) home = new HomePage(this);
                 return home;
+            }
+        }
+
+        /// <summary>
+        /// The current application version number.
+        /// </summary>
+        public static string ApplicationVersionNumber
+        {
+            get
+            {
+                return "1.2.42";
             }
         }
 
@@ -39,6 +49,8 @@ namespace Reindeer_Hunter
 
             _School = new School();
 
+            // Add the version to the title.
+            Title = Title + " " + ApplicationVersionNumber;
 
             if (_School.IsData() && !_School.IsFFARound)
             {

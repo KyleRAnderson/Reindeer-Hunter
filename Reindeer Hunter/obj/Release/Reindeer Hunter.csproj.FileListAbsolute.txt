@@ -89,5 +89,7 @@ E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Re
 E:\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Release\Subsystems\ProcessButtonCommands\MatchmakeDialog.g.cs
 E:\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Release\Subsystems\ProcessButtonCommands\MatchmakeDialog.baml
 E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\bin\Release\ZKWeb.System.Drawing.dll
-E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Release\Subsystems\DataDealer\URLChangeDialog.g.cs
-E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Release\Subsystems\DataDealer\URLChangeDialog.baml
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Release\Subsystems\DataDealerCommands\URLChangeDialog.g.cs
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Release\Subsystems\ToolsCommands\Editor\MatchEditor.g.cs
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Release\Subsystems\DataDealerCommands\URLChangeDialog.baml
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Release\Subsystems\ToolsCommands\Editor\MatchEditor.baml
