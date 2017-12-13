@@ -169,6 +169,8 @@ namespace Reindeer_Hunter.Subsystems
             Match selectedMatch = tuple.Item2;
             Student changedStudent = tuple.Item1;
 
+            if (Status != DOING_NOTHING && Status != PASSING_STUDENTS) return;
+
             // If the match is closed, error
             if (selectedMatch.Closed)
             {

@@ -130,16 +130,10 @@ namespace Reindeer_Hunter.Subsystems
             Searcher._School = _School;
         }
 
-        /* An integer used because, in the function below the stuff that we do
-         * Calls the event again, and this would run everything infinitely, so we use a counter */
-        private int SelectionCounter = 0;
         private void SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
         {
             // If Invalid or passmatch, return.
             if (!MainDisplay.CurrentCell.IsValid || School.IsPassMatch((Match)MainDisplay.CurrentItem)) return;
-
-            SelectionCounter++;
-            if (SelectionCounter % 2 == 0) return;
 
             Match match = (Match)MainDisplay.CurrentItem;
 
@@ -158,10 +152,11 @@ namespace Reindeer_Hunter.Subsystems
             else return;
 
             /* Clear the selection. When this happens, the SelectedCellsChanged event is called
-             * again and so therefore we need the Selection counter to make 
-             * sure we don't do all this twice.
+             * again and so therefore we need to unsubscribe then re-subscribe
              */
+            MainDisplay.SelectedCellsChanged -= SelectedCellsChanged;
             MainDisplay.SelectedCells.Clear();
+            MainDisplay.SelectedCellsChanged += SelectedCellsChanged;
 
             StudentAddedToPassQueue?.Invoke(this, new Tuple<Student, Match>(student, match));
         }
