@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Reindeer_Hunter.Data_Classes;
 using System.Windows.Controls;
 using Reindeer_Hunter.Subsystems;
 using System.ComponentModel;
-using Reindeer_Hunter.FFA;
 using System.Windows;
 using System.Collections;
 

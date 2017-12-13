@@ -98,3 +98,53 @@ E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\De
 E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\Subsystems\DataDealerCommands\URLChangeDialog.baml
 E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\Subsystems\ToolsCommands\Editor\MatchEditor.g.cs
 E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer Hunter\Reindeer Hunter\obj\Debug\Subsystems\ToolsCommands\Editor\MatchEditor.baml
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer-Hunter\Reindeer Hunter\bin\Debug\Reindeer Hunter.exe.config
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer-Hunter\Reindeer Hunter\bin\Debug\Reindeer Hunter.exe.manifest
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer-Hunter\Reindeer Hunter\bin\Debug\Reindeer Hunter.application
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer-Hunter\Reindeer Hunter\bin\Debug\Reindeer Hunter.exe
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer-Hunter\Reindeer Hunter\bin\Debug\Reindeer Hunter.pdb
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer-Hunter\Reindeer Hunter\bin\Debug\FileHelpers.dll
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer-Hunter\Reindeer Hunter\bin\Debug\itextsharp.dll
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer-Hunter\Reindeer Hunter\bin\Debug\Newtonsoft.Json.dll
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer-Hunter\Reindeer Hunter\bin\Debug\ZKWeb.System.Drawing.dll
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer-Hunter\Reindeer Hunter\bin\Debug\FileHelpers.xml
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer-Hunter\Reindeer Hunter\bin\Debug\itextsharp.xml
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer-Hunter\Reindeer Hunter\bin\Debug\Newtonsoft.Json.xml
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer-Hunter\Reindeer Hunter\obj\Debug\Reindeer Hunter.csprojResolveAssemblyReference.cache
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer-Hunter\Reindeer Hunter\obj\Debug\DataCards\MatchCard.g.cs
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer-Hunter\Reindeer Hunter\obj\Debug\DataCards\StudentCard.g.cs
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer-Hunter\Reindeer Hunter\obj\Debug\FFA\AskStudentNameDialog.g.cs
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer-Hunter\Reindeer Hunter\obj\Debug\FFA\DataCard.g.cs
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer-Hunter\Reindeer Hunter\obj\Debug\FFA\FreeForAll.g.cs
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer-Hunter\Reindeer Hunter\obj\Debug\HomePage.g.cs
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer-Hunter\Reindeer Hunter\obj\Debug\SetupPage.g.cs
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer-Hunter\Reindeer Hunter\obj\Debug\StartupWindow.g.cs
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer-Hunter\Reindeer Hunter\obj\Debug\DataCards\DataCardWindow.g.cs
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer-Hunter\Reindeer Hunter\obj\Debug\Subsystems\DataDealerCommands\URLChangeDialog.g.cs
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer-Hunter\Reindeer Hunter\obj\Debug\Subsystems\ToolsCommands\Editor\MatchEditor.g.cs
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer-Hunter\Reindeer Hunter\obj\Debug\Subsystems\ProcessButtonCommands\MatchmakeDialog.g.cs
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer-Hunter\Reindeer Hunter\obj\Debug\App.g.cs
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer-Hunter\Reindeer Hunter\obj\Debug\GeneratedInternalTypeHelper.g.cs
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer-Hunter\Reindeer Hunter\obj\Debug\Reindeer Hunter_MarkupCompile.cache
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer-Hunter\Reindeer Hunter\obj\Debug\Reindeer Hunter_MarkupCompile.lref
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer-Hunter\Reindeer Hunter\obj\Debug\DataCards\MatchCard.baml
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer-Hunter\Reindeer Hunter\obj\Debug\DataCards\StudentCard.baml
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer-Hunter\Reindeer Hunter\obj\Debug\FFA\AskStudentNameDialog.baml
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer-Hunter\Reindeer Hunter\obj\Debug\FFA\DataCard.baml
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer-Hunter\Reindeer Hunter\obj\Debug\FFA\FreeForAll.baml
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer-Hunter\Reindeer Hunter\obj\Debug\HomePage.baml
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer-Hunter\Reindeer Hunter\obj\Debug\SetupPage.baml
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer-Hunter\Reindeer Hunter\obj\Debug\StartupWindow.baml
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer-Hunter\Reindeer Hunter\obj\Debug\DataCards\DataCardWindow.baml
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer-Hunter\Reindeer Hunter\obj\Debug\Subsystems\DataDealerCommands\URLChangeDialog.baml
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer-Hunter\Reindeer Hunter\obj\Debug\Subsystems\ToolsCommands\Editor\MatchEditor.baml
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer-Hunter\Reindeer Hunter\obj\Debug\Subsystems\ProcessButtonCommands\MatchmakeDialog.baml
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer-Hunter\Reindeer Hunter\obj\Debug\Reindeer Hunter.g.resources
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer-Hunter\Reindeer Hunter\obj\Debug\Reindeer_Hunter.Properties.Resources.resources
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer-Hunter\Reindeer Hunter\obj\Debug\Reindeer Hunter.csproj.GenerateResource.Cache
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer-Hunter\Reindeer Hunter\obj\Debug\Reindeer Hunter.csproj.CoreCompileInputs.cache
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer-Hunter\Reindeer Hunter\obj\Debug\Reindeer Hunter.TrustInfo.xml
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer-Hunter\Reindeer Hunter\obj\Debug\Reindeer Hunter.exe.manifest
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer-Hunter\Reindeer Hunter\obj\Debug\Reindeer Hunter.application
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer-Hunter\Reindeer Hunter\obj\Debug\Reindeer Hunter.exe
+E:\AUE Mic SD\Programming\Reindeer Hunter\Reindeer-Hunter\Reindeer Hunter\obj\Debug\Reindeer Hunter.pdb

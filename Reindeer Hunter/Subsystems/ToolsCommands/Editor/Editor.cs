@@ -247,22 +247,24 @@ namespace Reindeer_Hunter.Subsystems.ToolsCommands.Editor
 
         private async Task<List<EditStudent>> GetStudentsFromMatches(List<Match> matches)
         {
-            List<EditStudent> returnable = new List<EditStudent>();
+            Dictionary<int, EditStudent> returnable = new Dictionary<int, EditStudent>();
             foreach (Match match in matches)
             {
-                returnable.AddRange(_School.GetStudentsInMatch(match)
-                    .Select(student => new EditStudent
+                List<Student> students = _School.GetStudentsInMatch(match);
+                foreach (Student student in students)
+                {
+                    if (returnable.ContainsKey(student.Id)) continue;
+
+                    returnable.Add(student.Id, new EditStudent
                     {
                         _Student = student,
                         MethodToExecute = MoveToMatch
-
-                    })
-                    .ToList()
-                    );
+                    });
+                }
             }
 
             await Task.Delay(0);
-            return returnable;
+            return returnable.Values.ToList();
         }
         #endregion
 

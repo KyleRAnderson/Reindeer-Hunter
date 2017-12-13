@@ -333,17 +333,7 @@ namespace Reindeer_Hunter
                 // Make nonexistent matches for each student to be displayed.
                 foreach (Student student in homeroomList)
                 {
-                    Match fakeMatch = new Match
-                    {
-                        MatchId = student.CurrMatchID,
-                        Id1 = student.Id,
-                        First1 = student.First,
-                        Last1 = student.Last,
-                        Grade1 = student.Grade,
-                        Round = student.LastRoundParticipated
-                    };
-
-                    resultsList.Add(fakeMatch);
+                    resultsList.AddRange(GetMatchesFromStudentWithFilters(student, filter));
                 }
             }
 
@@ -358,18 +348,7 @@ namespace Reindeer_Hunter
                     resultsList.Add(CreateFakeMatch(student));
                 }
 
-                foreach (string matchId in student.MatchesParticipated)
-                {
-                    // If the match id is null, there are no matches. Break and display fake match
-                    if (matchId == null)
-                    {
-                        break;
-                    }
-
-                    // Check for filter compliance. If it complies, return it. 
-                    if (CompliesWithFilters(match_directory[matchId], filter))
-                        resultsList.Add(match_directory[matchId].Clone());
-                }
+                resultsList.AddRange(GetMatchesFromStudentWithFilters(student, filter));
             }
 
             // The only remaining possibility is that a name was inputted. Find it, else error.
@@ -390,14 +369,13 @@ namespace Reindeer_Hunter
                     // If there are more than one students at that key, add them all
                     if (studentName_directory[key] is List<Student>)
                         foreach (Student student in (List<Student>)studentName_directory[key])
-                            resultsList.Add(CreateFakeMatch(student));
+                            resultsList.AddRange(GetMatchesFromStudentWithFilters(student, filter));
 
                     // If it's just one student, add them.
-                    else resultsList.Add(CreateFakeMatch((Student)studentName_directory[key]));
+                    else resultsList.AddRange(GetMatchesFromStudentWithFilters((Student)studentName_directory[key], filter));
                 }
 
             }
-
             return resultsList;
         }
 
@@ -407,7 +385,7 @@ namespace Reindeer_Hunter
         /// </summary>
         /// <param name="student">The student data to create a fake match with</param>
         /// <returns>A fake match for the given student.</returns>
-        private Match CreateFakeMatch(Student student)
+        public Match CreateFakeMatch(Student student)
         {
             return new Match
             {
@@ -419,6 +397,26 @@ namespace Reindeer_Hunter
                 Round = student.LastRoundParticipated,
                 Id2 = 0,
             };
+        }
+
+        /// <summary>
+        /// Gets a list of matches  that the given student has participated in that comply
+        /// with the filters.
+        /// </summary>
+        /// <param name="student">The student whose matches to extract.</param>
+        /// <param name="filters">The filters to ensure the matches comply with.</param>
+        /// <returns>List of the proper matches.</returns>
+        private List<Match> GetMatchesFromStudentWithFilters(Student student, Filter filters)
+        {
+            List<Match> matches = new List<Match>();
+
+            foreach (string matchId in student.MatchesParticipated)
+            {
+                Match match = match_directory[matchId];
+                if (CompliesWithFilters(match, filters)) matches.Add(match);
+            }
+
+            return matches;
         }
 
         /// <summary>
@@ -733,7 +731,8 @@ namespace Reindeer_Hunter
 
         public Student GetStudent(int id)
         {
-            return student_directory[id].Clone();
+            if (student_directory.ContainsKey(id)) return student_directory[id].Clone();
+            else return null;
         }
 
         public Match GetMatch(string id)
@@ -1091,7 +1090,7 @@ namespace Reindeer_Hunter
             foreach (Match match in matchesToAdd)
             {
                 // Make sure the students are in, and close their matches.
-                if (student_directory.ContainsKey(match.Id2))
+                if (student_directory.ContainsKey(match.Id1))
                 {
                     Student student1 = student_directory[match.Id1];
                     student1.In = true;
@@ -1376,6 +1375,16 @@ namespace Reindeer_Hunter
         public static bool IsPassMatch(Match match)
         {
             return (match.Id2 == 0 && match.First2 == "Pass" && match.Last2 == "Pass" && match.Home2 == 0);
+        }
+
+        /// <summary>
+        /// Determines whether the given match is valid.
+        /// </summary>
+        /// <param name="match">The match to validate.</param>
+        /// <returns>True if valid, false otherwise.</returns>
+        public bool IsValidMatch(Match match)
+        {
+            return match_directory.ContainsKey(match.MatchId);
         }
 
         /// <summary>

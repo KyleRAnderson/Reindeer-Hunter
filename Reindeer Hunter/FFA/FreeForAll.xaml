@@ -12,7 +12,13 @@
         <Grid Height="455" Width="614">
             <DataGrid x:Name="VictorDisplay" Margin="10,10,10,35" Background="Black" BorderBrush="Black" Foreground="Black" AutoGenerateColumns="False" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="18" ItemsSource="{Binding Victors.Values}" IsReadOnly="True" SelectionMode="Single">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Binding="{Binding FullName}" ClipboardContentBinding="{x:Null}" Header="Student Name" Width="*"/>
+                    <DataGridTextColumn Binding="{Binding FullName}" ClipboardContentBinding="{x:Null}" Header="Student Name" Width="*">
+                        <DataGridTextColumn.CellStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="TextWrapping" Value="Wrap"/>
+                            </Style>
+                        </DataGridTextColumn.CellStyle>
+                    </DataGridTextColumn>
                     <DataGridTextColumn Binding="{Binding Status, Mode=OneWay}" ClipboardContentBinding="{x:Null}" Header="Status" Width="*"/>
                     <DataGridTextColumn Binding="{Binding NumKills}" ClipboardContentBinding="{x:Null}" Header="Kill Count" Width="*"/>
                 </DataGrid.Columns>

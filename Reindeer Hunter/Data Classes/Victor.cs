@@ -8,14 +8,6 @@ namespace Reindeer_Hunter.Data_Classes
     /// </summary>
     public class Victor : Student
     {
-        public string FullName
-        {
-            get
-            {
-                return String.Format("{0} {1}", First, Last);
-            }
-        }
-
         /// <summary>
         /// List of student numbers representing the students that this victor
         /// has pinned.
@@ -26,15 +18,6 @@ namespace Reindeer_Hunter.Data_Classes
         /// Total number of kills this person has done
         /// </summary>
         public int NumKills { get; set; }
-
-        public string Status
-        {
-            get
-            {
-                if (In) return "In";
-                else return "Out";
-            }
-        }
 
         /// <summary>
         /// A data class to hold data on students in the FFA round.

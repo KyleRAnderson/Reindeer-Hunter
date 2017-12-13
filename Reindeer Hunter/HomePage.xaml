@@ -4,8 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Reindeer_Hunter"
-             xmlns:Data_Classes="clr-namespace:Reindeer_Hunter.Data_Classes" x:Class="Reindeer_Hunter.HomePage"
+             xmlns:Data_Classes="clr-namespace:Reindeer_Hunter.Data_Classes" x:Name="HomePage1" x:Class="Reindeer_Hunter.HomePage"
              mc:Ignorable="d" Foreground="White" Background="#FFEEEEEE">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </UserControl.Resources>
     <UserControl.DataContext>
         <local:CommandManager/>
     </UserControl.DataContext>
@@ -54,44 +57,56 @@
                 </DataGrid.Background>
                 <DataGrid.Columns>
                     <DataGridCheckBoxColumn Binding="{Binding Pass1}" ClipboardContentBinding="{x:Null}" Header="Pass"/>
-                    <DataGridTextColumn Binding="{Binding First1}" ClipboardContentBinding="{x:Null}" Header="First" Width="*" IsReadOnly="True">
+                    <DataGridTextColumn Binding="{Binding FullName1, Mode=OneWay}" ClipboardContentBinding="{x:Null}" Header="Student 1" Width="*" IsReadOnly="True">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
-                                <Setter Property="TextWrapping" Value="WrapWithOverflow"/>
-                            </Style>
-                        </DataGridTextColumn.ElementStyle>
-                    </DataGridTextColumn>
-                    <DataGridTextColumn Binding="{Binding Last1}" ClipboardContentBinding="{x:Null}" Header="Last" Width="*" IsReadOnly="True">
-                        <DataGridTextColumn.ElementStyle>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="TextWrapping" Value="WrapWithOverflow"/>
+                                <Setter Property="TextWrapping" Value="Wrap"/>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
                     <DataGridTextColumn Binding="{Binding MatchId}" ClipboardContentBinding="{x:Null}" Header="Match ID" Width="*" IsReadOnly="True" SortDirection="Ascending" SortMemberPath="MatchNumber"/>
-                    <DataGridTextColumn Binding="{Binding First2}" ClipboardContentBinding="{x:Null}" Header="First" Width="*" IsReadOnly="True">
+                    <DataGridTextColumn Binding="{Binding FullName2, Mode=OneWay}" ClipboardContentBinding="{x:Null}" Header="Student 2" Width="*" IsReadOnly="True">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
-                                <Setter Property="TextWrapping" Value="WrapWithOverflow"/>
-                            </Style>
-                        </DataGridTextColumn.ElementStyle>
-                    </DataGridTextColumn>
-                    <DataGridTextColumn Binding="{Binding Last2}" ClipboardContentBinding="{x:Null}" Header="Last" Width="*" IsReadOnly="True">
-                        <DataGridTextColumn.ElementStyle>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="TextWrapping" Value="WrapWithOverflow"/>
+                                <Setter Property="TextWrapping" Value="Wrap"/>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
                     <DataGridCheckBoxColumn Binding="{Binding Pass2}" ClipboardContentBinding="{Binding Pass2}" Header="Pass"/>
                 </DataGrid.Columns>
             </DataGrid>
-            <Button x:Name="SaveButton" Content="Save" Margin="0,0,5,5" Background="#FF2EFF00" Foreground="White" Grid.Column="7" Grid.Row="8" HorizontalContentAlignment="Center" Command="{Binding _SaveDiscard.SaveCommand, Mode=Default}" ToolTip="Ctrl + S"/>
-            <Button x:Name="DiscardButton" Content="Discard" Grid.Column="6" Grid.Row="8" Margin="5,0,0,5" HorizontalContentAlignment="Center" Background="Red" Command="{Binding _SaveDiscard.DiscardCommand, Mode=Default}" ToolTip="Ctrl + D" />
+            <Button x:Name="SaveButton" Content="Save" Margin="0,0,5,5" Foreground="Black" Grid.Column="7" Grid.Row="8" HorizontalContentAlignment="Left" Command="{Binding _SaveDiscard.SaveCommand, Mode=Default}" ToolTip="Ctrl + S" Padding="8,1,1,1" BorderBrush="#FF71F714">
+                <Button.Background>
+                    <ImageBrush ImageSource="Resources/Save.ico" Stretch="Uniform">
+                        <ImageBrush.RelativeTransform>
+                            <TransformGroup>
+                                <ScaleTransform CenterY="0.5" CenterX="0.5"/>
+                                <SkewTransform CenterY="0.5" CenterX="0.5"/>
+                                <RotateTransform CenterY="0.5" CenterX="0.5"/>
+                                <TranslateTransform X="0.3"/>
+                            </TransformGroup>
+                        </ImageBrush.RelativeTransform>
+                    </ImageBrush>
+                </Button.Background>
+            </Button>
+            <Button x:Name="DiscardButton" Content="Discard" Grid.Column="6" Grid.Row="8" Margin="5,0,0,5" HorizontalContentAlignment="Left" Command="{Binding _SaveDiscard.DiscardCommand, Mode=Default}" ToolTip="Ctrl + D" Padding="8,1,1,1" BorderBrush="#FFF31717">
+                <Button.Background>
+                    <ImageBrush ImageSource="Resources/Delete.ico" Stretch="Uniform">
+                        <ImageBrush.RelativeTransform>
+                            <TransformGroup>
+                                <ScaleTransform CenterY="0.5" CenterX="0.5"/>
+                                <SkewTransform CenterY="0.5" CenterX="0.5"/>
+                                <RotateTransform CenterY="0.5" CenterX="0.5"/>
+                                <TranslateTransform X="0.3"/>
+                            </TransformGroup>
+                        </ImageBrush.RelativeTransform>
+                    </ImageBrush>
+                </Button.Background>
+            </Button>
             <ProgressBar x:Name="progressBar" LargeChange="0" Grid.ColumnSpan="9" Grid.Row="1"/>
             <ListBox x:Name="ListDisplayBox" Grid.RowSpan="7" Grid.Column="8" Margin="5,10,0,10" Grid.Row="2" BorderBrush="{x:Null}" ItemsSource="{Binding _Passer.DisplayButtons}" Background="{x:Null}" ToolTip="Click on the student to not pass them"/>
             <DockPanel Grid.ColumnSpan="9" LastChildFill="False" Background="#FFF0F0F0">
-                <Menu x:Name="menu" VerticalAlignment="Top" HorizontalAlignment="Left" DockPanel.Dock="Top">
+                <Menu x:Name="menu" VerticalAlignment="Top" HorizontalAlignment="Left" DockPanel.Dock="Top" Visibility="{Binding IsDevMode, Mode=OneWay}">
                     <MenuItem Header="File">
                         <MenuItem Header="Import Data" Command="{Binding _ImportExport.Import, Mode=OneWay}" ToolTip="Import a Reindeer Hunt from a file"/>
                         <MenuItem Header="Export Data" Command="{Binding _ImportExport.Export, Mode=OneWay}" ToolTip="Export this Reindeer Hunt to file"/>
@@ -159,7 +174,7 @@
                     </DataGridTextColumn>
                 </DataGrid.Columns>
             </DataGrid>
-            <Button x:Name="ClearQueueButton" Content="Clear" Grid.Column="8" Margin="9,21,10,10" Grid.Row="9" Command="{Binding _Passer.ClearQueueCommand, Mode=OneWay}" FontSize="18"/>
+            <Button x:Name="ClearQueueButton" Content="Clear" Grid.Column="8" Margin="9,21,10,10" Grid.Row="9" Command="{Binding _Passer.ClearQueueCommand, Mode=OneWay}" FontSize="18" BorderBrush="{x:Null}" BorderThickness="0" Padding="0"/>
         </Grid>
     </Viewbox>
     <UserControl.InputBindings>

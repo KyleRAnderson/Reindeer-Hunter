@@ -131,7 +131,7 @@
                     </ImageBrush>
                 </Button.Background>
             </Button>
-            <Button x:Name="DiscardCloseButton" Content="Discard &amp; Close" HorizontalContentAlignment="Left" Margin="100,10" Grid.Row="3" Command="{Binding DiscardClose, Mode=OneWay}" Padding="10,1,1,1" FontSize="18">
+            <Button x:Name="DiscardCloseButton" Content="Discard &amp; Close" HorizontalContentAlignment="Left" Margin="100,10" Grid.Row="3" Command="{Binding DiscardCloseCommand, Mode=OneWay}" Padding="10,1,1,1" FontSize="18">
                 <Button.Background>
                     <ImageBrush ImageSource="/Reindeer Hunter;component/Resources/Delete.ico" Stretch="Uniform">
                         <ImageBrush.RelativeTransform>

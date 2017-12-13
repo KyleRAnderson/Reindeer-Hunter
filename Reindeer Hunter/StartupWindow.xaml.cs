@@ -3,6 +3,7 @@ using Reindeer_Hunter.FFA;
 using System;
 using Microsoft.Win32;
 using Reindeer_Hunter.ThreadMonitors;
+using System.Diagnostics;
 
 namespace Reindeer_Hunter
 {
@@ -11,6 +12,17 @@ namespace Reindeer_Hunter
     /// </summary>
     public partial class StartupWindow : Window
     {
+        /// <summary>
+        /// Whether or not the application should be in dev mode.
+        /// </summary>
+        public static bool IsDevMode
+        {
+            get
+            {
+                return Debugger.IsAttached;
+            }
+        }
+
         public School _School { get; set; }
         private HomePage home;
         public HomePage Home
@@ -29,7 +41,7 @@ namespace Reindeer_Hunter
         {
             get
             {
-                return "1.2.42";
+                return "1.2.44";
             }
         }
 

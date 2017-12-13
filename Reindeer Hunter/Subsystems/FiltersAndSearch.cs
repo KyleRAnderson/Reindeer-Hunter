@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Windows.Input;
 using System.Windows;
 using Reindeer_Hunter.DataCards;
+using System.Threading.Tasks;
 
 namespace Reindeer_Hunter.Subsystems
 {
@@ -20,6 +21,12 @@ namespace Reindeer_Hunter.Subsystems
         /// Fired when a match is added to the editing queue. Contains the match added.
         /// </summary>
         public event EventHandler<Match> MatchAddedToQueue;
+
+        public static int Pass1ColumnIndex = 0;
+        public static int Full1ColumnIndex = 1;
+        public static int MatchIdColumnIndex = 2;
+        public static int Full2ColumnIndex = 3;
+        public static int Pass2ColumnIndex = 4;
 
         public event EventHandler<Tuple<Student, Match>> StudentAddedToPassQueue;
 
@@ -136,8 +143,8 @@ namespace Reindeer_Hunter.Subsystems
 
             Match match = (Match)MainDisplay.CurrentItem;
 
-            bool isStudent1 = MainDisplay.CurrentCell.Column.DisplayIndex == 0;
-            bool isStudent2 = MainDisplay.CurrentCell.Column.DisplayIndex == 6;
+            bool isStudent1 = MainDisplay.CurrentCell.Column.DisplayIndex == Pass1ColumnIndex;
+            bool isStudent2 = MainDisplay.CurrentCell.Column.DisplayIndex == Pass2ColumnIndex;
 
             Student student;
             if (isStudent1)
@@ -235,14 +242,14 @@ namespace Reindeer_Hunter.Subsystems
         /// <summary>
         /// Simple function to load content onto the MainDisplay object.
         /// </summary>
-        private void LoadContent(object sender = null, EventArgs e = null)
+        private async void LoadContent(object sender = null, EventArgs e = null)
         {
-            MainDisplay_Display_List = GetMatches();
+            MainDisplay_Display_List = await GetMatches();
             // Notify UI that the Main Display Match List has changed and it should update.
             PropertyChanged(this, new PropertyChangedEventArgs("MainDisplay_Display_List"));
         }
 
-        public List<Match> GetMatches()
+        public async Task<List<Match>> GetMatches()
         {
             List<Match> returnable;
 
@@ -252,10 +259,11 @@ namespace Reindeer_Hunter.Subsystems
             }
             else
             {
-                returnable =
+                returnable = 
                     _School.GetMatches(Searcher.CurrentQuery, CurrentFilters);
             }
 
+            await Task.Delay(0);
             return returnable;
         }
 
@@ -323,13 +331,13 @@ namespace Reindeer_Hunter.Subsystems
             StartupWindow masterWindow = Manager.Home.MasterWindow;
             DataCardWindow window;
             // Indicating that the user double clicked on the first student's name
-            if (currentColumnIndex == 1 || currentColumnIndex == 2)
+            if (currentColumnIndex == Full1ColumnIndex)
             {
                 window = new DataCardWindow(Manager.Home.MasterWindow._School, studentId: match.Id1);
             }
 
             // Indicating they hit the match id
-            else if (currentColumnIndex == 3)
+            else if (currentColumnIndex == MatchIdColumnIndex)
             {
                 // In case it is a fake match.
                 if (match.MatchId == "") return;
@@ -337,7 +345,7 @@ namespace Reindeer_Hunter.Subsystems
             }
 
             // Indicating they hit the second student's name
-            else if (currentColumnIndex == 4 || currentColumnIndex == 5)
+            else if (currentColumnIndex == Full2ColumnIndex)
             {
                 // In case it is a pass student or a fake match
                 if (match.Id2 == 0) return;
@@ -378,8 +386,9 @@ namespace Reindeer_Hunter.Subsystems
         /// <param name="e"></param>
         private void AddMatchToEditQueue(object sender, MouseButtonEventArgs e)
         {
+            int column = MainDisplay.CurrentCell.Column.DisplayIndex;
             // Do nothing if no cell is selected.
-            if (!MainDisplay.CurrentCell.IsValid || MainDisplay.CurrentCell.Column.DisplayIndex != 3) return;
+            if (!MainDisplay.CurrentCell.IsValid || column == Pass1ColumnIndex || column == Pass2ColumnIndex) return;
 
             // This error is produced when the user presses the sort buttons repeatedly, so avoid crash. 
             Match match;
@@ -390,6 +399,25 @@ namespace Reindeer_Hunter.Subsystems
             catch (InvalidCastException)
             {
                 return;
+            }
+
+            if (column < MatchIdColumnIndex)
+            {
+                Student studentToDisplay = _School.GetStudent(match.Id1);
+                if (studentToDisplay != null)
+                {
+                    match = _School.CreateFakeMatch(studentToDisplay);
+                    match.MatchId = studentToDisplay.FullName;
+                }
+            }
+            else if (column > MatchIdColumnIndex)
+            {
+                Student studentToDisplay = _School.GetStudent(match.Id2);
+                if (studentToDisplay != null)
+                {
+                    match = _School.CreateFakeMatch(studentToDisplay);
+                    match.MatchId = studentToDisplay.FullName;
+                }
             }
 
             // If all is good, call the event.

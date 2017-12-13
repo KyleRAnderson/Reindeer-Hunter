@@ -81,10 +81,10 @@ namespace Reindeer_Hunter.Subsystems
         /// The function called by the ExportStudents command.
         /// </summary>
         /// <param name="parameter"></param>
-        public void Export_Students(object parameter)
+        public async void Export_Students(object parameter)
         {
             // Get the matches whose students need exporting. 
-            List<Match> studentsToExport = Manager._FiltersAndSearch.GetMatches();
+            List<Match> studentsToExport = await Manager._FiltersAndSearch.GetMatches();
 
             if (studentsToExport.Count == 0) return;
 
