@@ -41,7 +41,7 @@ namespace Reindeer_Hunter
         {
             get
             {
-                return "1.2.44";
+                return "1.2.47";
             }
         }
 

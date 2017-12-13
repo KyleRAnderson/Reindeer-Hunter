@@ -24,6 +24,8 @@ namespace Reindeer_Hunter.Subsystems.ToolsCommands.Editor
         private DataGrid Display2;
         private DataGrid Display3;
 
+        private Dictionary<int, EditStudent> student_directory;
+
         /// <summary>
         /// School object used for various operations.
         /// </summary>
@@ -44,6 +46,10 @@ namespace Reindeer_Hunter.Subsystems.ToolsCommands.Editor
         /// The students in the third datagrid, full of finalized matches.
         /// </summary>
         public List<Match> MatchesMade { get; private set; } = new List<Match>();
+        
+        /// <summary>
+        /// A dictionary of all the students in matches currently, so we know who's been dealt with.
+        /// </summary>
         private Dictionary<int, EditStudent> studentsInMatches = new Dictionary<int, EditStudent>();
 
         #region RelayCommands
@@ -86,16 +92,14 @@ namespace Reindeer_Hunter.Subsystems.ToolsCommands.Editor
         {
             if (MatchesMade.Count >= 1 && MatchesMade[MatchesMade.Count - 1].Id2 == 0)
             {
-                Match match = MatchesMade[MatchesMade.Count - 1];
-                match.Id2 = student._Student.Id;
-                match.Last2 = student._Student.Last;
-                match.First2 = student._Student.First;
-                match.Home2 = student._Student.Homeroom;
-                match.Grade2 = student._Student.Grade;
+                int index = MatchesMade.Count - 1;
+                EditStudent student1 = student_directory[MatchesMade[index].Id1];
+                MatchesMade.RemoveAt(index);
+                MatchesMade.Insert(index, Matcher.GenerateMatch(student1._Student, student._Student, topMatchNo, round));
             }
             else
             {
-                topMatchNo += 1;
+                topMatchNo++;
                 MatchesMade.Add(
                     Matcher.PassStudent(student._Student, topMatchNo, round));
             }
@@ -106,18 +110,60 @@ namespace Reindeer_Hunter.Subsystems.ToolsCommands.Editor
             StudentMoved?.Invoke(this, new EventArgs());
         }
 
+        private void MoveToPassMatch(object sender, EditStudent student)
+        {
+            topMatchNo++;
+            MatchesMade.Add(
+                Matcher.PassStudent(student._Student, topMatchNo, round));
+
+            studentsInMatches.Add(student._Student.Id, student);
+
+
+            Table1Students.Remove(student);
+            StudentMoved?.Invoke(this, new EventArgs());
+        }
+
+        /// <summary>
+        /// Just calls the DeleteMatchesAsync method properly.
+        /// </summary>
+        /// <param name="parameter"></param>
+        private async void DeleteMatches(object parameter)
+        {
+            await DeleteMatchesAsync();
+        }
+
         /// <summary>
         /// Deletes the selected match from the match table,
         /// and places the students involved in it back in the
         /// student table.
         /// </summary>
         /// <param name="parameter"></param>
-        private void DeleteMatch(object parameter)
+        private async Task DeleteMatchesAsync()
         {
             if (Display3.SelectedCells.Count == 0) return;
 
-            Match matchToDelete = (Match)Display3.SelectedItem;
-            MatchesMade.Remove(matchToDelete);
+            List<Match> matchesToDelete = new List<Match>(Display3.SelectedItems.Cast<Match>());
+
+            // Get rid of the matches, re-assign the students.
+            foreach (Match matchToDelete in matchesToDelete)
+            {
+                MatchesMade.Remove(matchToDelete);
+
+                // Move the first student back.
+                EditStudent student1 = studentsInMatches[matchToDelete.Id1];
+                MoveToStudentTable(student1, false);
+                studentsInMatches.Remove(student1._Student.Id);
+
+                // Move the second student back, if they are real.
+                if (matchToDelete.Id2 != 0)
+                {
+                    EditStudent student2 = studentsInMatches[matchToDelete.Id2];
+                    MoveToStudentTable(student2, false);
+                    studentsInMatches.Remove(student2._Student.Id);
+                }
+            }
+
+            // Reset the match ids.
             topMatchNo = originalTopMatchNo;
 
             // Re-generate the match ids.
@@ -127,20 +173,9 @@ namespace Reindeer_Hunter.Subsystems.ToolsCommands.Editor
                 match.GenerateID(topMatchNo);
             }
 
-            // Move the first student back.
-            EditStudent student1 = studentsInMatches[matchToDelete.Id1];
-            MoveToStudentTable(student1, false);
-            studentsInMatches.Remove(student1._Student.Id);
-
-            // Move the second student back, if they are real.
-            if (matchToDelete.Id2 != 0)
-            {
-                EditStudent student2 = studentsInMatches[matchToDelete.Id2];
-                MoveToStudentTable(student2, false);
-                studentsInMatches.Remove(student1._Student.Id);
-            }
-
             StudentMoved?.Invoke(this, new EventArgs());
+
+            await Task.Delay(0);
         }
         #endregion
 
@@ -238,7 +273,7 @@ namespace Reindeer_Hunter.Subsystems.ToolsCommands.Editor
 
             // Delete Match Command
             DeleteMatchCommand.CanExecuteDeterminer = () => Display3.SelectedCells.Count > 0;
-            DeleteMatchCommand.FunctionToExecute = DeleteMatch;
+            DeleteMatchCommand.FunctionToExecute = DeleteMatches;
 
             #endregion
 
@@ -258,10 +293,13 @@ namespace Reindeer_Hunter.Subsystems.ToolsCommands.Editor
                     returnable.Add(student.Id, new EditStudent
                     {
                         _Student = student,
-                        MethodToExecute = MoveToMatch
+                        MethodToExecute = MoveToMatch,
+                        PassMethod = MoveToPassMatch
                     });
                 }
             }
+
+            student_directory = returnable;
 
             await Task.Delay(0);
             return returnable.Values.ToList();

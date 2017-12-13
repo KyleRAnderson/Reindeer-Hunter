@@ -5,9 +5,19 @@ namespace Reindeer_Hunter.Subsystems.ToolsCommands.Editor
 {
     public class EditStudent
     {
-        public event EventHandler<EditStudent> ButtonClicked;
+        /// <summary>
+        /// Fired when the move to match button is clicked.
+        /// </summary>
+        public event EventHandler<EditStudent> MoveToMatchClicked;
 
-        public RelayCommand ButtonCommand { get; private set; }
+        /// <summary>
+        /// Fired when the move to passmatch button is clicked.
+        /// </summary>
+        public event EventHandler<EditStudent> PassStudentButtonClicked;
+
+        public RelayCommand MoveToMatchCommand { get; private set; }
+
+        public RelayCommand PassCommad { get; private set; }
 
         public Student _Student { get; set; }
 
@@ -16,24 +26,37 @@ namespace Reindeer_Hunter.Subsystems.ToolsCommands.Editor
         {
             set
             {
-                if (lastMethodToExecute != null) ButtonClicked -= lastMethodToExecute;
-                ButtonClicked += value;
+                if (lastMethodToExecute != null) MoveToMatchClicked -= lastMethodToExecute;
+                MoveToMatchClicked += value;
                 lastMethodToExecute = value;
+            }
+        }
+
+        private EventHandler<EditStudent> lastPassMethod;
+        public EventHandler<EditStudent> PassMethod
+        {
+            set
+            {
+                if (lastPassMethod != null) PassStudentButtonClicked -= lastPassMethod;
+                PassStudentButtonClicked += value;
+                lastPassMethod = value;
             }
         }
 
         public EditStudent()
         {
-            ButtonCommand = new RelayCommand
+            MoveToMatchCommand = new RelayCommand
             {
                 CanExecuteDeterminer = () => true,
-                FunctionToExecute = RaiseButtonClicked
+                FunctionToExecute = (object parameter) => MoveToMatchClicked?.Invoke(this, this)
             };
-        }
 
-        private void RaiseButtonClicked(object parameter)
-        {
-            ButtonClicked?.Invoke(this, this);
+            PassCommad = new RelayCommand
+            {
+                CanExecuteDeterminer = () => true,
+                FunctionToExecute = (object parameter) => PassStudentButtonClicked?.Invoke(this, this)
+            };
+
         }
     }
 }

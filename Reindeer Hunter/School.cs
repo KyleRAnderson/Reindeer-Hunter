@@ -783,10 +783,10 @@ namespace Reindeer_Hunter
         }
 
         /// <summary>
-        /// Get a list of all matches in the current round, open or not
+        /// Get a list of the matches to be instantprinted.
         /// </summary>
         /// <returns>List of matches of the currrent round.</returns>
-        public List<Match> GetCurrRoundMatches()
+        public List<Match> GetInstantPrintMatches()
         {
             // Get a clone of the list of matches
             List<Match> matchList = GetMatchList();
@@ -795,10 +795,10 @@ namespace Reindeer_Hunter
             // Make new list for the open ones.
             List<Match> roundMatchList = new List<Match>();
 
-            foreach (Match match in matchList)
-            {
-                if (match.Round == currRound) roundMatchList.Add(match);
-            }
+            roundMatchList = matchList
+                .Where(match => match.Round == currRound && !match.Closed)
+                .ToList();
+
             return roundMatchList;
         }
 

@@ -24,11 +24,24 @@
             </Grid.ColumnDefinitions>
             <DataGrid x:Name="StudentGrid" Margin="10" Grid.RowSpan="2" ItemsSource="{Binding Table1Students}" AutoGenerateColumns="False" IsReadOnly="True">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Binding="{Binding _Student.FullName, Mode=OneWay}" ClipboardContentBinding="{x:Null}" Header="Name" Width="*"/>
+                    <DataGridTextColumn Binding="{Binding _Student.FullName, Mode=OneWay}" ClipboardContentBinding="{x:Null}" Header="Name" Width="*">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="TextWrapping" Value="Wrap"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
                     <DataGridTemplateColumn Header="Add  To Match" Width="*">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <Button Content="Match -&gt;" Command="{Binding ButtonCommand, Mode=OneWay}"/>
+                                <Button Content="Match -&gt;" Command="{Binding MoveToMatchCommand, Mode=OneWay}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="Add  To Match" Width="*">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Content="Pass -&gt;" Command="{Binding PassCommad, Mode=OneWay}"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
@@ -43,37 +56,29 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTextColumn Binding="{Binding _Student.FullName, Mode=OneWay}" ClipboardContentBinding="{x:Null}" Width="*" Header="Name"/>
-                </DataGrid.Columns>
-            </DataGrid>
-            <DataGrid x:Name="MatchGrid" Margin="10" Grid.RowSpan="2" Grid.Column="2" ItemsSource="{Binding MatchesMade}" IsReadOnly="True" AutoGenerateColumns="False" SelectionMode="Single">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Binding="{Binding First1}" ClipboardContentBinding="{x:Null}" Header="First" Width="*" IsReadOnly="True">
+                    <DataGridTextColumn Binding="{Binding _Student.FullName, Mode=OneWay}" ClipboardContentBinding="{x:Null}" Width="*" Header="Name">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
-                                <Setter Property="TextWrapping" Value="WrapWithOverflow"/>
+                                <Setter Property="TextWrapping" Value="Wrap"/>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Binding="{Binding Last1}" ClipboardContentBinding="{x:Null}" Header="Last" Width="*" IsReadOnly="True">
+                </DataGrid.Columns>
+            </DataGrid>
+            <DataGrid x:Name="MatchGrid" Margin="10" Grid.RowSpan="2" Grid.Column="2" ItemsSource="{Binding MatchesMade}" IsReadOnly="True" AutoGenerateColumns="False">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Binding="{Binding FullName1, Mode=OneWay}" ClipboardContentBinding="{x:Null}" Header="Student 1" Width="*" IsReadOnly="True">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
-                                <Setter Property="TextWrapping" Value="WrapWithOverflow"/>
+                                <Setter Property="TextWrapping" Value="Wrap"/>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
                     <DataGridTextColumn Binding="{Binding MatchId}" ClipboardContentBinding="{x:Null}" Header="Match ID" Width="*" IsReadOnly="True" SortDirection="Ascending" SortMemberPath="MatchNumber"/>
-                    <DataGridTextColumn Binding="{Binding First2}" ClipboardContentBinding="{x:Null}" Header="First" Width="*" IsReadOnly="True">
+                    <DataGridTextColumn Binding="{Binding FullName2, Mode=OneWay}" ClipboardContentBinding="{x:Null}" Header="Student 2" Width="*" IsReadOnly="True">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
-                                <Setter Property="TextWrapping" Value="WrapWithOverflow"/>
-                            </Style>
-                        </DataGridTextColumn.ElementStyle>
-                    </DataGridTextColumn>
-                    <DataGridTextColumn Binding="{Binding Last2}" ClipboardContentBinding="{x:Null}" Header="Last" Width="*" IsReadOnly="True">
-                        <DataGridTextColumn.ElementStyle>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="TextWrapping" Value="WrapWithOverflow"/>
+                                <Setter Property="TextWrapping" Value="Wrap"/>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
@@ -87,7 +92,7 @@
                     </LinearGradientBrush>
                 </Button.Background>
             </Button>
-            <Button x:Name="AddToRandom" Content="Add To Randomize" Margin="10" Grid.Row="2" FontSize="18" Command="{Binding AddToRandomizeCommand, Mode=OneWay}">
+            <Button x:Name="AddToRandom" Content="Add Selected To Randomize" Margin="10" Grid.Row="2" FontSize="18" Command="{Binding AddToRandomizeCommand, Mode=OneWay}">
                 <Button.Background>
                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                         <GradientStop Color="#FF716BFF" Offset="0"/>
@@ -95,7 +100,7 @@
                     </LinearGradientBrush>
                 </Button.Background>
             </Button>
-            <Button x:Name="DeleteButton" Content="Delete Match" Margin="10" Grid.Row="2" FontSize="18" Command="{Binding DeleteMatchCommand, Mode=OneWay}" Grid.Column="2">
+            <Button x:Name="DeleteButton" Content="Delete Selected" Margin="10" Grid.Row="2" FontSize="18" Command="{Binding DeleteMatchCommand, Mode=OneWay}" Grid.Column="2">
                 <Button.Background>
                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                         <GradientStop Color="#FFFF1010" Offset="0"/>

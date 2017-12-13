@@ -22,11 +22,11 @@ namespace Reindeer_Hunter.Subsystems
         /// </summary>
         public event EventHandler<Match> MatchAddedToQueue;
 
-        public static int Pass1ColumnIndex = 0;
-        public static int Full1ColumnIndex = 1;
-        public static int MatchIdColumnIndex = 2;
-        public static int Full2ColumnIndex = 3;
-        public static int Pass2ColumnIndex = 4;
+        public static readonly int Pass1ColumnIndex = 0;
+        public static readonly int Full1ColumnIndex = 1;
+        public static readonly int MatchIdColumnIndex = 2;
+        public static readonly int Full2ColumnIndex = 3;
+        public static readonly int Pass2ColumnIndex = 4;
 
         public event EventHandler<Tuple<Student, Match>> StudentAddedToPassQueue;
 
@@ -201,12 +201,22 @@ namespace Reindeer_Hunter.Subsystems
         {
             return CurrentFilters;
         }
-        
+
         /// <summary>
-        /// Function to reset the filters to the default.
+        /// Async Function to reset the filters to the default.
         /// </summary>
-        public void ResetFilters(object sender = null, EventArgs e = null)
+        public async void ResetFilters(object sender = null, EventArgs e = null)
         {
+            await ResetFiltersAsync();
+        }
+
+        /// <summary>
+        /// Async Function to reset the filters to the default.
+        /// </summary>
+        public async Task ResetFiltersAsync()
+        {
+
+            await Task.Delay(0);
             // Create the filter object 
             List<long> rounds = new List<long>();
 
@@ -231,7 +241,10 @@ namespace Reindeer_Hunter.Subsystems
 
             // Notify the UI that the filters have changed and that it should update.
             PropertyChanged(this, new PropertyChangedEventArgs("CurrentFilters"));
-            LoadContent(); 
+
+            LoadContent();
+
+            await Task.Delay(0);
         }
 
         /// <summary>
