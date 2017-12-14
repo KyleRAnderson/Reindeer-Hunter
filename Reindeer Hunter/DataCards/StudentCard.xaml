@@ -29,21 +29,21 @@
                     <DataGridTextColumn Binding="{Binding First}" ClipboardContentBinding="{x:Null}" Header="First" Width="*">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
-                                <Setter Property="TextWrapping" Value="WrapWithOverflow"/>
+                                <Setter Property="TextWrapping" Value="Wrap"/>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
                     <DataGridTextColumn Binding="{Binding Last}" ClipboardContentBinding="{x:Null}" Header="Last" Width="*">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
-                                <Setter Property="TextWrapping" Value="WrapWithOverflow"/>
+                                <Setter Property="TextWrapping" Value="Wrap"/>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
                     <DataGridTextColumn Binding="{Binding Homeroom}" ClipboardContentBinding="{x:Null}" Header="Homeroom" Width="*">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
-                                <Setter Property="TextWrapping" Value="WrapWithOverflow"/>
+                                <Setter Property="TextWrapping" Value="Wrap"/>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                         <DataGridTextColumn.HeaderStyle>
@@ -60,17 +60,17 @@
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Binding="{Binding Status}" ClipboardContentBinding="{x:Null}" Header="Status" Width="*" IsReadOnly="True">
-                        <DataGridTextColumn.ElementStyle>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="TextWrapping" Value="WrapWithOverflow"/>
+                    <DataGridCheckBoxColumn Binding="{Binding In}" ClipboardContentBinding="{x:Null}" Width="0.75*" Header="Still In">
+                        <DataGridCheckBoxColumn.HeaderStyle>
+                            <Style TargetType="DataGridColumnHeader">
+                                <Setter Property="FontSize" Value="9"/>
                             </Style>
-                        </DataGridTextColumn.ElementStyle>
-                    </DataGridTextColumn>
+                        </DataGridCheckBoxColumn.HeaderStyle>
+                    </DataGridCheckBoxColumn>
                     <DataGridTextColumn Binding="{Binding LastRoundParticipated}" ClipboardContentBinding="{x:Null}" Header="Round" Width="*" IsReadOnly="True">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
-                                <Setter Property="TextWrapping" Value="WrapWithOverflow"/>
+                                <Setter Property="TextWrapping" Value="Wrap"/>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>

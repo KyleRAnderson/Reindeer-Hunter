@@ -410,6 +410,12 @@ namespace Reindeer_Hunter
         {
             List<Match> matches = new List<Match>();
 
+            if (student.MatchesParticipated.Count == 0)
+            {
+                matches.Add(CreateFakeMatch(student));
+                return matches;
+            }
+
             foreach (string matchId in student.MatchesParticipated)
             {
                 Match match = match_directory[matchId];

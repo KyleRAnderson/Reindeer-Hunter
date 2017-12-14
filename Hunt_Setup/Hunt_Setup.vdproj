@@ -100,25 +100,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_D17EE9D028C746FC944DEA895C488E0B"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_B85C3DE0E1140828AF468FB2AD30A64A"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_91F7118FA992A27ECB3F9268DB0D2379"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_C811387089AC6555A6605D550FFC549E"
+        "OwnerKey" = "8:_2201163EE9BDCA10709FF960B3D5778E"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -130,7 +112,25 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_2201163EE9BDCA10709FF960B3D5778E"
+        "OwnerKey" = "8:_C811387089AC6555A6605D550FFC549E"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_91F7118FA992A27ECB3F9268DB0D2379"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_B85C3DE0E1140828AF468FB2AD30A64A"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_D17EE9D028C746FC944DEA895C488E0B"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -478,15 +478,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Reindeer Hunter"
-        "ProductCode" = "8:{7A4ECFC1-4C42-43F8-9DB6-A96ECFE53B6D}"
-        "PackageCode" = "8:{528DED7F-D3C0-478A-BA55-E4602421BCAB}"
+        "ProductCode" = "8:{478C2447-C503-4725-A37A-E661ED66A3A7}"
+        "PackageCode" = "8:{2B6EE8ED-0CD9-4C10-93C7-6AF4F64A052C}"
         "UpgradeCode" = "8:{DD08C5B6-48FE-4D8F-BA93-8780CCC7804A}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.2.47"
+        "ProductVersion" = "8:1.2.49"
         "Manufacturer" = "8:Kyle Anderson"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:https://github.com/eAUE/Reindeer-Hunter/wiki"

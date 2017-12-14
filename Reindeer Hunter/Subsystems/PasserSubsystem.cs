@@ -294,7 +294,7 @@ namespace Reindeer_Hunter.Subsystems
         {
             // If we're not in the right status, return.
             if ((Status != DOING_NOTHING && Status != HANDLING_MATCHES) || match.MatchId == null ||
-                MatchEditQueue.ContainsKey(match.MatchId)) return;
+                MatchEditQueue.ContainsKey(match.MatchId) || _School.GetCurrRoundNo() == 0 || !_School.IsValidMatch(match)) return;
 
             MatchButton matchButton = new MatchButton(match);
 
