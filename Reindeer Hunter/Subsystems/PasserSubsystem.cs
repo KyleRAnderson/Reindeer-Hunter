@@ -185,6 +185,13 @@ namespace Reindeer_Hunter.Subsystems
                     "it is a special match.", "Match Status error",
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
+            // If matches have just been made and the user attempts to pass someone, warn the user.
+            else if (Manager._ProcessButtonSubsystem.AreMatchesMade)
+            {
+                MessageBox.Show("Cannot edit status of that match, " +
+                   "generated matches haven't been saved.", "Matches not Saved",
+                   MessageBoxButton.OK, MessageBoxImage.Error);
+            }
             // If matches haven't just been made by the matchmaker, proceed.
             else if (!Manager._ProcessButtonSubsystem.AreMatchesMade)
             {

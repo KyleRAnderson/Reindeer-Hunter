@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Reindeer_Hunter.Subsystems.ProcessButtonCommands;
 using System.Windows.Controls;
 using Reindeer_Hunter.Data_Classes;
@@ -19,6 +17,7 @@ namespace Reindeer_Hunter.Subsystems
 
         // The commands that this subsystem is in charge of.
         public Process ProcessCommand { get; } = new Process();
+        public RelayCommand GoToFFAOverrideCommand { get; } = new RelayCommand();
 
         // The GUI display objects that this subsystem is responsible for.
         private Button processButton;
@@ -120,6 +119,12 @@ namespace Reindeer_Hunter.Subsystems
             _School.StudentsImported += OnMatchesChanged;
             Manager._SaveDiscard.Save += OnSave;
             Manager._SaveDiscard.Discard += OnDiscard;
+
+            // Set up the commands
+            GoToFFAOverrideCommand.FunctionToExecute = (object parameter) => GoToFFA();
+            GoToFFAOverrideCommand.CanExecuteDeterminer = () => _School.NumInStudents > 0;
+            // Make sure that the GoToFFAOverrideCommand updates when number of students change.
+            _School.MatchChangeEvent += (object EventSender, EventArgs a) => GoToFFAOverrideCommand.RaiseCanExecuteChanged();
         }
 
         private void UpdateStatus()
