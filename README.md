@@ -2,7 +2,7 @@
 A program that manages the Sacred Heart High School (Ottawa) annual reindeer hunt. 
 Created by Kyle Anderson (eAUE) for the 2017 Reindeer Hunt at Sacred Heart High School.
 
-&copy;2017 Kyle Anderson
+&copy;2018 Kyle Anderson
 
 ## Setup Instructions
 1. Install Visual Studio 2017 with .Net Desktop Development Tools
