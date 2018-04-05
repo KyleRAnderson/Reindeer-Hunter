@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Reindeer_Hunter.Subsystems
 {
@@ -84,7 +85,7 @@ namespace Reindeer_Hunter.Subsystems
         public async void Export_Students(object parameter)
         {
             // Get the matches whose students need exporting. 
-            List<Match> studentsToExport = await Manager._FiltersAndSearch.GetMatches();
+            List<Match> studentsToExport = await Task.Run(Manager._FiltersAndSearch.GetMatches);
 
             if (studentsToExport.Count == 0) return;
 

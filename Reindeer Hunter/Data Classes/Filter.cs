@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Controls;
 
 namespace Reindeer_Hunter.Data_Classes
@@ -42,5 +39,15 @@ namespace Reindeer_Hunter.Data_Classes
             }
         public bool Open { get; set; }
         public bool Closed { get; set; }
+
+        public Filter Clone()
+        {
+            return new Filter
+            {
+                Open = Open,
+                Closed = Closed,
+                Round = new List<long>(Round)
+            };
+        }
     }
 }

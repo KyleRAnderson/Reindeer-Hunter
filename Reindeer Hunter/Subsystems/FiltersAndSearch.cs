@@ -40,6 +40,10 @@ namespace Reindeer_Hunter.Subsystems
         {
             CanExecuteDeterminer = () => true
         };
+        public RelayCommand ClearSearchOnly { get; } = new RelayCommand
+        {
+            CanExecuteDeterminer = () => true
+        };
 
         /// <summary>
         /// Simple way of getting the number of students on screen
@@ -73,6 +77,18 @@ namespace Reindeer_Hunter.Subsystems
             ClearFiltersCommand = new ClearFiltersAndSearch(this);
             Searcher = new SearchCommand(this);
             PropertiesPopup.FunctionToExecute = PropertiesPopuper;
+
+            // Set up the clear search only function.
+            ClearSearchOnly.FunctionToExecute = (object parameter) =>
+            {
+                Searcher.ClearSearch();
+                SearchBox.Text = searchBox_Default_Text;
+
+                // Notify the UI that the filters have changed and that it should update.
+                PropertyChanged(this, new PropertyChangedEventArgs("CurrentFilters"));
+
+                LoadContent();
+            };
         }
 
         /// <summary>
@@ -125,6 +141,9 @@ namespace Reindeer_Hunter.Subsystems
             // Subscribe to save and discard events
             Manager._SaveDiscard.Save += OnSaveDiscard;
             Manager._ProcessButtonSubsystem.MatchesDiscarded += OnSaveDiscard;
+
+            // Subscribe to search event
+            _School.StudentNameFoundThroughSearch += SetStudentName;
 
             // Give the SearchCommand the School object
             Searcher._School = _School;
@@ -207,16 +226,6 @@ namespace Reindeer_Hunter.Subsystems
         /// </summary>
         public async void ResetFilters(object sender = null, EventArgs e = null)
         {
-            await ResetFiltersAsync();
-        }
-
-        /// <summary>
-        /// Async Function to reset the filters to the default.
-        /// </summary>
-        public async Task ResetFiltersAsync()
-        {
-
-            await Task.Delay(0);
             // Create the filter object 
             List<long> rounds = new List<long>();
 
@@ -240,7 +249,7 @@ namespace Reindeer_Hunter.Subsystems
             }
 
             // Notify the UI that the filters have changed and that it should update.
-            PropertyChanged(this, new PropertyChangedEventArgs("CurrentFilters"));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CurrentFilters"));
 
             LoadContent();
 
@@ -252,7 +261,7 @@ namespace Reindeer_Hunter.Subsystems
         /// </summary>
         private async void LoadContent(object sender = null, EventArgs e = null)
         {
-            MainDisplay_Display_List = await GetMatches();
+            MainDisplay_Display_List = await Task.Run(GetMatches);
             // Notify UI that the Main Display Match List has changed and it should update.
             PropertyChanged(this, new PropertyChangedEventArgs("MainDisplay_Display_List"));
         }
@@ -267,12 +276,22 @@ namespace Reindeer_Hunter.Subsystems
             }
             else
             {
-                returnable = 
+                returnable =
                     _School.GetMatches(Searcher.CurrentQuery, CurrentFilters);
             }
 
             await Task.Delay(0);
             return returnable;
+        }
+
+        /// <summary>
+        /// Adds the name of the student searched for to the search box.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="StudentName"></param>
+        private void SetStudentName(object sender, string StudentName)
+        {
+            SearchBox.Text = string.Format("{0} --> {1}", SearchBox.Text, StudentName);
         }
 
         /// <summary>

@@ -106,7 +106,7 @@
             <ProgressBar x:Name="progressBar" LargeChange="0" Grid.ColumnSpan="9" Grid.Row="1"/>
             <ListBox x:Name="ListDisplayBox" Grid.RowSpan="7" Grid.Column="8" Margin="5,10,0,10" Grid.Row="2" BorderBrush="{x:Null}" ItemsSource="{Binding _Passer.DisplayButtons}" Background="{x:Null}" ToolTip="Click on the student to not pass them"/>
             <DockPanel Grid.ColumnSpan="9" LastChildFill="False" Background="#FFF0F0F0">
-                <Menu x:Name="menu" VerticalAlignment="Top" HorizontalAlignment="Left" DockPanel.Dock="Top" Visibility="{Binding IsDevMode, Mode=OneWay}">
+                <Menu x:Name="menu" VerticalAlignment="Top" HorizontalAlignment="Left" DockPanel.Dock="Top">
                     <MenuItem Header="File">
                         <MenuItem Header="Import Data" Command="{Binding _ImportExport.Import, Mode=OneWay}" ToolTip="Import a Reindeer Hunt from a file"/>
                         <MenuItem Header="Export Data" Command="{Binding _ImportExport.Export, Mode=OneWay}" ToolTip="Export this Reindeer Hunt to file"/>
@@ -151,6 +151,7 @@
                             <MenuItem x:Name="Round_Filter" Header="Round" ItemsSource="{Binding _FiltersAndSearch.CurrentFilters.RoundCheckboxes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                         </MenuItem>
                         <MenuItem x:Name="Clear_Filters_Button" Header="Clear" HorizontalContentAlignment="Stretch" Command="{Binding _FiltersAndSearch.ClearFiltersCommand, Mode=OneWay}" ToolTip="Clear the current search and filters"/>
+                        <MenuItem x:Name="Clear_Search_Only" Header="Clear Search Only" HorizontalAlignment="Stretch" ToolTip="Clear just the typed in search." Command="{Binding _FiltersAndSearch.ClearSearchOnly, Mode=OneWay}"/>
 
                     </MenuItem>
                     <MenuItem x:Name="Help" Header="Help">
