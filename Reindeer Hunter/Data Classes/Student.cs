@@ -27,7 +27,7 @@ namespace Reindeer_Hunter.Data_Classes
         // The last round the student participated in
         public long LastRoundParticipated { get; set; }
 
-        public List<string> MatchesParticipated { get; set; }
+        public List<string> MatchesParticipated { get; set; } = new List<string>();
 
         public string CurrMatchID
         {

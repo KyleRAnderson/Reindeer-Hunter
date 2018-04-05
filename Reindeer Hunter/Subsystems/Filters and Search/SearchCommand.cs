@@ -1,6 +1,7 @@
 ﻿using Reindeer_Hunter.Data_Classes;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace Reindeer_Hunter.Subsystems.SearchAndFilters
@@ -89,13 +90,15 @@ namespace Reindeer_Hunter.Subsystems.SearchAndFilters
             };
         }
 
-        public List<Match> Search(string searchInput, Filter filter)
+        public async Task<List<Match>> Search(string searchInput, Filter filter)
         {
             UserInput = searchInput;
+            List<Match> returnMatchList = null;
+
+
             if (UserInput == "")
             {
                 NotFound();
-                return null;
             }
 
             UserInput = UserInput.Trim();
@@ -103,16 +106,17 @@ namespace Reindeer_Hunter.Subsystems.SearchAndFilters
             if (Query == null)
             {
                 NotFound();
-                return null;
             }
 
-            List<Match> returnMatchList = _School.GetMatches(Query, filter);
+            returnMatchList = _School.GetMatches(Query, filter);
             if (returnMatchList == null || returnMatchList.Count == 0)
             {
                 NotFound();
-                return null;
+                returnMatchList = null;
             }
-            else return returnMatchList;  
+
+            await Task.Delay(0);
+            return returnMatchList;
         }
 
         /// <summary>
@@ -137,13 +141,18 @@ namespace Reindeer_Hunter.Subsystems.SearchAndFilters
             else return true;
         }
 
-        public void Execute(object parameter)
+        public async void Execute(object parameter)
         {
             // In case it's empty
-            if (parameter == null) return;
+            if (parameter == null)
+            {
+                await Task.Delay(0);
+                return;
+            }
 
             List<Match> resultsList =
-                Search(parameter.ToString(), Filters_Subsystem.GetFilters());
+                await Task.Run(() => Search(parameter.ToString(), Filters_Subsystem.GetFilters()));
+
             if (resultsList == null) return;
             Filters_Subsystem.SetSearchResults(resultsList);
         }
