@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Reindeer_Hunter.Data_Classes
 {
@@ -38,7 +34,7 @@ namespace Reindeer_Hunter.Data_Classes
             set
             {
                 // Retain the old value for history's sake
-                if (!MatchesParticipated.Contains(value))
+                if (!MatchesParticipated.Contains(value) && value != null)
                     MatchesParticipated.Add(value);
                 matchId = value;
             }
