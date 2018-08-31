@@ -302,9 +302,8 @@ namespace Reindeer_Hunter
         /// <returns>True when the match complies, false otherwise.</returns>
         private bool CompliesWithFilters(Match match, Filter filter)
         {
-            if (((match.Closed && filter.Closed) || !match.Closed && filter.Open)
-                && filter.Round.Contains(match.Round)) return true;
-            else return false;
+            return ((match.Closed && filter.Closed) || !match.Closed && filter.Open)
+                && filter.SelectedRounds.Contains(match.Round);
         }
 
         /// <summary>
@@ -744,7 +743,7 @@ namespace Reindeer_Hunter
             foreach (Match match in matchList)
             {
                 if (((match.Closed && filter.Closed) || (!match.Closed && filter.Open))
-                    && filter.Round.Contains(match.Round))
+                    && filter.SelectedRounds.Contains(match.Round))
                 {
                     returnList.Add(match);
                 }

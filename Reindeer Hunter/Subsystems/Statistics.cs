@@ -17,38 +17,38 @@ namespace Reindeer_Hunter.Subsystems
 
         public string RoundNo()
         {
-            return _School.GetCurrRoundNo().ToString();
+            return school.GetCurrRoundNo().ToString();
         }
 
         public string NumInStudents()
         {
-            return _School.GetNumStudentsStillIn().ToString();
+            return school.GetNumStudentsStillIn().ToString();
         }
 
         public string NumOpenMatches()
         {
-            return _School.NumOpenMatches.ToString();
+            return school.NumOpenMatches.ToString();
         }
 
         public string NumGeneratedMatches()
         {
-            return _School.GetNumMatchesGenerated().ToString();
+            return school.GetNumMatchesGenerated().ToString();
         }
 
         public string PercentStudentsStillIn()
         {
-            int percent = (int)Math.Round((double)(100 * ((double)_School.NumInStudents / (double)_School.TotalNumStudents)));
+            int percent = (int)Math.Round((double)(100 * ((double)school.NumInStudents / (double)school.TotalNumStudents)));
             return String.Format("{0}%", percent);
         }
 
         public string TotalNumStudents()
         {
-            return _School.TotalNumStudents.ToString();
+            return school.TotalNumStudents.ToString();
         }
 
         public string NumpassMatches()
         {
-            return _School.NumPassMatches.ToString();
+            return school.NumPassMatches.ToString();
         }
 
         public Statistics() : base()
@@ -80,9 +80,9 @@ namespace Reindeer_Hunter.Subsystems
             Refresh();
 
             // Subscribe to a bunch of events that may need the statistics to refresh
-            _School.MatchChangeEvent += Refresh;
-            _School.RoundIncreased += Refresh;
-            _School.StudentsImported += Refresh;
+            school.MatchChangeEvent += Refresh;
+            school.RoundIncreased += Refresh;
+            school.StudentsImported += Refresh;
         }
 
         /// <summary>

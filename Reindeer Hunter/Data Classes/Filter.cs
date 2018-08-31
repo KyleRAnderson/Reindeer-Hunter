@@ -1,53 +1,27 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Controls;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Reindeer_Hunter.Data_Classes
 {
     public class Filter
     {
-        public List<CheckBox> RoundCheckboxes { get; set; } = new List<CheckBox>();
-
-        public List<long> Round {
-            get
-            {
-                List<long> returnList = new List<long>();
-                foreach (CheckBox checkbox in RoundCheckboxes)
-                {
-                    if ((bool)checkbox.IsChecked)
-                        returnList.Add(long.Parse(checkbox.Content.ToString()));
-                }
-                return returnList;
-            }
-            set
-            {
-                RoundCheckboxes.Clear();
-                foreach (long round in value)
-                {
-                    RoundCheckboxes.Add(new CheckBox
-                    {
-                        Content = round.ToString(),
-                    }
-                    );
-                }
-
-                /* The last checkbox in the list is the checkbox of the highest round, and
-                 * should be checked by default. Don't do it if there are no rouds in the list. */
-                if (RoundCheckboxes.Count() > 0 )
-                    RoundCheckboxes.ElementAt(RoundCheckboxes.Count() - 1).IsChecked = true;
-            }
-            }
+        public List<Tuple<long, bool>> Round { get; set; }
         public bool Open { get; set; }
         public bool Closed { get; set; }
 
-        public Filter Clone()
+        public List<long> SelectedRounds
         {
-            return new Filter
+            get
             {
-                Open = Open,
-                Closed = Closed,
-                Round = new List<long>(Round)
-            };
+                List<long> rounds = new List<long>();
+
+                foreach (Tuple<long, bool> round in Round)
+                {
+                    if (round.Item2) rounds.Add(round.Item1);
+                }
+
+                return rounds;
+            }
         }
     }
 }
