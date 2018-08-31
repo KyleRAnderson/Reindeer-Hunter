@@ -4,3 +4,5 @@
 /Hunt_Setup/Debug/
 /Reindeer Hunter/obj/
 packages/*
+!packages/repositories.config
+!packages/build/
