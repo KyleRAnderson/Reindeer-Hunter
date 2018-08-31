@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Reindeer_Hunter.Subsystems
 {
@@ -45,8 +46,8 @@ namespace Reindeer_Hunter.Subsystems
 
             #region Subscribing to events
             // Subscribe to events that will merit refresh
-            _School.MatchChangeEvent += Refresh;
-            _School.RoundIncreased += Refresh;
+            school.MatchChangeEvent += Refresh;
+            school.RoundIncreased += Refresh;
             Manager._ProcessButtonSubsystem.WentToFFA += Refresh;
             #endregion
 
@@ -60,7 +61,7 @@ namespace Reindeer_Hunter.Subsystems
         public bool Can_Import_Students()
         {
             // You can only import during round 0. or during Free For all
-            bool result = (_School != null && !_School.IsFFARound);
+            bool result = (school != null && !school.IsFFARound);
             return result;
         }
 
@@ -84,7 +85,7 @@ namespace Reindeer_Hunter.Subsystems
         public async void Export_Students(object parameter)
         {
             // Get the matches whose students need exporting. 
-            List<Match> studentsToExport = await Manager._FiltersAndSearch.GetMatches();
+            List<Match> studentsToExport = await Task.Run(() => Manager._FiltersAndSearch.GetMatches());
 
             if (studentsToExport.Count == 0) return;
 
@@ -111,7 +112,7 @@ namespace Reindeer_Hunter.Subsystems
             if (path == "") return;
 
             // Make the object that will handle all else.
-            new ExportStudents(studentsToExport, _School, path);
+            new ExportStudents(studentsToExport, school, path);
         }
 
         /// <summary>
@@ -126,7 +127,7 @@ namespace Reindeer_Hunter.Subsystems
         public bool Can_Import_Results()
         {
             // If there are no matches, there is no importing results for matches.
-            if (_School.NumOpenMatches <= 0) return false;
+            if (school.NumOpenMatches <= 0) return false;
             else return true;
         }
 
@@ -139,7 +140,7 @@ namespace Reindeer_Hunter.Subsystems
             // Just tell the data file to import it, and catch the error
             try
             {
-                _School.DataFile.Import_Template_PDF();
+                school.DataFile.Import_Template_PDF();
             }
             catch (IOException)
             {
@@ -184,7 +185,7 @@ namespace Reindeer_Hunter.Subsystems
                 results.Add(student);
             }
 
-            _School.AddMatchResults(results);
+            school.AddMatchResults(results);
         }
 
         /// <summary>

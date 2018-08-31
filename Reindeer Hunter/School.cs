@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -301,10 +302,14 @@ namespace Reindeer_Hunter
         /// <returns>True when the match complies, false otherwise.</returns>
         private bool CompliesWithFilters(Match match, Filter filter)
         {
-            if (((match.Closed && filter.Closed) || !match.Closed && filter.Open)
-                && filter.Round.Contains(match.Round)) return true;
-            else return false;
+            return ((match.Closed && filter.Closed) || !match.Closed && filter.Open)
+                && filter.SelectedRounds.Contains(match.Round);
         }
+
+        /// <summary>
+        /// Fired when the name of the student that was searched for was found using search.
+        /// </summary>
+        public event EventHandler<string> StudentNameFoundThroughSearch;
 
         /// <summary>
         /// Command to give a list of matches relevant to the search
@@ -313,14 +318,19 @@ namespace Reindeer_Hunter
         /// <returns>List of matches relevant to the search</returns>
         public List<Match> GetMatches(SearchQuery query, Filter filter)
         {
+            Thread.Sleep(100000000); // TODO remove this and using
             List<Match> resultsList = new List<Match>();
 
             // If match id is provided, get that match's info if it exists, else error.
             if (query.MatchId != "")
             {
                 if (match_directory.ContainsKey(query.MatchId)
-                    && CompliesWithFilters(match_directory[query.MatchId], filter)) resultsList.
+                    && CompliesWithFilters(match_directory[query.MatchId], filter))
+                {
+                    resultsList.
                         Add(match_directory[query.MatchId].Clone());
+                }
+
                 else return null;
             }
 
@@ -349,6 +359,12 @@ namespace Reindeer_Hunter
                 }
 
                 resultsList.AddRange(GetMatchesFromStudentWithFilters(student, filter));
+
+                // Call the event.
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    StudentNameFoundThroughSearch?.Invoke(this, student.FullName);
+                });
             }
 
             // The only remaining possibility is that a name was inputted. Find it, else error.
@@ -376,6 +392,7 @@ namespace Reindeer_Hunter
                 }
 
             }
+
             return resultsList;
         }
 
@@ -726,7 +743,7 @@ namespace Reindeer_Hunter
             foreach (Match match in matchList)
             {
                 if (((match.Closed && filter.Closed) || (!match.Closed && filter.Open))
-                    && filter.Round.Contains(match.Round))
+                    && filter.SelectedRounds.Contains(match.Round))
                 {
                     returnList.Add(match);
                 }

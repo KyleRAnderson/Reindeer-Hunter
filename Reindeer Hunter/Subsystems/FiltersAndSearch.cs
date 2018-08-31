@@ -40,6 +40,10 @@ namespace Reindeer_Hunter.Subsystems
         {
             CanExecuteDeterminer = () => true
         };
+        public RelayCommand ClearSearchOnly { get; } = new RelayCommand
+        {
+            CanExecuteDeterminer = () => true
+        };
 
         /// <summary>
         /// Simple way of getting the number of students on screen
@@ -73,6 +77,18 @@ namespace Reindeer_Hunter.Subsystems
             ClearFiltersCommand = new ClearFiltersAndSearch(this);
             Searcher = new SearchCommand(this);
             PropertiesPopup.FunctionToExecute = PropertiesPopuper;
+
+            // Set up the clear search only function.
+            ClearSearchOnly.FunctionToExecute = (object parameter) =>
+            {
+                Searcher.ClearSearch();
+                SearchBox.Text = searchBox_Default_Text;
+
+                // Notify the UI that the filters have changed and that it should update.
+                PropertyChanged(this, new PropertyChangedEventArgs("CurrentFilters"));
+
+                LoadContent();
+            };
         }
 
         /// <summary>
@@ -90,6 +106,7 @@ namespace Reindeer_Hunter.Subsystems
 
             // Define our checkboxes and menu items
             Filter_Menu = Manager.Home.Search_Menu;
+            Filter_Menu.SubmenuClosed += LoadContent;
             OpenCheckbox = Manager.Home.Open_Filter;
             ClosedCheckbox = Manager.Home.Closed_Filter;
             RoundFilter = Manager.Home.Round_Filter;
@@ -106,7 +123,7 @@ namespace Reindeer_Hunter.Subsystems
             Manager._Passer.ResultRemoved += OnMatchResultRemoved;
 
             // Subscribe to increased round event
-            _School.RoundIncreased += ResetFilters;
+            school.RoundIncreased += ResetFilters;
 
             // Subscribe to click events
             MainDisplay.MouseRightButtonDown += PopupProperties;
@@ -118,7 +135,7 @@ namespace Reindeer_Hunter.Subsystems
              */
             Manager._Passer.PassingStudentsSaved += LoadContent;
             Manager._ProcessButtonSubsystem.MatchesRegistered += OnMatchesSaved;
-            _School.MatchChangeEvent += OnMatchesSaved;
+            school.MatchChangeEvent += OnMatchesSaved;
             Manager._ProcessButtonSubsystem.MatchesDiscarded += LoadContent;
             Manager._ProcessButtonSubsystem.MatchesMade += ShowNewMatches;
 
@@ -126,8 +143,11 @@ namespace Reindeer_Hunter.Subsystems
             Manager._SaveDiscard.Save += OnSaveDiscard;
             Manager._ProcessButtonSubsystem.MatchesDiscarded += OnSaveDiscard;
 
+            // Subscribe to search event
+            school.StudentNameFoundThroughSearch += SetStudentName;
+
             // Give the SearchCommand the School object
-            Searcher._School = _School;
+            Searcher._School = school;
         }
 
         private void SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
@@ -143,11 +163,11 @@ namespace Reindeer_Hunter.Subsystems
             Student student;
             if (isStudent1)
             {
-                student = _School.GetStudent(match.Id1);
+                student = school.GetStudent(match.Id1);
             }
             else if (isStudent2)
             {
-                student = _School.GetStudent(match.Id2);
+                student = school.GetStudent(match.Id2);
             }
             else return;
 
@@ -207,20 +227,11 @@ namespace Reindeer_Hunter.Subsystems
         /// </summary>
         public async void ResetFilters(object sender = null, EventArgs e = null)
         {
-            await ResetFiltersAsync();
-        }
-
-        /// <summary>
-        /// Async Function to reset the filters to the default.
-        /// </summary>
-        public async Task ResetFiltersAsync()
-        {
-
-            await Task.Delay(0);
             // Create the filter object 
-            List<long> rounds = new List<long>();
+            List<Tuple<long, bool>> rounds = new List<Tuple<long, bool>>();
 
-            for (long a = 1; a <= _School.GetCurrRoundNo(); a++) rounds.Add(a);
+            long currentRound = school.GetCurrRoundNo();
+            for (long a = 1; a <= currentRound; a++) rounds.Add(new Tuple<long, bool>(a, a == currentRound));
 
             CurrentFilters.Closed = false;
             CurrentFilters.Open = true;
@@ -233,14 +244,15 @@ namespace Reindeer_Hunter.Subsystems
             CurrentFilters.Round = rounds;
             RoundFilter.Items.Refresh();
 
-            // Subscribe to the newly created checkboxes' events.
-            foreach (CheckBox checkbox in CurrentFilters.RoundCheckboxes)
-            {
-                checkbox.Click += LoadContent;
-            }
+            //// Subscribe to the newly created checkboxes' events.
+            //foreach (CheckBox checkbox in CurrentFilters.RoundCheckboxes)
+            //{
+            //    checkbox.Click += LoadContent;
+            //} 
+            // TODO re-implement
 
             // Notify the UI that the filters have changed and that it should update.
-            PropertyChanged(this, new PropertyChangedEventArgs("CurrentFilters"));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CurrentFilters"));
 
             LoadContent();
 
@@ -252,27 +264,65 @@ namespace Reindeer_Hunter.Subsystems
         /// </summary>
         private async void LoadContent(object sender = null, EventArgs e = null)
         {
-            MainDisplay_Display_List = await GetMatches();
-            // Notify UI that the Main Display Match List has changed and it should update.
+            List<Match> matchList = await GetMatchesAsync();
+            MainDisplay_Display_List = matchList;
             PropertyChanged(this, new PropertyChangedEventArgs("MainDisplay_Display_List"));
         }
 
-        public async Task<List<Match>> GetMatches()
+        private Filter LastFilter = new Filter(); // Keep track of the last filter used to populate the display table so that we don't populate it twice with the same filter.
+        public async Task<List<Match>> GetMatchesAsync()
         {
             List<Match> returnable;
-
-            if (Searcher.CurrentQuery == null)
+            Filter currentFilters = CurrentFilters;
+            if (!currentFilters.Equals(LastFilter))
             {
-                returnable = _School.GetMatches(CurrentFilters);
+                if (Searcher.CurrentQuery == null)
+                {
+                    returnable = await Task.Run(() => school.GetMatches(currentFilters));
+                }
+                else
+                {
+                    returnable = school.GetMatches(Searcher.CurrentQuery, currentFilters);
+                }
             }
             else
             {
-                returnable = 
-                    _School.GetMatches(Searcher.CurrentQuery, CurrentFilters);
+                returnable = MainDisplay_Display_List;
+            }
+            LastFilter.Round = currentFilters.Round;
+            LastFilter.Open = currentFilters.Open;
+            LastFilter.Closed = currentFilters.Closed;
+
+            return returnable;
+        }
+
+        public List<Match> GetMatches()
+        {
+            List<Match> returnable;
+
+            // If there is no search being done, only find matches based on the filters.
+            if (Searcher.CurrentQuery == null)
+            {
+                returnable = school.GetMatches(CurrentFilters);
+            }
+            // Otherwise, include the search parameters in the filtering process.
+            else
+            {
+                returnable =
+                    school.GetMatches(Searcher.CurrentQuery, CurrentFilters);
             }
 
-            await Task.Delay(0);
             return returnable;
+        }
+
+        /// <summary>
+        /// Adds the name of the student searched for to the search box.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="StudentName"></param>
+        private void SetStudentName(object sender, string StudentName)
+        {
+            SearchBox.Text = string.Format("{0} --> {1}", SearchBox.Text, StudentName);
         }
 
         /// <summary>
@@ -411,19 +461,19 @@ namespace Reindeer_Hunter.Subsystems
 
             if (column < MatchIdColumnIndex)
             {
-                Student studentToDisplay = _School.GetStudent(match.Id1);
+                Student studentToDisplay = school.GetStudent(match.Id1);
                 if (studentToDisplay != null)
                 {
-                    match = _School.CreateFakeMatch(studentToDisplay);
+                    match = school.CreateFakeMatch(studentToDisplay);
                     match.MatchId = studentToDisplay.FullName;
                 }
             }
             else if (column > MatchIdColumnIndex)
             {
-                Student studentToDisplay = _School.GetStudent(match.Id2);
+                Student studentToDisplay = school.GetStudent(match.Id2);
                 if (studentToDisplay != null)
                 {
-                    match = _School.CreateFakeMatch(studentToDisplay);
+                    match = school.CreateFakeMatch(studentToDisplay);
                     match.MatchId = studentToDisplay.FullName;
                 }
             }

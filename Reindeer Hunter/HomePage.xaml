@@ -4,10 +4,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Reindeer_Hunter"
-             xmlns:Data_Classes="clr-namespace:Reindeer_Hunter.Data_Classes" x:Name="HomePage1" x:Class="Reindeer_Hunter.HomePage"
+             xmlns:Data_Classes="clr-namespace:Reindeer_Hunter.Data_Classes"
+    xmlns:valueconverters="clr-namespace:Reindeer_Hunter.ValueConverters" x:Name="HomePage1" x:Class="Reindeer_Hunter.HomePage"
              mc:Ignorable="d" Foreground="White" Background="#FFEEEEEE">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <valueconverters:RoundToCheckboxConverter x:Key="RoundToCheckbox"/>
     </UserControl.Resources>
     <UserControl.DataContext>
         <local:CommandManager/>
@@ -106,7 +108,7 @@
             <ProgressBar x:Name="progressBar" LargeChange="0" Grid.ColumnSpan="9" Grid.Row="1"/>
             <ListBox x:Name="ListDisplayBox" Grid.RowSpan="7" Grid.Column="8" Margin="5,10,0,10" Grid.Row="2" BorderBrush="{x:Null}" ItemsSource="{Binding _Passer.DisplayButtons}" Background="{x:Null}" ToolTip="Click on the student to not pass them"/>
             <DockPanel Grid.ColumnSpan="9" LastChildFill="False" Background="#FFF0F0F0">
-                <Menu x:Name="menu" VerticalAlignment="Top" HorizontalAlignment="Left" DockPanel.Dock="Top" Visibility="{Binding IsDevMode, Mode=OneWay}">
+                <Menu x:Name="menu" VerticalAlignment="Top" HorizontalAlignment="Left" DockPanel.Dock="Top">
                     <MenuItem Header="File">
                         <MenuItem Header="Import Data" Command="{Binding _ImportExport.Import, Mode=OneWay}" ToolTip="Import a Reindeer Hunt from a file"/>
                         <MenuItem Header="Export Data" Command="{Binding _ImportExport.Export, Mode=OneWay}" ToolTip="Export this Reindeer Hunt to file"/>
@@ -148,9 +150,10 @@
                         <MenuItem Header="Filters">
                             <CheckBox x:Name="Open_Filter" Content="Open" IsChecked="{Binding _FiltersAndSearch.CurrentFilters.Open, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                             <CheckBox x:Name="Closed_Filter" Content="Closed" IsChecked="{Binding _FiltersAndSearch.CurrentFilters.Closed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                            <MenuItem x:Name="Round_Filter" Header="Round" ItemsSource="{Binding _FiltersAndSearch.CurrentFilters.RoundCheckboxes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            <MenuItem x:Name="Round_Filter" Header="Round" ItemsSource="{Binding _FiltersAndSearch.CurrentFilters.Round, Converter={StaticResource RoundToCheckbox}}"/>
                         </MenuItem>
                         <MenuItem x:Name="Clear_Filters_Button" Header="Clear" HorizontalContentAlignment="Stretch" Command="{Binding _FiltersAndSearch.ClearFiltersCommand, Mode=OneWay}" ToolTip="Clear the current search and filters"/>
+                        <MenuItem x:Name="Clear_Search_Only" Header="Clear Search Only" HorizontalAlignment="Stretch" ToolTip="Clear just the typed in search." Command="{Binding _FiltersAndSearch.ClearSearchOnly, Mode=OneWay}"/>
 
                     </MenuItem>
                     <MenuItem x:Name="Help" Header="Help">

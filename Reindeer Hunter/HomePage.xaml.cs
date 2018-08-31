@@ -1,9 +1,5 @@
-﻿using Reindeer_Hunter.Data_Classes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using System.Windows;
-using System.Windows.Input;
 
 namespace Reindeer_Hunter
 {

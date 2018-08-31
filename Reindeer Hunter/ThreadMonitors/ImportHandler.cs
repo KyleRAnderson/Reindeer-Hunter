@@ -24,7 +24,7 @@ namespace Reindeer_Hunter.ThreadMonitors
         /// <param name="filePath">The file to import students from</param>
         /// <param name="school">The school object</param>
         /// <param name="endFunction">The function to call if the import is successful at the end.</param>
-        public ImportHandler(School school, String[] filePath, Action endFunction = null)
+        public ImportHandler(School school, string[] filePath, Action endFunction = null)
         {
             _School = school;
             EndFunction = endFunction;

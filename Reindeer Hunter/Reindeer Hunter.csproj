@@ -164,6 +164,7 @@
     <Compile Include="Subsystems\Student_Manager\ExportStudents.cs" />
     <Compile Include="Subsystems\Subsystem.cs" />
     <Compile Include="FFA\VictorHandler.cs" />
+    <Compile Include="ValueConverters\RoundToCheckboxConverter.cs" />
     <Page Include="DataCards\MatchCard.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

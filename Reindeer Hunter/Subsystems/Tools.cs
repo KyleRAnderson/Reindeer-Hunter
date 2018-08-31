@@ -52,7 +52,7 @@ namespace Reindeer_Hunter.Subsystems
             #region Subscribing to the right events
             Manager._Passer.MatchAdded += Refresh;
             Manager._Passer.MatchRemoved += Refresh;
-            _School.MatchChangeEvent += Refresh;
+            school.MatchChangeEvent += Refresh;
             #endregion
         }
 
@@ -60,7 +60,7 @@ namespace Reindeer_Hunter.Subsystems
         {
             List<Match> matchesToEdit = Manager._Passer.EditQueue;
 
-            new MatchEditor(_School, matchesToEdit).ShowDialog();
+            new MatchEditor(school, matchesToEdit).ShowDialog();
 
             MatchesEdited?.Invoke(this, new EventArgs());
         }
@@ -86,7 +86,7 @@ namespace Reindeer_Hunter.Subsystems
             List<Match> matchesToPrint = Manager._Passer.EditQueue;
 
             // Get the handler to print them.
-            new InstantPrintHandler(_School, Manager._ProcessButtonSubsystem, matchesToPrint);
+            new InstantPrintHandler(school, Manager._ProcessButtonSubsystem, matchesToPrint);
         }
 
         private void Refresh(object sender = null, EventArgs e = null)
@@ -107,19 +107,19 @@ namespace Reindeer_Hunter.Subsystems
             List<Match> matchesToClose = Manager._Passer.EditQueue;
 
             // Close them.
-            await Task.Run(() => _School.CloseMatches(matchesToClose));
+            await Task.Run(() => school.CloseMatches(matchesToClose));
 
             SelectedMatchesClosed?.Invoke(this, new EventArgs());
         }
 
         private bool CanCloseAll()
         {
-            return _School.NumOpenMatches > 0;
+            return school.NumOpenMatches > 0;
         }
 
         private async void CloseAllMatches(object sender)
         {
-            await Task.Run(_School.CloseAllMatches);
+            await Task.Run(school.CloseAllMatches);
         }
     }
 }

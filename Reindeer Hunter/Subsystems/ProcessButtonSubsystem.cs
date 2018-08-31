@@ -109,28 +109,28 @@ namespace Reindeer_Hunter.Subsystems
             messageDisplayBox = Manager.Home.progressDisplayBox;
 
             // Update current round number
-            CurrRoundNo = _School.GetCurrRoundNo();
+            CurrRoundNo = school.GetCurrRoundNo();
             // Update Display Status
             UpdateStatus();
 
             // Subscribe to match change event and round increased event and save/discard events.
-            _School.MatchChangeEvent += OnMatchesChanged;
-            _School.RoundIncreased += OnMatchesChanged;
-            _School.StudentsImported += OnMatchesChanged;
+            school.MatchChangeEvent += OnMatchesChanged;
+            school.RoundIncreased += OnMatchesChanged;
+            school.StudentsImported += OnMatchesChanged;
             Manager._SaveDiscard.Save += OnSave;
             Manager._SaveDiscard.Discard += OnDiscard;
 
             // Set up the commands
             GoToFFAOverrideCommand.FunctionToExecute = (object parameter) => GoToFFA();
-            GoToFFAOverrideCommand.CanExecuteDeterminer = () => _School.NumInStudents > 0;
+            GoToFFAOverrideCommand.CanExecuteDeterminer = () => school.NumInStudents > 0;
             // Make sure that the GoToFFAOverrideCommand updates when number of students change.
-            _School.MatchChangeEvent += (object EventSender, EventArgs a) => GoToFFAOverrideCommand.RaiseCanExecuteChanged();
+            school.MatchChangeEvent += (object EventSender, EventArgs a) => GoToFFAOverrideCommand.RaiseCanExecuteChanged();
         }
 
         private void UpdateStatus()
         {
-            if (_School.IsTimeForFFA || _School.IsFFARound) Status = FFA;
-            else if (_School.IsReadyForNextRound) Status = MATCHMAKING;
+            if (school.IsTimeForFFA || school.IsFFARound) Status = FFA;
+            else if (school.IsReadyForNextRound) Status = MATCHMAKING;
             else Status = INSTANTPRINT;
         }
 
@@ -143,7 +143,7 @@ namespace Reindeer_Hunter.Subsystems
         private void OnMatchesChanged(object sender, EventArgs e)
         {
             // Update the round and status.
-            CurrRoundNo = _School.GetCurrRoundNo();
+            CurrRoundNo = school.GetCurrRoundNo();
             UpdateStatus();
         }
 
@@ -200,11 +200,11 @@ namespace Reindeer_Hunter.Subsystems
             if (AreMatchesMade)
             {
                 // Add the generated matches
-                _School.AddMatches(NewMatches);
+                school.AddMatches(NewMatches);
                 
                 // Set the new current match number
-                _School.CurrMatchNo = GenerationInfo.Item1;
-                _School.RoundEndDate = GenerationInfo.Item3;
+                school.CurrMatchNo = GenerationInfo.Item1;
+                school.RoundEndDate = GenerationInfo.Item3;
 
                 NewMatches.Clear();
                 // Fire the event.
@@ -229,7 +229,7 @@ namespace Reindeer_Hunter.Subsystems
         /// </summary>
         public void GoToFFA()
         {
-            _School.IsFFARound = true;
+            school.IsFFARound = true;
             ((StartupWindow)Manager.Home.Parent).GoToFFA();
             WentToFFA(this, new EventArgs());
         }

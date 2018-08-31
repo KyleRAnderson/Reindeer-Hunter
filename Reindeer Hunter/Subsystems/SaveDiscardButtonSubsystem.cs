@@ -38,7 +38,7 @@ namespace Reindeer_Hunter.Subsystems
 
             // Subscribe to certain events
             Manager._ProcessButtonSubsystem.MatchesMade += WhenButtonsNeedUpdating;
-            _School.MatchChangeEvent += WhenButtonsNeedUpdating;
+            school.MatchChangeEvent += WhenButtonsNeedUpdating;
             Manager._Passer.ResultAdded += WhenButtonsNeedUpdating;
             Manager._Passer.ResultRemoved += WhenButtonsNeedUpdating;
         }

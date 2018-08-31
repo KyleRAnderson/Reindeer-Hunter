@@ -16,14 +16,14 @@ namespace Reindeer_Hunter.Subsystems
             OpenUserManual.FunctionToExecute = OpenManual;
 
             // Set the data manager
-            _DataManager = _School.DataFile;
+            _DataManager = school.DataFile;
 
             Refresh();
         }
 
         private bool CanOpenManual()
         {
-            return (_School != null && _DataManager != null && _DataManager.ManualExists);
+            return (school != null && _DataManager != null && _DataManager.ManualExists);
         }
 
         private void OpenManual(object parameter)

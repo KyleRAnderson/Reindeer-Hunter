@@ -126,7 +126,7 @@ namespace Reindeer_Hunter
             if (csvopenDialog.FileNames.Length == 0) return;
             foreach (string path in csvopenDialog.FileNames)
             {
-                if (String.IsNullOrEmpty(path)) return;
+                if (string.IsNullOrEmpty(path)) return;
             }
 
             ImportHandler importer = new ImportHandler(_School, csvopenDialog.FileNames, GoToHome);

@@ -25,7 +25,7 @@ namespace Reindeer_Hunter.Subsystems
             set
             {
                 Manager = value;
-                _School = value._School;
+                school = value._School;
                 ManagerSet(this, new EventArgs());
             }
         }
@@ -35,7 +35,7 @@ namespace Reindeer_Hunter.Subsystems
             ManagerSet += OnManagerSet;
         }
 
-        protected School _School;
+        protected School school;
 
         protected void OnManagerSet(object sender, EventArgs e)
         {
@@ -48,7 +48,7 @@ namespace Reindeer_Hunter.Subsystems
         protected virtual void OnHomePageSet(object sender, EventArgs e)
         {
             // Set the school property now that we can
-            _School = Manager._School;
+            school = Manager._School;
 
             // Do stuff.
         }

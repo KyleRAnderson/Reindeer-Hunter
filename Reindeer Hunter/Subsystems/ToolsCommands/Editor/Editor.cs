@@ -129,7 +129,7 @@ namespace Reindeer_Hunter.Subsystems.ToolsCommands.Editor
         /// <param name="parameter"></param>
         private async void DeleteMatches(object parameter)
         {
-            await DeleteMatchesAsync();
+            await Task.Run(DeleteMatchesAsync);
         }
 
         /// <summary>
@@ -248,7 +248,7 @@ namespace Reindeer_Hunter.Subsystems.ToolsCommands.Editor
             // Update the delete match command when the selected cells change.
             Display3.SelectedCellsChanged += (object sender, SelectedCellsChangedEventArgs e) => DeleteMatchCommand.RaiseCanExecuteChanged();
 
-            Table1Students = await GetStudentsFromMatches(inputtedMatches);
+            Table1Students = await Task.Run(() => GetStudentsFromMatches(inputtedMatches));
 
             #region Setting up relaycommands
             // Randomize command
@@ -326,10 +326,10 @@ namespace Reindeer_Hunter.Subsystems.ToolsCommands.Editor
                 .Select(student => student._Student)
                 .ToList();
 
-            await _School.EliminateStudents(studentsToEliminate);
+            await Task.Run(() => _School.EliminateStudents(studentsToEliminate));
 
             // Add the generated matches
-            await _School.AddEditedMatches(MatchesMade);
+            await Task.Run(() => _School.AddEditedMatches(MatchesMade));
         }
 
         private bool CanSave()

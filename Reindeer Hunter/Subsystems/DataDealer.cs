@@ -44,7 +44,7 @@ namespace Reindeer_Hunter.Subsystems
                 FunctionToExecute = ResetForm,
 
                 // If it's already reset, don't execute.
-                CanExecuteDeterminer = () => _School.FormURL != string.Empty
+                CanExecuteDeterminer = () => school.FormURL != string.Empty
             };
         }
     
@@ -64,7 +64,7 @@ namespace Reindeer_Hunter.Subsystems
             if (newURL == string.Empty) return;
             else
             {
-                _School.FormURL = newURL;
+                school.FormURL = newURL;
             }
         }
 
@@ -74,7 +74,7 @@ namespace Reindeer_Hunter.Subsystems
         /// <param name="parameter"></param>
         private void ResetForm(object parameter)
         {
-            _School.FormURL = "";
+            school.FormURL = "";
         }
 
         /// <summary>
