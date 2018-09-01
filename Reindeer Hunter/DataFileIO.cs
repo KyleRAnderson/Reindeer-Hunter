@@ -26,7 +26,7 @@ namespace Reindeer_Hunter
         protected static bool dataFileExists = false;
 
         // This is what other threads must have to access the sensitive code.
-        static object key = new object();
+        private static object key = new object();
 
         public static readonly string FFADataLoc = "FFA";
         public static readonly string StudentDataLoc = "students";
@@ -358,12 +358,13 @@ namespace Reindeer_Hunter
         {
             // Get directory and loop around deleting all the files.
             DirectoryInfo dir = new DirectoryInfo(DataLocation);
+            string[] acceptable_paths = { ".pdf", ".json", ".txt" };
 
             List<FileInfo> filesInSaveDir = new List<FileInfo>(dir.GetFiles());
             foreach (FileInfo file in filesInSaveDir)
             {
                 // In case there's other stuff there.
-                if (file.Extension == ".pdf" || file.Extension == ".json" || file.Extension == ".txt") file.Delete();
+                if (acceptable_paths.Contains(file.Extension)) file.Delete();
             }
         }
 

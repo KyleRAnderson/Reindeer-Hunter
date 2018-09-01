@@ -129,8 +129,8 @@ namespace Reindeer_Hunter.Subsystems
         {
             // Warn the user, ask them for permission to continue
             MessageBoxResult result = MessageBox.Show("WARNING - This will overwrite all current information being stored. " +
-               "If you want to save the current information but would like to view the imported information, " +
-               "export it first and the import. \nProceed?", "WARNING", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
+               "If you want to save the current information but would like to import another save, " +
+               "export this hunt first and then import the other hunt. \nProceed?", "WARNING", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
 
             if (result != MessageBoxResult.OK) return;
 
