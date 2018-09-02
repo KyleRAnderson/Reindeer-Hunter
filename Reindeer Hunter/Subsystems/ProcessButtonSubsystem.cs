@@ -157,7 +157,7 @@ namespace Reindeer_Hunter.Subsystems
             // All we need to do is update the text.
             if (Status == MATCHMAKING)
             {
-                processButton.Content = String.Format("Matchmake R{0}", CurrRoundNo + 1);
+                processButton.Content = string.Format("Matchmake R{0}", CurrRoundNo + 1);
             }
             // Status is otherwise instant print.
             else if (Status == INSTANTPRINT)
@@ -232,6 +232,7 @@ namespace Reindeer_Hunter.Subsystems
             school.IsFFARound = true;
             ((StartupWindow)Manager.Home.Parent).GoToFFA();
             WentToFFA(this, new EventArgs());
+            UpdateStatus();
         }
     }
 }

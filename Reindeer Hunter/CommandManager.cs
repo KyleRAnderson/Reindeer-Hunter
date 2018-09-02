@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using Reindeer_Hunter.Subsystems;
 
 namespace Reindeer_Hunter
