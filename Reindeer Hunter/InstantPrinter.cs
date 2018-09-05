@@ -19,25 +19,25 @@ namespace Reindeer_Hunter
         protected static List<Match> MatchList;
 
         // Path location of the template PDF file
-        private string TemplateLocation;
+        private string templateLocation;
 
         // Path where the duplicated file will be exported.
-        private string TempLocation;
+        private string tempLocation;
 
         // Path location where filled file will be exported.
-        private string OutputLocation;
+        private string outputLocation;
 
         // Temporary path for stuff
-        private string Temp2Location;
+        private string temp2Location;
 
         // The end date to be put on the licenses.
-        private string EndDate;
+        private string endDate;
 
         // Queue used for communication
         private Queue<PrintMessage> Print_Comms;
 
         // The URL of the form
-        private string FormURL = "";
+        private string formURL = "";
 
         protected readonly object Key;
 
@@ -48,11 +48,7 @@ namespace Reindeer_Hunter
         protected static long RoundNo;
 
         // Statuses
-        public static int SETUP = 0;
-        public static int CREATINGPAGES = 1;
-        public static int FILLING = 2;
-        public static int COMPLETED = 3;
-        public static int GENERATING_LICENSE_OBJECTS = 4;
+        public enum PrintStatus { Setup, CreatingPages, Filling, Completed, Generating_License_Object };
         public Stopwatch stopwatch;
 
         /// <summary>
@@ -62,7 +58,7 @@ namespace Reindeer_Hunter
         {
             get
             {
-                return FormURL != string.Empty;
+                return formURL != string.Empty;
             }
         }
 
@@ -75,18 +71,18 @@ namespace Reindeer_Hunter
             long roundNo, object key, Queue<PrintMessage> comms, string DataPath, string endDate, string formURL)
         {
             // Set up file locations
-            TempLocation = Path.Combine(DataPath, "Duplicate.tmp");
-            OutputLocation = Path.Combine(DataPath, "FilledLicenses.tmp");
-            Temp2Location = Path.Combine(DataPath, "Temporary.tmp");
-            TemplateLocation = Path.Combine(DataPath, DataFileIO.TemplatePDFName);
+            tempLocation = Path.Combine(DataPath, "Duplicate.tmp");
+            outputLocation = Path.Combine(DataPath, "FilledLicenses.tmp");
+            temp2Location = Path.Combine(DataPath, "Temporary.tmp");
+            templateLocation = Path.Combine(DataPath, DataFileIO.TemplatePDFName);
 
 
             Key = key;
             MatchList = matches;
             RoundNo = roundNo;
             Print_Comms = comms;
-            EndDate = endDate;
-            FormURL = formURL;
+            this.endDate = endDate;
+            this.formURL = formURL;
         }
 
         /// <summary>
@@ -97,12 +93,12 @@ namespace Reindeer_Hunter
             stopwatch = new Stopwatch();
             stopwatch.Start();
 
-            SendUpdateMessage(0, status: GENERATING_LICENSE_OBJECTS);
+            SendUpdateMessage(0, status: PrintStatus.Generating_License_Object);
 
             // Make license objects.
-            List<License> licenses = Generate_License_Objects(MatchList, EndDate);
+            List<License> licenses = Generate_License_Objects(MatchList, endDate);
 
-            SendUpdateMessage(0, status: SETUP);
+            SendUpdateMessage(0, status: PrintStatus.Setup);
 
             /* 
              * Determine how many pages will be necessary. 
@@ -114,7 +110,7 @@ namespace Reindeer_Hunter
             // Duplicate as many pages as is necessary
             Document document = new Document();
             PdfCopy copy = new PdfSmartCopy(document, new FileStream(
-                TempLocation, FileMode.Create));
+                tempLocation, FileMode.Create));
 
             // Used this to close all the readers later
             List<PdfReader> readers = new List<PdfReader>();
@@ -125,11 +121,11 @@ namespace Reindeer_Hunter
 
             for (int copier = 0; copier < pagesNeeded; copier++)
             {
-                PdfReader pdfreader = RenamePDFFields(TemplateLocation, Temp2Location, copier);
+                PdfReader pdfreader = RenamePDFFields(templateLocation, temp2Location, copier);
                 copy.AddDocument(pdfreader);
                 readers.Add(pdfreader);
                 
-                File.Delete(Temp2Location);
+                File.Delete(temp2Location);
             }
 
             copy.CloseStream = true;
@@ -138,9 +134,9 @@ namespace Reindeer_Hunter
 
             foreach (PdfReader readerToClose in readers) readerToClose.Close();
 
-            PdfReader reader = new PdfReader(TempLocation);
+            PdfReader reader = new PdfReader(tempLocation);
             PdfStamper stamper = new PdfStamper(reader, 
-                new FileStream(OutputLocation, FileMode.Create));
+                new FileStream(outputLocation, FileMode.Create));
             AcroFields formFields = stamper.AcroFields;
 
             StuffDone = 0;
@@ -151,7 +147,7 @@ namespace Reindeer_Hunter
             {
                 Tuple<int, int> fraction = new Tuple<int, int>(StuffDone, StuffToDo);
                 double percent = (double) StuffDone / StuffToDo;
-                SendUpdateMessage(percent, FILLING, fraction);
+                SendUpdateMessage(percent, PrintStatus.Filling, fraction);
 
                 License license = licenses[a];
 
@@ -193,7 +189,7 @@ namespace Reindeer_Hunter
                 formFields.SetField(roundpath, license.Round.ToString());
 
                 // Set the date
-                formFields.SetField(datePath, EndDate);
+                formFields.SetField(datePath, endDate);
 
                 // Set the second student's info.
                 formFields.SetField(student2path,
@@ -248,9 +244,9 @@ namespace Reindeer_Hunter
             stamper.Close();
             reader.Close();
 
-            File.Delete(TempLocation);
+            File.Delete(tempLocation);
 
-            SendUpdateMessage(1, COMPLETED);
+            SendUpdateMessage(1, PrintStatus.Completed);
         }
 
         private PdfReader RenamePDFFields(string source, string output, int pageNo)
@@ -273,10 +269,10 @@ namespace Reindeer_Hunter
             float posx, float posy, int width, int height)
         {
             // If the form url is empty, do not proceed.
-            if (FormURL == "") return null;
+            if (formURL == "") return null;
 
             // Generate the proper url. TODO make URL easy to change.
-            string url = string.Format(FormURL, student1first, student1last, student1_homeroom, student1id);
+            string url = string.Format(formURL, student1first, student1last, student1_homeroom, student1id);
 
             BarcodeQRCode qRCode = new BarcodeQRCode(url, width, height, null);
             Image qr = qRCode.GetImage();
@@ -387,23 +383,23 @@ namespace Reindeer_Hunter
         /// <param name="status">Integer status</param>
         /// <param name="fraction">Tuple (stuffDone/stuffToDo). Provide it when status = FILLING</param>
         /// <param name="path">The path at which the file was exported to temporarily.</param>
-        private void SendUpdateMessage(double percent, int status, Tuple<int, int> fraction = null, string path = "")
+        private void SendUpdateMessage(double percent, PrintStatus status, Tuple<int, int> fraction = null, string path = "")
         {
             string textMessage;
 
-            if (status == GENERATING_LICENSE_OBJECTS)
+            if (status == PrintStatus.Generating_License_Object)
             {
                 textMessage = "Making License Objects";
             }
-            else if (status == SETUP)
+            else if (status == PrintStatus.Setup)
             {
                 textMessage = "Getting Ready";
             }
-            else if (status == CREATINGPAGES)
+            else if (status == PrintStatus.CreatingPages)
             {
                 textMessage = "Creating pages";
             }
-            else if (status == FILLING)
+            else if (status == PrintStatus.Filling)
             {
                 textMessage = "Filling form. License " + fraction.Item1.ToString() 
                     + "/" + fraction.Item2.ToString();
@@ -417,7 +413,7 @@ namespace Reindeer_Hunter
                 stopwatch.Stop();
 
                 textMessage = "Completed " + seconds.ToString() + " seconds.";
-                path = OutputLocation;
+                path = outputLocation;
             }
 
             PrintMessage message = new PrintMessage
