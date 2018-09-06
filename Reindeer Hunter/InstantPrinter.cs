@@ -82,47 +82,17 @@ namespace Reindeer_Hunter
         /// </summary>
         /// <param name="document">Document the document to use in copying the PDF file.</param>
         /// <param name="stream">The stream to copy the document to.</param>
-        private static PdfSmartCopy CopyDocument(Document document, Stream stream)
+        /// <param name="pagesNeeded">Number of pages needed total</param>
+        /// <returns>The PdfSmartCopy object created.</returns>
+        private PdfSmartCopy CopyDocument(Document document, Stream stream, int pagesNeeded)
         {
             PdfSmartCopy working_document = new PdfSmartCopy(document, stream);
-
-            return working_document;
-        }
-
-        /// <summary>
-        /// The function responsible for completely filling the PDF
-        /// </summary>
-        public void Print()
-        {
-            stopwatch = new Stopwatch();
-            stopwatch.Start();
-
-            SendUpdateMessage(0, status: PrintStatus.Generating_License_Object);
-
-            // Make license objects.
-            List<License> licenses = Generate_License_Objects(MatchList, endDate);
-
-            SendUpdateMessage(0, status: PrintStatus.Setup);
-
-            /* 
-             * Determine how many pages will be necessary. 
-             * Keep in mind that 8 licenses can be fit on each page.
-             * So, we divide the license number by 8.
-             */
-            int pagesNeeded = (int)Math.Ceiling((double)licenses.Count / 8);
-
-            // Duplicate as many pages as is necessary
-            MemoryStream memoryStream = new MemoryStream();
-            Document document = new Document();
-            // Copy the document from storage.
-            PdfSmartCopy working_document = CopyDocument(document, memoryStream);
             working_document.SetMergeFields();
 
             // Used this to close all the readers later
             PdfReader[] readers = new PdfReader[pagesNeeded];
 
             document.Open();
-            // TODO determine if we should have this
 
             for (int copier = 0; copier < pagesNeeded; copier++)
             {
@@ -131,27 +101,36 @@ namespace Reindeer_Hunter
                 readers[copier] = pdfreader;
             }
 
-            // TODO figure out if this is needed.
-            //working_document.CloseStream = true;
-            //working_document.Close();
             document.Close();
 
             foreach (PdfReader readerToClose in readers) readerToClose.Close();
 
+            return working_document;
+        }
+        
+        /// <summary>
+        /// Fills in all the PDF forms on the page as well as the QR codes if the form URL is set.
+        /// </summary>
+        /// <param name="document">The document to work with</param>
+        /// <param name="memoryStream">The memory stream containing the copied document</param>
+        /// <param name="licenses">The licenses to print.</param>
+        private void FillFormFields(Document document, MemoryStream memoryStream, License[] licenses)
+        {
+            // Get ready to fill the forms.
             PdfReader reader = new PdfReader(memoryStream.ToArray());
             MemoryStream memStream = new MemoryStream();
-            PdfStamper stamper = new PdfStamper(reader, 
+            PdfStamper stamper = new PdfStamper(reader,
                 new FileStream(outputLocation, FileMode.Create));
             AcroFields formFields = stamper.AcroFields;
 
             StuffDone = 0;
-            StuffToDo = licenses.Count;
+            StuffToDo = licenses.Length;
 
             // Loop through all matches and write the information
             for (int a = 0; a < StuffToDo; a++)
             {
                 Tuple<int, int> fraction = new Tuple<int, int>(StuffDone, StuffToDo);
-                double percent = (double) StuffDone / StuffToDo;
+                double percent = (double)StuffDone / StuffToDo;
                 SendUpdateMessage(percent, PrintStatus.Filling, fraction);
 
                 License license = licenses[a];
@@ -168,21 +147,10 @@ namespace Reindeer_Hunter
                 string roundpath;
                 string datePath;
 
-                // If it's the first license of the page, there's no underscore and id number
-                if (IndexNo < 2)
-                {
-                    student1path = string.Format("Student1P{0}", PageNo);
-                    student2path = string.Format("Student2P{0}", PageNo);
-                    roundpath = string.Format("RoundP{0}", PageNo);
-                    datePath = string.Format("DateP{0}", PageNo);
-                }
-                else
-                {
-                    student1path = string.Format("Student1_{0}P{1}", IndexNo, PageNo);
-                    student2path = string.Format("Student2_{0}P{1}", IndexNo, PageNo);
-                    roundpath = string.Format("Round_{0}P{1}", IndexNo, PageNo);
-                    datePath = string.Format("Date_{0}P{1}", IndexNo, PageNo);
-                }
+                student1path = string.Format("Student1_{0}P{1}", IndexNo, PageNo);
+                student2path = string.Format("Student2_{0}P{1}", IndexNo, PageNo);
+                roundpath = string.Format("Round_{0}P{1}", IndexNo, PageNo);
+                datePath = string.Format("Date_{0}P{1}", IndexNo, PageNo);
 
                 // Fill in the form fields.
 
@@ -248,6 +216,37 @@ namespace Reindeer_Hunter
             stamper.FormFlattening = false;
             stamper.Close();
             reader.Close();
+        }
+
+        /// <summary>
+        /// The function responsible for completely filling the PDF
+        /// </summary>
+        public void Print()
+        {
+            stopwatch = new Stopwatch();
+            stopwatch.Start();
+
+            SendUpdateMessage(0, status: PrintStatus.Generating_License_Object);
+
+            // Make license objects.
+            License[] licenses = Generate_License_Objects(MatchList, endDate).ToArray();
+
+            SendUpdateMessage(0, status: PrintStatus.Setup);
+
+            /* 
+             * Determine how many pages will be necessary. 
+             * Keep in mind that 8 licenses can be fit on each page.
+             * So, we divide the license number by 8.
+             */
+            int pagesNeeded = (int)Math.Ceiling((double)licenses.Length / 8);
+
+            // Duplicate as many pages as is necessary
+            MemoryStream memoryStream = new MemoryStream();
+            Document document = new Document();
+            // Copy the document from storage.
+            PdfSmartCopy working_document = CopyDocument(document, memoryStream, pagesNeeded);
+
+            FillFormFields(document, memoryStream, licenses);
 
             SendUpdateMessage(1, PrintStatus.Completed);
         }
