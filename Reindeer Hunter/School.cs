@@ -5,7 +5,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -318,7 +317,6 @@ namespace Reindeer_Hunter
         /// <returns>List of matches relevant to the search</returns>
         public List<Match> GetMatches(SearchQuery query, Filter filter)
         {
-            Thread.Sleep(100000000); // TODO remove this and using
             List<Match> resultsList = new List<Match>();
 
             // If match id is provided, get that match's info if it exists, else error.

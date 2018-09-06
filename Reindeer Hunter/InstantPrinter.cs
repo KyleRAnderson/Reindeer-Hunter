@@ -21,14 +21,8 @@ namespace Reindeer_Hunter
         // Path location of the template PDF file
         private string templateLocation;
 
-        // Path where the duplicated file will be exported.
-        private string tempLocation;
-
         // Path location where filled file will be exported.
         private string outputLocation;
-
-        // Temporary path for stuff
-        private string temp2Location;
 
         // The end date to be put on the licenses.
         private string endDate;
@@ -71,9 +65,7 @@ namespace Reindeer_Hunter
             long roundNo, object key, Queue<PrintMessage> comms, string DataPath, string endDate, string formURL)
         {
             // Set up file locations
-            tempLocation = Path.Combine(DataPath, "Duplicate.tmp");
             outputLocation = Path.Combine(DataPath, "FilledLicenses.tmp");
-            temp2Location = Path.Combine(DataPath, "Temporary.tmp");
             templateLocation = Path.Combine(DataPath, DataFileIO.TemplatePDFName);
 
 
@@ -83,6 +75,18 @@ namespace Reindeer_Hunter
             Print_Comms = comms;
             this.endDate = endDate;
             this.formURL = formURL;
+        }
+
+        /// <summary>
+        /// Copies the template PDF file (at the given file path) to the given stream.
+        /// </summary>
+        /// <param name="document">Document the document to use in copying the PDF file.</param>
+        /// <param name="stream">The stream to copy the document to.</param>
+        private static PdfSmartCopy CopyDocument(Document document, Stream stream)
+        {
+            PdfSmartCopy working_document = new PdfSmartCopy(document, stream);
+
+            return working_document;
         }
 
         /// <summary>
@@ -108,33 +112,34 @@ namespace Reindeer_Hunter
             int pagesNeeded = (int)Math.Ceiling((double)licenses.Count / 8);
 
             // Duplicate as many pages as is necessary
+            MemoryStream memoryStream = new MemoryStream();
             Document document = new Document();
-            PdfCopy copy = new PdfSmartCopy(document, new FileStream(
-                tempLocation, FileMode.Create));
+            // Copy the document from storage.
+            PdfSmartCopy working_document = CopyDocument(document, memoryStream);
+            working_document.SetMergeFields();
 
             // Used this to close all the readers later
-            List<PdfReader> readers = new List<PdfReader>();
+            PdfReader[] readers = new PdfReader[pagesNeeded];
 
-            copy.Open();
-            copy.SetMergeFields();
             document.Open();
+            // TODO determine if we should have this
 
             for (int copier = 0; copier < pagesNeeded; copier++)
             {
-                PdfReader pdfreader = RenamePDFFields(templateLocation, temp2Location, copier);
-                copy.AddDocument(pdfreader);
-                readers.Add(pdfreader);
-                
-                File.Delete(temp2Location);
+                PdfReader pdfreader = RenamePDFFields(copier);
+                working_document.AddDocument(pdfreader);
+                readers[copier] = pdfreader;
             }
 
-            copy.CloseStream = true;
-            copy.Close();
+            // TODO figure out if this is needed.
+            //working_document.CloseStream = true;
+            //working_document.Close();
             document.Close();
 
             foreach (PdfReader readerToClose in readers) readerToClose.Close();
 
-            PdfReader reader = new PdfReader(tempLocation);
+            PdfReader reader = new PdfReader(memoryStream.ToArray());
+            MemoryStream memStream = new MemoryStream();
             PdfStamper stamper = new PdfStamper(reader, 
                 new FileStream(outputLocation, FileMode.Create));
             AcroFields formFields = stamper.AcroFields;
@@ -244,25 +249,33 @@ namespace Reindeer_Hunter
             stamper.Close();
             reader.Close();
 
-            File.Delete(tempLocation);
-
             SendUpdateMessage(1, PrintStatus.Completed);
         }
 
-        private PdfReader RenamePDFFields(string source, string output, int pageNo)
+        /// <summary>
+        /// Renames all the form fields in this duplicated PDF so that the form field names don't conflict with each other when
+        /// they are all added together.
+        /// </summary>
+        /// <param name="templateLocation">The string location of the template PDF file.</param>
+        /// <param name="pageNo">The page number of the first page of this new PDF.</param>
+        /// <returns>The PdfReader object used to read the new PDF.</returns>
+        private PdfReader RenamePDFFields(int pageNo)
         {
-            PdfReader reader = new PdfReader(source);
-            PdfStamper stamper = new PdfStamper(reader, new FileStream(output, FileMode.Create));
+            MemoryStream memoryStream = new MemoryStream();
+            PdfReader reader = new PdfReader(templateLocation);
+            PdfStamper stamper = new PdfStamper(reader, memoryStream);
             AcroFields forms = stamper.AcroFields;
-            List<string> keys = new List<string>(forms.Fields.Keys);
+            HashSet<string> keys = new HashSet<string>(forms.Fields.Keys);
 
             foreach (string formKey in keys)
             {
-                forms.RenameField(formKey, String.Format("{0}P{1}", formKey, pageNo));
+                forms.RenameField(formKey, string.Format("{0}P{1}", formKey, pageNo));
             }
 
             stamper.Close();
-            return reader;
+            reader.Close();
+
+            return new PdfReader(memoryStream.ToArray());
         }
 
         private Image GenerateQRCode(string student1first, string student1last, int student1_homeroom, int student1id, 
