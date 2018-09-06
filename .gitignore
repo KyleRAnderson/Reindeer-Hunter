@@ -1,7 +1,8 @@
 /.vs/
 */data.json
-/Reindeer Hunter/bin/
-/Hunt_Setup/Debug/
+*/bin/
+*/Debug/
+*/Release/
 /Reindeer Hunter/obj/
 packages/*
 !packages/repositories.config
