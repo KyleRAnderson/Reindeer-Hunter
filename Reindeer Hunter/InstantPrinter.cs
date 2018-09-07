@@ -19,25 +19,19 @@ namespace Reindeer_Hunter
         protected static List<Match> MatchList;
 
         // Path location of the template PDF file
-        private string TemplateLocation;
-
-        // Path where the duplicated file will be exported.
-        private string TempLocation;
+        private string templateLocation;
 
         // Path location where filled file will be exported.
-        private string OutputLocation;
-
-        // Temporary path for stuff
-        private string Temp2Location;
+        private string outputLocation;
 
         // The end date to be put on the licenses.
-        private string EndDate;
+        private string endDate;
 
         // Queue used for communication
         private Queue<PrintMessage> Print_Comms;
 
         // The URL of the form
-        private string FormURL = "";
+        private string formURL = "";
 
         protected readonly object Key;
 
@@ -48,11 +42,7 @@ namespace Reindeer_Hunter
         protected static long RoundNo;
 
         // Statuses
-        public static int SETUP = 0;
-        public static int CREATINGPAGES = 1;
-        public static int FILLING = 2;
-        public static int COMPLETED = 3;
-        public static int GENERATING_LICENSE_OBJECTS = 4;
+        public enum PrintStatus { Setup, CreatingPages, Filling, Completed, Generating_License_Object };
         public Stopwatch stopwatch;
 
         /// <summary>
@@ -62,7 +52,7 @@ namespace Reindeer_Hunter
         {
             get
             {
-                return FormURL != string.Empty;
+                return formURL != string.Empty;
             }
         }
 
@@ -75,83 +65,73 @@ namespace Reindeer_Hunter
             long roundNo, object key, Queue<PrintMessage> comms, string DataPath, string endDate, string formURL)
         {
             // Set up file locations
-            TempLocation = Path.Combine(DataPath, "Duplicate.tmp");
-            OutputLocation = Path.Combine(DataPath, "FilledLicenses.tmp");
-            Temp2Location = Path.Combine(DataPath, "Temporary.tmp");
-            TemplateLocation = Path.Combine(DataPath, DataFileIO.TemplatePDFName);
+            outputLocation = Path.Combine(DataPath, "FilledLicenses.tmp");
+            templateLocation = Path.Combine(DataPath, DataFileIO.TemplatePDFName);
 
 
             Key = key;
             MatchList = matches;
             RoundNo = roundNo;
             Print_Comms = comms;
-            EndDate = endDate;
-            FormURL = formURL;
+            this.endDate = endDate;
+            this.formURL = formURL;
         }
 
         /// <summary>
-        /// The function responsible for completely filling the PDF
+        /// Copies the template PDF file (at the given file path) to the given stream.
         /// </summary>
-        public void Print()
+        /// <param name="document">Document the document to use in copying the PDF file.</param>
+        /// <param name="stream">The stream to copy the document to.</param>
+        /// <param name="pagesNeeded">Number of pages needed total</param>
+        /// <returns>The PdfSmartCopy object created.</returns>
+        private PdfSmartCopy CopyDocument(Document document, Stream stream, int pagesNeeded)
         {
-            stopwatch = new Stopwatch();
-            stopwatch.Start();
-
-            SendUpdateMessage(0, status: GENERATING_LICENSE_OBJECTS);
-
-            // Make license objects.
-            List<License> licenses = Generate_License_Objects(MatchList, EndDate);
-
-            SendUpdateMessage(0, status: SETUP);
-
-            /* 
-             * Determine how many pages will be necessary. 
-             * Keep in mind that 8 licenses can be fit on each page.
-             * So, we divide the license number by 8.
-             */
-            int pagesNeeded = (int)Math.Ceiling((double)licenses.Count / 8);
-
-            // Duplicate as many pages as is necessary
-            Document document = new Document();
-            PdfCopy copy = new PdfSmartCopy(document, new FileStream(
-                TempLocation, FileMode.Create));
+            PdfSmartCopy working_document = new PdfSmartCopy(document, stream);
+            working_document.SetMergeFields();
 
             // Used this to close all the readers later
-            List<PdfReader> readers = new List<PdfReader>();
+            PdfReader[] readers = new PdfReader[pagesNeeded];
 
-            copy.Open();
-            copy.SetMergeFields();
             document.Open();
 
             for (int copier = 0; copier < pagesNeeded; copier++)
             {
-                PdfReader pdfreader = RenamePDFFields(TemplateLocation, Temp2Location, copier);
-                copy.AddDocument(pdfreader);
-                readers.Add(pdfreader);
-                
-                File.Delete(Temp2Location);
+                PdfReader pdfreader = RenamePDFFields(copier);
+                working_document.AddDocument(pdfreader);
+                readers[copier] = pdfreader;
             }
 
-            copy.CloseStream = true;
-            copy.Close();
             document.Close();
 
             foreach (PdfReader readerToClose in readers) readerToClose.Close();
 
-            PdfReader reader = new PdfReader(TempLocation);
-            PdfStamper stamper = new PdfStamper(reader, 
-                new FileStream(OutputLocation, FileMode.Create));
+            return working_document;
+        }
+        
+        /// <summary>
+        /// Fills in all the PDF forms on the page as well as the QR codes if the form URL is set.
+        /// </summary>
+        /// <param name="document">The document to work with</param>
+        /// <param name="memoryStream">The memory stream containing the copied document</param>
+        /// <param name="licenses">The licenses to print.</param>
+        private void FillFormFields(Document document, MemoryStream memoryStream, License[] licenses)
+        {
+            // Get ready to fill the forms.
+            PdfReader reader = new PdfReader(memoryStream.ToArray());
+            MemoryStream memStream = new MemoryStream();
+            PdfStamper stamper = new PdfStamper(reader,
+                new FileStream(outputLocation, FileMode.Create));
             AcroFields formFields = stamper.AcroFields;
 
             StuffDone = 0;
-            StuffToDo = licenses.Count;
+            StuffToDo = licenses.Length;
 
             // Loop through all matches and write the information
             for (int a = 0; a < StuffToDo; a++)
             {
                 Tuple<int, int> fraction = new Tuple<int, int>(StuffDone, StuffToDo);
-                double percent = (double) StuffDone / StuffToDo;
-                SendUpdateMessage(percent, FILLING, fraction);
+                double percent = (double)StuffDone / StuffToDo;
+                SendUpdateMessage(percent, PrintStatus.Filling, fraction);
 
                 License license = licenses[a];
 
@@ -167,21 +147,10 @@ namespace Reindeer_Hunter
                 string roundpath;
                 string datePath;
 
-                // If it's the first license of the page, there's no underscore and id number
-                if (IndexNo < 2)
-                {
-                    student1path = string.Format("Student1P{0}", PageNo);
-                    student2path = string.Format("Student2P{0}", PageNo);
-                    roundpath = string.Format("RoundP{0}", PageNo);
-                    datePath = string.Format("DateP{0}", PageNo);
-                }
-                else
-                {
-                    student1path = string.Format("Student1_{0}P{1}", IndexNo, PageNo);
-                    student2path = string.Format("Student2_{0}P{1}", IndexNo, PageNo);
-                    roundpath = string.Format("Round_{0}P{1}", IndexNo, PageNo);
-                    datePath = string.Format("Date_{0}P{1}", IndexNo, PageNo);
-                }
+                student1path = string.Format("Student1_{0}P{1}", IndexNo, PageNo);
+                student2path = string.Format("Student2_{0}P{1}", IndexNo, PageNo);
+                roundpath = string.Format("Round_{0}P{1}", IndexNo, PageNo);
+                datePath = string.Format("Date_{0}P{1}", IndexNo, PageNo);
 
                 // Fill in the form fields.
 
@@ -193,7 +162,7 @@ namespace Reindeer_Hunter
                 formFields.SetField(roundpath, license.Round.ToString());
 
                 // Set the date
-                formFields.SetField(datePath, EndDate);
+                formFields.SetField(datePath, endDate);
 
                 // Set the second student's info.
                 formFields.SetField(student2path,
@@ -247,36 +216,75 @@ namespace Reindeer_Hunter
             stamper.FormFlattening = false;
             stamper.Close();
             reader.Close();
-
-            File.Delete(TempLocation);
-
-            SendUpdateMessage(1, COMPLETED);
         }
 
-        private PdfReader RenamePDFFields(string source, string output, int pageNo)
+        /// <summary>
+        /// The function responsible for completely filling the PDF
+        /// </summary>
+        public void Print()
         {
-            PdfReader reader = new PdfReader(source);
-            PdfStamper stamper = new PdfStamper(reader, new FileStream(output, FileMode.Create));
+            stopwatch = new Stopwatch();
+            stopwatch.Start();
+
+            SendUpdateMessage(0, status: PrintStatus.Generating_License_Object);
+
+            // Make license objects.
+            License[] licenses = Generate_License_Objects(MatchList, endDate).ToArray();
+
+            SendUpdateMessage(0, status: PrintStatus.Setup);
+
+            /* 
+             * Determine how many pages will be necessary. 
+             * Keep in mind that 8 licenses can be fit on each page.
+             * So, we divide the license number by 8.
+             */
+            int pagesNeeded = (int)Math.Ceiling((double)licenses.Length / 8);
+
+            // Duplicate as many pages as is necessary
+            MemoryStream memoryStream = new MemoryStream();
+            Document document = new Document();
+            // Copy the document from storage.
+            PdfSmartCopy working_document = CopyDocument(document, memoryStream, pagesNeeded);
+
+            FillFormFields(document, memoryStream, licenses);
+
+            SendUpdateMessage(1, PrintStatus.Completed);
+        }
+
+        /// <summary>
+        /// Renames all the form fields in this duplicated PDF so that the form field names don't conflict with each other when
+        /// they are all added together.
+        /// </summary>
+        /// <param name="templateLocation">The string location of the template PDF file.</param>
+        /// <param name="pageNo">The page number of the first page of this new PDF.</param>
+        /// <returns>The PdfReader object used to read the new PDF.</returns>
+        private PdfReader RenamePDFFields(int pageNo)
+        {
+            MemoryStream memoryStream = new MemoryStream();
+            PdfReader reader = new PdfReader(templateLocation);
+            PdfStamper stamper = new PdfStamper(reader, memoryStream);
             AcroFields forms = stamper.AcroFields;
-            List<string> keys = new List<string>(forms.Fields.Keys);
+            HashSet<string> keys = new HashSet<string>(forms.Fields.Keys);
 
             foreach (string formKey in keys)
             {
-                forms.RenameField(formKey, String.Format("{0}P{1}", formKey, pageNo));
+                forms.RenameField(formKey, string.Format("{0}P{1}", formKey, pageNo));
             }
 
             stamper.Close();
-            return reader;
+            reader.Close();
+
+            return new PdfReader(memoryStream.ToArray());
         }
 
         private Image GenerateQRCode(string student1first, string student1last, int student1_homeroom, int student1id, 
             float posx, float posy, int width, int height)
         {
             // If the form url is empty, do not proceed.
-            if (FormURL == "") return null;
+            if (formURL == "") return null;
 
             // Generate the proper url. TODO make URL easy to change.
-            string url = string.Format(FormURL, student1first, student1last, student1_homeroom, student1id);
+            string url = string.Format(formURL, student1first, student1last, student1_homeroom, student1id);
 
             BarcodeQRCode qRCode = new BarcodeQRCode(url, width, height, null);
             Image qr = qRCode.GetImage();
@@ -387,23 +395,23 @@ namespace Reindeer_Hunter
         /// <param name="status">Integer status</param>
         /// <param name="fraction">Tuple (stuffDone/stuffToDo). Provide it when status = FILLING</param>
         /// <param name="path">The path at which the file was exported to temporarily.</param>
-        private void SendUpdateMessage(double percent, int status, Tuple<int, int> fraction = null, string path = "")
+        private void SendUpdateMessage(double percent, PrintStatus status, Tuple<int, int> fraction = null, string path = "")
         {
             string textMessage;
 
-            if (status == GENERATING_LICENSE_OBJECTS)
+            if (status == PrintStatus.Generating_License_Object)
             {
                 textMessage = "Making License Objects";
             }
-            else if (status == SETUP)
+            else if (status == PrintStatus.Setup)
             {
                 textMessage = "Getting Ready";
             }
-            else if (status == CREATINGPAGES)
+            else if (status == PrintStatus.CreatingPages)
             {
                 textMessage = "Creating pages";
             }
-            else if (status == FILLING)
+            else if (status == PrintStatus.Filling)
             {
                 textMessage = "Filling form. License " + fraction.Item1.ToString() 
                     + "/" + fraction.Item2.ToString();
@@ -417,7 +425,7 @@ namespace Reindeer_Hunter
                 stopwatch.Stop();
 
                 textMessage = "Completed " + seconds.ToString() + " seconds.";
-                path = OutputLocation;
+                path = outputLocation;
             }
 
             PrintMessage message = new PrintMessage

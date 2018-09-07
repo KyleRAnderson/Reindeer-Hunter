@@ -244,13 +244,6 @@ namespace Reindeer_Hunter.Subsystems
             CurrentFilters.Round = rounds;
             RoundFilter.Items.Refresh();
 
-            //// Subscribe to the newly created checkboxes' events.
-            //foreach (CheckBox checkbox in CurrentFilters.RoundCheckboxes)
-            //{
-            //    checkbox.Click += LoadContent;
-            //} 
-            // TODO re-implement
-
             // Notify the UI that the filters have changed and that it should update.
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CurrentFilters"));
 

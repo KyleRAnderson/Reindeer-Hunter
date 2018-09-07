@@ -4,9 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Media;
 
@@ -19,7 +17,7 @@ namespace Reindeer_Hunter.ThreadMonitors
         private readonly object Key = new object();
 
         private Queue<PrintMessage> comms;
-        private School school;
+        private School _School;
         private Thread printThread;
         private InstantPrinter printer;
         private ProcessButtonSubsystem subsystem;
@@ -47,7 +45,7 @@ namespace Reindeer_Hunter.ThreadMonitors
             comms = new Queue<PrintMessage>();
 
             // Instantiate school object for simplicity
-            this.school = school;
+            _School = school;
 
             // Make sure the template PDF file exists by the time printing begins. 
             if (!school.DataFile.TemplatePDFExists)
@@ -83,6 +81,11 @@ namespace Reindeer_Hunter.ThreadMonitors
             CompositionTarget.Rendering += PrintMonitor;
         }
 
+        /// <summary>
+        /// Monitors the instant print object in the other thread, updating the GUI with the status and prompting the user to export the file at the end.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public void PrintMonitor(object sender, EventArgs e)
         {
             lock (Key)
@@ -102,61 +105,71 @@ namespace Reindeer_Hunter.ThreadMonitors
                 // Progress is 100 % when complete
                 if (returnValue.Progress == 1)
                 {
-                    // Give the second thread the info it needs to move the file
-                    string path;
-                    SaveFileDialog fileDialog = new SaveFileDialog
-                    {
-                        // Open the file dialog to the user's directory
-                        InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-
-                        // Filter only for comma-seperated value files. 
-                        Filter = "pdf files (*.pdf)|*.pdf",
-                        FilterIndex = 2,
-                        RestoreDirectory = true
-                    };
-
-                    fileDialog.ShowDialog();
-
-                    if (fileDialog.FileName == "")
-                    {
-                        path = Path.Combine(Environment.GetFolderPath(
-                            Environment.SpecialFolder.Desktop), "FilledLicenses.pdf");
-
-                        MessageBox.Show("Export location Error. File was outputted to "
-                            + path, "Export Error",
-                            MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                    else path = fileDialog.FileName;
-
                     // Join the thread
                     printThread.Join();
 
-                    // Unsubscribe from event.
-                    CompositionTarget.Rendering -= PrintMonitor;
-
-                    // In case the user tries to overwrite another file
-                    try
-                    {
-                        if (File.Exists(path)) File.Delete(path);
-                    }
-                    catch (IOException)
-                    {
-                        path = Path.Combine(Environment.GetFolderPath(
-                           Environment.SpecialFolder.Desktop), "FilledLicenses.pdf");
-                        MessageBox.Show("Export location Error. That file is being used by another process. " +
-                            "File was outputted to "
-                            + path, "Export Error",
-                            MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-
-                    // Move the temporary file out of the code's folder.
-                    File.Move(returnValue.Path, path);
-
-                    System.Diagnostics.Process.Start("explorer.exe", Path.GetDirectoryName(path));
+                    // Export the result PDF file.
+                    ExportPDF(returnValue.Path);
 
                     IsPrinting = false;
                 }
             }
+        }
+
+        /// <summary>
+        /// Moves the exported PDF file to the location chosen by the user.
+        /// </summary>
+        /// <param name="current_location">The current location of the filled licenses PDF on file.</param>
+        private void ExportPDF(string current_location)
+        {
+            // Give the second thread the info it needs to move the file
+            string path;
+            SaveFileDialog fileDialog = new SaveFileDialog
+            {
+                // Open the file dialog to the user's directory
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+
+                // Filter only for comma-seperated value files. 
+                Filter = "pdf files (*.pdf)|*.pdf",
+                FilterIndex = 2,
+                RestoreDirectory = true
+            };
+
+            fileDialog.ShowDialog();
+
+            if (fileDialog.FileName == "")
+            {
+                path = Path.Combine(Environment.GetFolderPath(
+                    Environment.SpecialFolder.Desktop), "FilledLicenses.pdf");
+
+                MessageBox.Show("Export location Error. File was outputted to "
+                    + path, "Export Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else path = fileDialog.FileName;
+
+            // Unsubscribe from event.
+            CompositionTarget.Rendering -= PrintMonitor;
+
+            // In case the user tries to overwrite another file
+            try
+            {
+                if (File.Exists(path)) File.Delete(path);
+            }
+            catch (IOException)
+            {
+                path = Path.Combine(Environment.GetFolderPath(
+                   Environment.SpecialFolder.Desktop), "FilledLicenses.pdf");
+                MessageBox.Show("Export location Error. That file is being used by another process. " +
+                    "File was outputted to "
+                    + path, "Export Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            // Move the temporary file out of the code's folder.
+            File.Move(current_location, path);
+
+            System.Diagnostics.Process.Start("explorer.exe", Path.GetDirectoryName(path));
         }
     }
 }
