@@ -324,18 +324,15 @@ namespace Reindeer_Hunter.Subsystems
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="result"></param>
-        private void OnMatchResultRemoved(object sender, EventArgs e)
+        private void OnMatchResultRemoved(object sender, PassingStudent result)
         {
-            MatchGuiResult result = (MatchGuiResult)e;
-            foreach (Match match in MainDisplay_Display_List)
+            Match match = MainDisplay_Display_List.Find(m => m.MatchId == result.AffectedMatch.MatchId);
+
+            if (match != null)
             {
-                if (match.MatchId == result.MatchID)
-                {
-                    if (result.StuID == match.Id1) match.Pass1 = false;
-                    else match.Pass2 = false;
-                    MainDisplay.Items.Refresh();
-                    return;
-                }
+                if (match.IsStudent1(result.AffectedStudent)) match.Pass1 = false;
+                else match.Pass2 = false;
+                MainDisplay.Items.Refresh();
             }
         }
 

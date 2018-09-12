@@ -14,21 +14,19 @@ namespace Reindeer_Hunter.Subsystems
     public class PasserSubsystem : Subsystem
     {
         //  The statuses
-        public static readonly int DOING_NOTHING = 0;
-        public static readonly int PASSING_STUDENTS = 1;
-        public static readonly int HANDLING_MATCHES = 2;
+        public enum PasserStatus { Doing_Nothing, Passing_Students, Handling_Matches }
 
         /// <summary>
         /// The current state of the subsystem, whether we're about to pass students, or
         /// we're dealing with matches.
         /// </summary>
-        public int Status
+        public PasserStatus Status
         {
             get
             {
-                if (PassingStudents.Count > 0) return PASSING_STUDENTS;
-                else if (MatchEditQueue.Count > 0) return HANDLING_MATCHES;
-                else return DOING_NOTHING;
+                if (PassingStudents.Count > 0) return PasserStatus.Passing_Students;
+                else if (MatchEditQueue.Count > 0) return PasserStatus.Handling_Matches;
+                else return PasserStatus.Doing_Nothing;
             }
         }
 
@@ -36,7 +34,7 @@ namespace Reindeer_Hunter.Subsystems
         /// Triggered when a result is removed.
         /// Sends a MatchGuiResult object as EventArgs.
         /// </summary>
-        public event EventHandler ResultRemoved;
+        public event EventHandler<PassingStudent> ResultRemoved;
 
         /// <summary>
         /// Triggered when a result is added, by checking the checkbox.
@@ -56,7 +54,7 @@ namespace Reindeer_Hunter.Subsystems
         public RelayCommand ClearQueueCommand { get; } = new RelayCommand();
 
         // List of MatchGuiResults containing the students that are currently set to pass.
-        private Dictionary<int, MatchGuiResult> PassingStudents = new Dictionary<int, MatchGuiResult>();
+        private Dictionary<int, PassingStudent> PassingStudents = new Dictionary<int, PassingStudent>();
 
         // List of Matches To Edit
         private Dictionary<string, MatchButton> MatchEditQueue { get; set; } = new Dictionary<string, MatchButton>();
@@ -169,7 +167,7 @@ namespace Reindeer_Hunter.Subsystems
             Match selectedMatch = tuple.Item2;
             Student changedStudent = tuple.Item1;
 
-            if (Status != DOING_NOTHING && Status != PASSING_STUDENTS) return;
+            if (Status != PasserStatus.Doing_Nothing && Status != PasserStatus.Passing_Students) return;
 
             // If the match is closed, error
             if (selectedMatch.Closed)
@@ -231,18 +229,19 @@ namespace Reindeer_Hunter.Subsystems
                 // Make sure we only do this for proper matches.
                 if (name != "" && studentId != 0)
                 {
-                    MatchGuiResult matchResult = new MatchGuiResult(name)
+                    PassingStudent matchResult = new PassingStudent
                     {
-                        MatchID = selectedMatch.MatchId,
-                        StuID = studentId,
+                        AffectedMatch = selectedMatch,
+                        AffectedStudent = changedStudent
                     };
-                    matchResult.ResultButtonClick += RemoveResult;
+                    PasserButton button = new PasserButton(matchResult);
+                    button.Click += RemoveResult;
 
                     // Add match result to the list
-                    PassingStudents.Add(matchResult.StuID, matchResult);
+                    PassingStudents.Add(matchResult.AffectedStudent.Id, matchResult);
 
                     // Add the button created in the result object to the list and get its index.
-                    DisplayButtons.Add(matchResult.ResultButton);
+                    DisplayButtons.Add(button);
 
                     // Refresh the display
                     Refresh();
@@ -260,13 +259,13 @@ namespace Reindeer_Hunter.Subsystems
         /// <param name="e"></param>
         private void RemoveResult(object sender, EventArgs e)
         {
-            DisplayButtons.Remove(((MatchGuiResult)sender).ResultButton);
-            PassingStudents.Remove(((MatchGuiResult)sender).StuID);
+            DisplayButtons.Remove(((PasserButton)sender));
+            PassingStudents.Remove(((PasserButton)sender).MatchResult.AffectedStudent.Id);
 
             // Refresh the items.
             Refresh();
 
-            ResultRemoved(this, (MatchGuiResult)sender);
+            ResultRemoved(this, ((PasserButton)sender).MatchResult);
         }
 
         /// <summary>
@@ -288,7 +287,7 @@ namespace Reindeer_Hunter.Subsystems
             /* Can only edit matches if the status is correct, 
              * which only happens when there are matches in the list.
              */ 
-            return ( Status == HANDLING_MATCHES);
+            return ( Status == PasserStatus.Handling_Matches);
         }
 
         private void EditMatches(object parameter)
@@ -300,7 +299,7 @@ namespace Reindeer_Hunter.Subsystems
         private void AddMatchToQueue(object sender, Match match)
         {
             // If we're not in the right status, return.
-            if ((Status != DOING_NOTHING && Status != HANDLING_MATCHES) || match.MatchId == null ||
+            if ((Status != PasserStatus.Doing_Nothing && Status != PasserStatus.Handling_Matches) || match.MatchId == null ||
                 MatchEditQueue.ContainsKey(match.MatchId) || school.GetCurrRoundNo() == 0) return;
 
             MatchButton matchButton = new MatchButton(match);
@@ -331,7 +330,7 @@ namespace Reindeer_Hunter.Subsystems
         /// <returns></returns>
         private bool CanClearMatchEditQueue()
         {
-            return Status == HANDLING_MATCHES;
+            return Status == PasserStatus.Handling_Matches;
         }
 
         /// <summary>

@@ -73,7 +73,7 @@ namespace Reindeer_Hunter.Subsystems
         /// <returns></returns>
         private bool MatchEditQueueHasMatches()
         {
-            return Manager._Passer.Status == PasserSubsystem.HANDLING_MATCHES;
+            return Manager._Passer.Status == PasserSubsystem.PasserStatus.Handling_Matches;
         }
 
         /// <summary>

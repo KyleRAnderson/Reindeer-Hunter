@@ -482,18 +482,22 @@ namespace Reindeer_Hunter
             return newMatchList;
         }
 
-        public void AddMatchResults(List<MatchGuiResult> matcheResults)
+        /// <summary>
+        /// Add results to matches and calculate the new matches left and students still in the hunt.
+        /// </summary>
+        /// <param name="matchResults">The match results to be processed, in the form of MatchGuiResult objects.</param>
+        public void AddMatchResults(List<PassingStudent> matchResults)
         {
             // Update match and student data
-            foreach (MatchGuiResult matchResult in matcheResults)
+            foreach (PassingStudent matchResult in matchResults)
             {
-                Match match = match_directory[matchResult.MatchID];
+                Match match = matchResult.AffectedMatch;
 
                 // Seems not needed, but in case two people are passed then it's needed.
-                student_directory[matchResult.StuID].In = true;
+                matchResult.AffectedStudent.In = true;
 
-                // if the victor is student 1, mark student 2 as not in and pass student 1
-                if (matchResult.StuID == match.Id1)
+                // If the victor is student 1, mark student 2 as not in and pass student 1
+                if (match.IsStudent1(matchResult.AffectedStudent))
                 {
                     // If this match has already been closed, then the other student must have been passed too.
                     if (!match.Closed) student_directory[match.Id2].In = false;
@@ -516,92 +520,6 @@ namespace Reindeer_Hunter
         }
 
         /// <summary>
-        /// Function for reopening the given match. Make sure that the match isn't a pass match!
-        /// </summary>
-        /// <param name="matchId">The id of the match to reopen.</param>
-        public void ReopenMatch(string matchId)
-        {
-            // Reset required match and student parameters
-            Match match = match_directory[matchId];
-            match.Closed = false;
-            match.Pass1 = false;
-            match.Pass2 = false;
-
-            // Bring the students back in.
-            student_directory[match.Id1].In = true;
-            student_directory[match.Id2].In = true;
-
-            // Save and call match change event.
-            Save();
-            MatchChangeEvent?.Invoke(this, new EventArgs());
-        }
-
-        /// <summary>
-        /// Function to close the given match and eliminate both students in it.
-        /// </summary>
-        /// <param name="matchId">The id of the match to close.</param>
-        public void CloseMatch(string matchId, bool multiThread = false)
-        {
-            // Get the match object, and make sure it has the right values
-            Match match = match_directory[matchId];
-            // If the match is closed already, don't touch it.
-            if (match.Closed) return;
-            match.Closed = true;
-            match.Pass1 = false;
-            match.Pass2 = false;
-
-            // Put both students out.
-            student_directory[match.Id1].In = false;
-            if (!IsPassMatch(match)) student_directory[match.Id2].In = false;
-
-            if (multiThread)
-            {
-                // Just call the event for multi-thread, don't save.
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    MatchChangeEvent.Invoke(this, new EventArgs());
-                });
-            }
-            else
-            {
-                // Save and call the event
-                Save();
-                MatchChangeEvent?.Invoke(this, new EventArgs());
-            }
-        }
-
-        /// <summary>
-        /// Closes all the given matches
-        /// </summary>
-        /// <param name="matchesToClose">The list of matches to close</param>
-        public async Task CloseMatches(List<Match> matchesToClose)
-        {
-            foreach (Match match in matchesToClose)
-            {
-                CloseMatch(match.MatchId, multiThread: true);
-            }
-
-            // Save since close match won't do that anymore.
-            Save();
-            await Task.Delay(0);
-        }
-
-        /// <summary>
-        /// Closes all open matches.
-        /// </summary>
-        public async Task CloseAllMatches()
-        {
-            List<Match> matchesToClose = GetOpenMatchesList();
-            foreach (Match match in matchesToClose)
-            {
-                CloseMatch(match.MatchId, multiThread: true);
-            }
-            // Save, since CloseMatch won't do it for us now.
-            Save();
-            await Task.Delay(0);
-        }
-
-        /// <summary>
         /// Function for adding match results from the imported csv file.
         /// </summary>
         /// <param name="resultsStudents">List of ResultStudents containing the results.</param>
@@ -613,7 +531,7 @@ namespace Reindeer_Hunter
             // True as soon as there is a problem.
             bool error = false;
 
-            MatchResultImportLogger logger = 
+            MatchResultImportLogger logger =
                 new MatchResultImportLogger(DataFile, GetCurrRoundNo());
 
             // Start with looking for the student numbers, since that's faster
@@ -652,7 +570,7 @@ namespace Reindeer_Hunter
                         stuNo.ToString() + " is already out of the hunt.");
                 }
             }
-            
+
             if (error)
             {
                 logger.SaveAndClose();
@@ -661,41 +579,138 @@ namespace Reindeer_Hunter
 
                 // Open up the file explorer to the log.
                 Process.Start(logger.LogLocation);
-
-                return;
             }
-
-            // Now that all data is valid, proceed with closing of matches.
-            Dictionary<int, Match> relevantMatches = GetOpenMatchesWithStudentIds(idStudents);
-
-            // Update match and student data
-            foreach (KeyValuePair<int, Match> keyValue in relevantMatches)
+            else
             {
-                Match match = match_directory[keyValue.Value.MatchId];
+                // Now that all data is valid, proceed with closing of matches.
+                Dictionary<int, Match> relevantMatches = GetOpenMatchesWithStudentIds(idStudents);
 
-                // Seems not needed, but in case two people are passed then it's needed.
-                student_directory[keyValue.Key].In = true;
-
-                // if the victor is student 1, mark student 2 as not in and pass student 1
-                if (keyValue.Key == match.Id1)
+                // Update match and student data
+                foreach (KeyValuePair<int, Match> keyValue in relevantMatches)
                 {
-                    // If this match has already been closed, then the other student must have been passed too.
-                    if (!match.Closed) student_directory[match.Id2].In = false;
-                    match.Pass1 = true;
-                }
-                // Otherwise, mark student 1 as out and pass student 2
-                else
-                {
-                    // If this match has already been closed, then the other student must have been passed too
-                    if (!match.Closed) student_directory[match.Id1].In = false;
-                    match.Pass2 = true;
+                    Match match = match_directory[keyValue.Value.MatchId];
+
+                    // Seems not needed, but in case two people are passed then it's needed.
+                    student_directory[keyValue.Key].In = true;
+
+                    // if the victor is student 1, mark student 2 as not in and pass student 1
+                    if (keyValue.Key == match.Id1)
+                    {
+                        // If this match has already been closed, then the other student must have been passed too.
+                        if (!match.Closed) student_directory[match.Id2].In = false;
+                        match.Pass1 = true;
+                    }
+                    // Otherwise, mark student 1 as out and pass student 2
+                    else
+                    {
+                        // If this match has already been closed, then the other student must have been passed too
+                        if (!match.Closed) student_directory[match.Id1].In = false;
+                        match.Pass2 = true;
+                    }
+
+                    match.Closed = true;
                 }
 
-                match.Closed = true;
+                Save();
+                MatchChangeEvent(this, new EventArgs());
+            }
+        }
+
+        private void ResolveMatches()
+        {
+            // TODO fill in
+        }
+
+        /// <summary>
+        /// Function for reopening the given match. Make sure that the match isn't a pass match!
+        /// </summary>
+        /// <param name="matchId">The id of the match to reopen.</param>
+        public void ReopenMatch(string matchId)
+        {
+            // Reset required match and student parameters
+            Match match = match_directory[matchId];
+            match.Closed = false;
+            match.Pass1 = false;
+            match.Pass2 = false;
+
+            // Bring the students back in.
+            student_directory[match.Id1].In = true;
+            student_directory[match.Id2].In = true;
+
+            // Save and call match change event.
+            Save();
+            MatchChangeEvent?.Invoke(this, new EventArgs());
+        }
+
+        /// <summary>
+        /// Function to close the given match and eliminate both students in it.
+        /// </summary>
+        /// <param name="matchId">The id of the match to close.</param>
+        /// <param name="resolution">The manner in which the match is to be closed.</param>
+        public void CloseMatch(string matchId, Match.Resolution resolution)
+        {
+            // Get the match object, and make sure it has the right values
+            Match match = match_directory[matchId];
+            // If the match is closed already, don't touch it.
+            if (match.Closed) return;
+            match._Resolution = resolution;
+            match.Closed = true;
+            match.Pass1 = false;
+            match.Pass2 = false;
+
+            // Put both students out.
+            student_directory[match.Id1].In = false;
+            if (!IsPassMatch(match)) student_directory[match.Id2].In = false;
+
+            //if (multiThread)
+            //{
+            //    // Just call the event for multi-thread, don't save.
+            //    //Application.Current.Dispatcher.Invoke(() =>
+            //    //{
+            //    //    MatchChangeEvent.Invoke(this, new EventArgs());
+            //    //});
+            //    // TODO re-implement somehow
+            //}
+            //else
+            //{
+            //    // Save and call the event
+            //    Save();
+            //    MatchChangeEvent?.Invoke(this, new EventArgs());
+            //}
+        }
+
+        /// <summary>
+        /// Closes all the given matches
+        /// </summary>
+        /// <param name="matchesToClose">The list of matches to close</param>
+        public async Task CloseMatches(List<Match> matchesToClose)
+        {
+            foreach (Match match in matchesToClose)
+            {
+                CloseMatch(match.MatchId, Match.Resolution.Eliminated);
             }
 
+            // Save since close match won't do that anymore.
             Save();
-            MatchChangeEvent(this, new EventArgs());
+            await Task.Delay(0);
+        }
+
+        /// <summary>
+        /// Closes all open matches with resolution of eliminated.
+        /// </summary>
+        public async Task CloseAllMatches()
+        {
+            List<Match> matchesToClose = GetOpenMatchesList();
+            Task[] tasks = new Task[matchesToClose.Count];
+            for (int i = 0; i < matchesToClose.Count; i++)
+            {
+                Match match = matchesToClose[i];
+                tasks[i] = Task.Run(() => CloseMatch(match.MatchId, Match.Resolution.Eliminated));
+            }
+            // Save, since CloseMatch won't do it for us now.
+            Save();
+            await Task.WhenAll(tasks);
+            MatchChangeEvent?.Invoke(this, new EventArgs());
         }
 
         /// <summary>

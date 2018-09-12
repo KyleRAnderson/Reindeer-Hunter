@@ -1,13 +1,36 @@
-﻿using System;
-
-namespace Reindeer_Hunter.Data_Classes
+﻿namespace Reindeer_Hunter.Data_Classes
 {
     public class Match
     {
+        // Type of resolutions for matches available.
+        public enum Resolution { Pinned, Coin_Toss, Eliminated }
+
         public long Round { get; set; }
         public string MatchId { get; set; }
         public long MatchNumber { get; set; }
         public bool Closed { get; set; }
+        public Resolution _Resolution { get; set; }
+        public string Resolution_Message {  get
+            {
+                string resolution;
+                switch (_Resolution)
+                {
+                    case Resolution.Pinned:
+                        resolution = "Pinned";
+                        break;
+                    case Resolution.Eliminated:
+                        resolution = "Eliminated";
+                        break;
+                    case Resolution.Coin_Toss:
+                        resolution = "Coin Toss";
+                        break;
+                    default:
+                        resolution = "Unresolved";
+                        break;
+                }
+                return resolution;
+            }
+        }
 
         // Students' homeroom
         public int Home1 { get; set; }
@@ -52,19 +75,39 @@ namespace Reindeer_Hunter.Data_Classes
             MatchNumber = number;
         }
 
+        /// <summary>
+        /// Determines if the given student is the first student in this match
+        /// </summary>
+        /// <param name="student">The student</param>
+        /// <returns>True if the student is the first student in the match, false otherwise.</returns>
+        public bool IsStudent1(Student student)
+        {
+            return student.Id == Id1;
+        }
+
+        /// <summary>
+        /// Determines if the given student is the second student in this match
+        /// </summary>
+        /// <param name="student">The student</param>
+        /// <returns>True if the student is the second student in the match, false otherwise.</returns>
+        public bool IsSudent2(Student student)
+        {
+            return student.Id == Id2;
+        }
+
         public Match Clone()
         {
             return new Match
             {
                 Pass1 = Pass1,
                 Pass2 = Pass2,
-                First1 = String.Copy(First1),
-                First2 = String.Copy(First2),
-                Last1 = String.Copy(Last1),
-                Last2 = String.Copy(Last2),
+                First1 = string.Copy(First1),
+                First2 = string.Copy(First2),
+                Last1 = string.Copy(Last1),
+                Last2 = string.Copy(Last2),
                 Id1 = Id1,
                 Id2 = Id2,
-                MatchId = String.Copy(MatchId),
+                MatchId = string.Copy(MatchId),
                 MatchNumber = MatchNumber,
                 Round = Round,
                 Closed = Closed,
