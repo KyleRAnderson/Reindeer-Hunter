@@ -3,6 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System;
 using System.Windows;
+using Reindeer_Hunter.Hunt;
 
 namespace Reindeer_Hunter.Subsystems.Passer
 {

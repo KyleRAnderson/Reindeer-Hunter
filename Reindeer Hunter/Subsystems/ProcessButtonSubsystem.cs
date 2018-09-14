@@ -4,6 +4,7 @@ using System.Linq;
 using Reindeer_Hunter.Subsystems.ProcessButtonCommands;
 using System.Windows.Controls;
 using Reindeer_Hunter.Data_Classes;
+using Reindeer_Hunter.Hunt;
 
 namespace Reindeer_Hunter.Subsystems
 {

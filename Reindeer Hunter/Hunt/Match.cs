@@ -1,36 +1,13 @@
-﻿namespace Reindeer_Hunter.Data_Classes
+﻿using System;
+
+namespace Reindeer_Hunter.Hunt
 {
     public class Match
     {
-        // Type of resolutions for matches available.
-        public enum Resolution { Pinned, Coin_Toss, Eliminated }
-
         public long Round { get; set; }
         public string MatchId { get; set; }
         public long MatchNumber { get; set; }
         public bool Closed { get; set; }
-        public Resolution _Resolution { get; set; }
-        public string Resolution_Message {  get
-            {
-                string resolution;
-                switch (_Resolution)
-                {
-                    case Resolution.Pinned:
-                        resolution = "Pinned";
-                        break;
-                    case Resolution.Eliminated:
-                        resolution = "Eliminated";
-                        break;
-                    case Resolution.Coin_Toss:
-                        resolution = "Coin Toss";
-                        break;
-                    default:
-                        resolution = "Unresolved";
-                        break;
-                }
-                return resolution;
-            }
-        }
 
         // Students' homeroom
         public int Home1 { get; set; }
@@ -95,6 +72,10 @@
             return student.Id == Id2;
         }
 
+        /// <summary>
+        /// Creates a match object copy of this match.
+        /// </summary>
+        /// <returns>A new match object with the same properties as this one.</returns>
         public Match Clone()
         {
             return new Match

@@ -7,6 +7,7 @@ using Reindeer_Hunter.Subsystems;
 using System.ComponentModel;
 using System.Windows;
 using System.Collections;
+using Reindeer_Hunter.Hunt;
 
 namespace Reindeer_Hunter.FFA
 {

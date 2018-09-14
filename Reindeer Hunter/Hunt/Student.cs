@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
-namespace Reindeer_Hunter.Data_Classes
+namespace Reindeer_Hunter.Hunt
 {
     /// <summary>
     /// Class that represents each student.

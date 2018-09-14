@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Reindeer_Hunter.DataCards"
-             xmlns:Data_Classes="clr-namespace:Reindeer_Hunter.Data_Classes" x:Class="Reindeer_Hunter.DataCards.StudentCard"
+             xmlns:Hunt="clr-namespace:Reindeer_Hunter.Hunt" x:Class="Reindeer_Hunter.DataCards.StudentCard"
              mc:Ignorable="d" 
             d:DesignHeight ="370" d:DesignWidth="1200" Background="White">
     <Viewbox Stretch ="Uniform">
@@ -76,7 +76,7 @@
                     </DataGridTextColumn>
                 </DataGrid.Columns>
                 <DataGrid.DataContext>
-                    <Data_Classes:Student/>
+                    <Hunt:Student/>
                 </DataGrid.DataContext>
             </DataGrid>
             <Button x:Name="Delete_Button" Content="Delete Student" HorizontalAlignment="Left" Height="20" Margin="10,4,0,0" Grid.Row="3" VerticalAlignment="Top" Width="199" Click="Delete_Button_Click" ToolTip="Must be round 0 (before tthe hunt has begun)"/>

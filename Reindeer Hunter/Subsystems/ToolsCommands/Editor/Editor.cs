@@ -1,4 +1,4 @@
-﻿using Reindeer_Hunter.Data_Classes;
+﻿using Reindeer_Hunter.Hunt;
 using Reindeer_Hunter.ThreadMonitors;
 using System;
 using System.Collections.Generic;
@@ -326,7 +326,7 @@ namespace Reindeer_Hunter.Subsystems.ToolsCommands.Editor
                 .Select(student => student._Student)
                 .ToList();
 
-            await Task.Run(() => _School.EliminateStudents(studentsToEliminate));
+            await _School.EliminateStudents(studentsToEliminate);
 
             // Add the generated matches
             await Task.Run(() => _School.AddEditedMatches(MatchesMade));

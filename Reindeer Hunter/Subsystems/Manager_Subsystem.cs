@@ -1,5 +1,6 @@
 ﻿using Microsoft.Win32;
 using Reindeer_Hunter.Data_Classes;
+using Reindeer_Hunter.Hunt;
 using Reindeer_Hunter.Subsystems.Student_Manager;
 using System;
 using System.Collections.Generic;

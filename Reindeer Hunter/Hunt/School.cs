@@ -8,7 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace Reindeer_Hunter
+namespace Reindeer_Hunter.Hunt
 {
     /// <summary>
     /// This class will be in charge of evereything. Holds the lists of students and other information.
@@ -155,7 +155,7 @@ namespace Reindeer_Hunter
             {
                 /* The first value is null when the student has not yet participated in any matches later. 
                  * This is a problem later. */
-                if (student.MatchesParticipated[0] == null) student.MatchesParticipated.RemoveAt(0);
+                if (student.MatchesParticipated.Count > 0 && student.MatchesParticipated[0] == null) student.MatchesParticipated.RemoveAt(0);
             }
 
             CreateStudentDirs();
@@ -477,7 +477,7 @@ namespace Reindeer_Hunter
         {
             List<Match> matchList = new List<Match>(match_directory.Values);
             List<Match> newMatchList = new List<Match>();
-            foreach (Match match in matchList) newMatchList.Add(match.Clone());
+            foreach (Match match in matchList) newMatchList.Add(match);
 
             return newMatchList;
         }
@@ -647,13 +647,12 @@ namespace Reindeer_Hunter
         /// </summary>
         /// <param name="matchId">The id of the match to close.</param>
         /// <param name="resolution">The manner in which the match is to be closed.</param>
-        public void CloseMatch(string matchId, Match.Resolution resolution)
+        public void CloseMatch(string matchId)
         {
             // Get the match object, and make sure it has the right values
             Match match = match_directory[matchId];
             // If the match is closed already, don't touch it.
             if (match.Closed) return;
-            match._Resolution = resolution;
             match.Closed = true;
             match.Pass1 = false;
             match.Pass2 = false;
@@ -687,7 +686,7 @@ namespace Reindeer_Hunter
         {
             foreach (Match match in matchesToClose)
             {
-                CloseMatch(match.MatchId, Match.Resolution.Eliminated);
+                CloseMatch(match.MatchId);
             }
 
             // Save since close match won't do that anymore.
@@ -705,7 +704,7 @@ namespace Reindeer_Hunter
             for (int i = 0; i < matchesToClose.Count; i++)
             {
                 Match match = matchesToClose[i];
-                tasks[i] = Task.Run(() => CloseMatch(match.MatchId, Match.Resolution.Eliminated));
+                tasks[i] = Task.Run(() => CloseMatch(match.MatchId));
             }
             // Save, since CloseMatch won't do it for us now.
             Save();
@@ -977,7 +976,7 @@ namespace Reindeer_Hunter
         /// <param name="students">The list of students to add.</param>
         /// <param name="inThread">True if this is being called frorm a thread
         /// other than the main one. </param>
-        public bool AddStudents(List<Student> students, Boolean inThread = false)
+        public bool AddStudents(List<Student> students, bool inThread = false)  // TODO fix this up so that it's async.
         {
             // So that we can rollback any changes.
             Dictionary<int, Student> safeStudent_directory = new Dictionary<int, Student>(student_directory);
@@ -1160,15 +1159,22 @@ namespace Reindeer_Hunter
         /// <param name="studentsToEliminate">The students to eliminate.</param>
         public async Task EliminateStudents(List<Student> studentsToEliminate)
         {
-            foreach (Student student in studentsToEliminate)
+            Task[] tasks = new Task[studentsToEliminate.Count];  // TODO make sure this runs async.
+            for (int i = 0; i < studentsToEliminate.Count; i++)
             {
-                EliminateStudent(student);
+
+                Student student = studentsToEliminate.ElementAt(i);
+                tasks[i] = Task.Run(() => EliminateStudent(student));
             }
 
+            await Task.WhenAll(tasks);
             Save();
-            await Task.Delay(0);
         }
 
+        /// <summary>
+        /// Eliminates the provided students from the hunt.
+        /// </summary>
+        /// <param name="studentToEliminate">The students to eliminate.</param>
         public void EliminateStudent(Student studentToEliminate)
         {
             // Make sure the student exists.
@@ -1320,7 +1326,7 @@ namespace Reindeer_Hunter
 
                 for (int a = 0; a < studentKV.Value.Count; a++)
                 {
-                    homeroom.Add(studentKV.Value[a].Clone());
+                    homeroom.Add(studentKV.Value[a]);
                 }
 
                 // Add it to the list
@@ -1433,8 +1439,8 @@ namespace Reindeer_Hunter
         {
             List<Student> returnable = new List<Student>();
 
-            if (student_directory.ContainsKey(match.Id1)) returnable.Add(student_directory[match.Id1].Clone());
-            if (student_directory.ContainsKey(match.Id2)) returnable.Add(student_directory[match.Id2].Clone());
+            if (student_directory.ContainsKey(match.Id1)) returnable.Add(student_directory[match.Id1]);
+            if (student_directory.ContainsKey(match.Id2)) returnable.Add(student_directory[match.Id2]);
 
             return returnable;
         }
@@ -1449,11 +1455,11 @@ namespace Reindeer_Hunter
             int id;
             if (studentId == 0 && student == null)
             {
-                throw new Exception("StudentId and student parameters cannot be ignored");
+                throw new ArgumentException("StudentId and student parameters cannot be ignored");
             }
             else if (GetCurrRoundNo() != 0)
             {
-                throw new Exception("Cannot delete students past round 0.");
+                throw new ArgumentException("Cannot delete students past round 0.");
             }
 
             // If just the studentId is null, 

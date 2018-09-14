@@ -211,18 +211,18 @@
     <Compile Include="Data Classes\Filter.cs" />
     <Compile Include="Data Classes\RawStudent.cs" />
     <Compile Include="Data Classes\SearchQuery.cs" />
-    <Compile Include="Data Classes\Student.cs" />
+    <Compile Include="Hunt\Student.cs" />
     <Compile Include="DataFileIO.cs" />
     <Compile Include="HomePage.xaml.cs">
       <DependentUpon>HomePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="InstantPrinter.cs" />
-    <Compile Include="Data Classes\Match.cs" />
+    <Compile Include="Hunt\Match.cs" />
     <Compile Include="Matcher.cs" />
     <Compile Include="Data Classes\PrintMessage.cs" />
     <Compile Include="CSVHandler.cs" />
     <Compile Include="Data Classes\ResultStudent.cs" />
-    <Compile Include="School.cs" />
+    <Compile Include="Hunt\School.cs" />
     <Compile Include="Subsystems\Filters and Search\ClearFiltersAndSearch.cs" />
     <Compile Include="SetupPage.xaml.cs">
       <DependentUpon>SetupPage.xaml</DependentUpon>

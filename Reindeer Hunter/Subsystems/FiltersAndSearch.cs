@@ -8,6 +8,7 @@ using System.Windows.Input;
 using System.Windows;
 using Reindeer_Hunter.DataCards;
 using System.Threading.Tasks;
+using Reindeer_Hunter.Hunt;
 
 namespace Reindeer_Hunter.Subsystems
 {
@@ -326,6 +327,7 @@ namespace Reindeer_Hunter.Subsystems
         /// <param name="result"></param>
         private void OnMatchResultRemoved(object sender, PassingStudent result)
         {
+            // Find the match which matches (haha, puns) the Match ID of the match we were given.
             Match match = MainDisplay_Display_List.Find(m => m.MatchId == result.AffectedMatch.MatchId);
 
             if (match != null)

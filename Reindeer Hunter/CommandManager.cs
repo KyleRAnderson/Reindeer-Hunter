@@ -1,5 +1,6 @@
 ﻿using System;
 using Reindeer_Hunter.Subsystems;
+using Reindeer_Hunter.Hunt;
 
 namespace Reindeer_Hunter
 {

@@ -1,5 +1,4 @@
-﻿using Reindeer_Hunter.Data_Classes;
-using Reindeer_Hunter.DataCards;
+﻿using Reindeer_Hunter.Hunt;
 using System;
 using System.Windows;
 using System.Windows.Controls;

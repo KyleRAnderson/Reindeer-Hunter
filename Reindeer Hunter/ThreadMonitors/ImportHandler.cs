@@ -1,10 +1,8 @@
-﻿using Reindeer_Hunter.Data_Classes;
+﻿using Reindeer_Hunter.Hunt;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Media;
 
 namespace Reindeer_Hunter.ThreadMonitors

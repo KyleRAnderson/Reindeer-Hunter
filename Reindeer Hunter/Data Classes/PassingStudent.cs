@@ -1,4 +1,6 @@
-﻿namespace Reindeer_Hunter.Data_Classes
+﻿using Reindeer_Hunter.Hunt;
+
+namespace Reindeer_Hunter.Data_Classes
 {
     /// <summary>
     /// Class for keeping track of a student passing in a match.

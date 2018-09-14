@@ -1,4 +1,5 @@
 ﻿using Reindeer_Hunter.Data_Classes;
+using Reindeer_Hunter.Hunt;
 using Reindeer_Hunter.Subsystems.Passer;
 using System;
 using System.Collections.Generic;

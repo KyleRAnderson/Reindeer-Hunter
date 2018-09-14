@@ -1,4 +1,4 @@
-﻿using Reindeer_Hunter.Data_Classes;
+﻿using Reindeer_Hunter.Hunt;
 using System;
 
 namespace Reindeer_Hunter.Subsystems.ToolsCommands.Editor

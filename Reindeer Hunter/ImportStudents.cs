@@ -1,4 +1,5 @@
 ﻿using Reindeer_Hunter.Data_Classes;
+using Reindeer_Hunter.Hunt;
 using System;
 using System.Collections.Generic;
 
@@ -7,7 +8,7 @@ namespace Reindeer_Hunter
     public class ImportStudents
     {
         private School _School;
-        private String[] FileLocation;
+        private string[] FileLocation;
         private Queue<bool> Comms;
 
         public ImportStudents(String[] fileLocation, School school, Queue<bool> comms)
