@@ -28,8 +28,11 @@ namespace Reindeer_Hunter.Subsystems
 
         // Status variable and on status chang event
         public event EventHandler StatusChanged;
-        private int status = 0;
-        public int Status {
+
+        public enum Status { MatchMaking, FFA, Instant_Print };
+
+        private Status status = 0;
+        public Status CurrentStatus {
             get
             {
                 return status;
@@ -127,11 +130,14 @@ namespace Reindeer_Hunter.Subsystems
             school.MatchChangeEvent += (object EventSender, EventArgs a) => GoToFFAOverrideCommand.RaiseCanExecuteChanged();
         }
 
+        /// <summary>
+        /// Updates this subsystem's status.
+        /// </summary>
         private void UpdateStatus()
         {
-            if (school.IsTimeForFFA || school.IsFFARound) Status = FFA;
-            else if (school.IsReadyForNextRound) Status = MATCHMAKING;
-            else Status = INSTANTPRINT;
+            if (school.IsTimeForFFA || school.IsFFARound) CurrentStatus = Status.FFA;
+            else if (school.IsReadyForNextRound) CurrentStatus = Status.MatchMaking;
+            else CurrentStatus = Status.Instant_Print;
         }
 
         /// <summary>
@@ -155,12 +161,12 @@ namespace Reindeer_Hunter.Subsystems
         private void OnStatusChange(object sender, EventArgs e)
         {
             // All we need to do is update the text.
-            if (Status == MATCHMAKING)
+            if (CurrentStatus == Status.MatchMaking)
             {
                 processButton.Content = string.Format("Matchmake R{0}", CurrRoundNo + 1);
             }
             // Status is otherwise instant print.
-            else if (Status == INSTANTPRINT)
+            else if (CurrentStatus == Status.Instant_Print)
             {
                 processButton.Content = "Instant Print";
             }

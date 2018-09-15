@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.IO;
 using System.Windows;
 using Microsoft.Win32;
 using Reindeer_Hunter.Subsystems.DataDealerCommands;
@@ -94,7 +94,7 @@ namespace Reindeer_Hunter.Subsystems
             OpenFileDialog askLoc = new OpenFileDialog
             {
                 // Open the file dialog to the user's directory
-                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                InitialDirectory = DataFileIO.InitialDirectory,
 
                 // Filter only for comma-seperated value files. 
                 Filter = "json files (*.json)|*.json",
@@ -110,6 +110,9 @@ namespace Reindeer_Hunter.Subsystems
             if (openLoc == null || openLoc == "") return;
 
             Manager._School.DataFile.Import(openLoc);
+
+            // Set the last open directory to the directory that the user opened.
+            DataFileIO.LastOpenedDirectory = Path.GetDirectoryName(openLoc);
         }
 
         /// <summary>
