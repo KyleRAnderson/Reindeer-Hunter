@@ -80,7 +80,7 @@ namespace Reindeer_Hunter.Subsystems
             Refresh();
 
             // Subscribe to a bunch of events that may need the statistics to refresh
-            school.MatchChangeEvent += Refresh;
+            school.MatchChangeEvent += (a, b) => Refresh();
             school.RoundIncreased += Refresh;
             school.StudentsImported += Refresh;
         }

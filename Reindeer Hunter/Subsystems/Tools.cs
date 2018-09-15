@@ -53,7 +53,7 @@ namespace Reindeer_Hunter.Subsystems
             #region Subscribing to the right events
             Manager._Passer.MatchAdded += Refresh;
             Manager._Passer.MatchRemoved += Refresh;
-            school.MatchChangeEvent += Refresh;
+            school.MatchChangeEvent += (a, b) => Refresh();
             #endregion
         }
 
@@ -108,7 +108,7 @@ namespace Reindeer_Hunter.Subsystems
             List<Match> matchesToClose = Manager._Passer.EditQueue;
 
             // Close them.
-            await Task.Run(() => school.CloseMatches(matchesToClose));
+            await Task.Run(() => school.CloseMatchesAsync(matchesToClose));
 
             SelectedMatchesClosed?.Invoke(this, new EventArgs());
         }
@@ -120,7 +120,7 @@ namespace Reindeer_Hunter.Subsystems
 
         private async void CloseAllMatches(object sender)
         {
-            await Task.Run(school.CloseAllMatches);
+            await Task.Run(school.CloseAllMatchesAsync);
         }
     }
 }

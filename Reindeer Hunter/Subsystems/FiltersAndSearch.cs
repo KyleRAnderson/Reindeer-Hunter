@@ -200,7 +200,7 @@ namespace Reindeer_Hunter.Subsystems
             Searcher.RaiseCanExecuteChanged();
         }
 
-        public void OnMatchesSaved(object sneder, EventArgs e)
+        public void OnMatchesSaved(object sneder, Match[] e)
         {
             // Refresh the search command.
             Searcher.RaiseCanExecuteChanged();

@@ -25,7 +25,7 @@ namespace Reindeer_Hunter.Hunt
 
 
         // Event raised when something about matches is changed/updated
-        public event EventHandler MatchChangeEvent;
+        public event EventHandler<Match[]> MatchChangeEvent;
 
         // Called when the round number is increased.
         public event EventHandler RoundIncreased;
@@ -488,10 +488,12 @@ namespace Reindeer_Hunter.Hunt
         /// <param name="matchResults">The match results to be processed, in the form of MatchGuiResult objects.</param>
         public void AddMatchResults(List<PassingStudent> matchResults)
         {
+            List<Match> affectedMatches = new List<Match>();
             // Update match and student data
             foreach (PassingStudent matchResult in matchResults)
             {
                 Match match = matchResult.AffectedMatch;
+                affectedMatches.Add(match);
 
                 // Seems not needed, but in case two people are passed then it's needed.
                 matchResult.AffectedStudent.In = true;
@@ -516,7 +518,7 @@ namespace Reindeer_Hunter.Hunt
 
             Save();
 
-            MatchChangeEvent(this, new EventArgs());
+            MatchChangeEvent(this, affectedMatches.ToArray());
         }
 
         /// <summary>
@@ -527,6 +529,7 @@ namespace Reindeer_Hunter.Hunt
         {
             // List of result students with supplied id
             List<int> idStudents = new List<int>();
+            
 
             // True as soon as there is a problem.
             bool error = false;
@@ -553,7 +556,6 @@ namespace Reindeer_Hunter.Hunt
 
                 // Add the now known id to the list
                 if (student.Id != 0) idStudents.Add(student.Id);
-
             }
 
             // Validate all the student ids now that we have them
@@ -570,6 +572,8 @@ namespace Reindeer_Hunter.Hunt
                         stuNo.ToString() + " is already out of the hunt.");
                 }
             }
+
+            List<Match> affectedMatches = new List<Match>(); // Matches affected by this function.
 
             if (error)
             {
@@ -609,10 +613,11 @@ namespace Reindeer_Hunter.Hunt
                     }
 
                     match.Closed = true;
+                    affectedMatches.Add(match);
                 }
 
                 Save();
-                MatchChangeEvent(this, new EventArgs());
+                MatchChangeEvent?.Invoke(this, affectedMatches.ToArray());
             }
         }
 
@@ -639,7 +644,7 @@ namespace Reindeer_Hunter.Hunt
 
             // Save and call match change event.
             Save();
-            MatchChangeEvent?.Invoke(this, new EventArgs());
+            MatchChangeEvent?.Invoke(this, new Match[] { match } );
         }
 
         /// <summary>
@@ -660,44 +665,31 @@ namespace Reindeer_Hunter.Hunt
             // Put both students out.
             student_directory[match.Id1].In = false;
             if (!IsPassMatch(match)) student_directory[match.Id2].In = false;
-
-            //if (multiThread)
-            //{
-            //    // Just call the event for multi-thread, don't save.
-            //    //Application.Current.Dispatcher.Invoke(() =>
-            //    //{
-            //    //    MatchChangeEvent.Invoke(this, new EventArgs());
-            //    //});
-            //    // TODO re-implement somehow
-            //}
-            //else
-            //{
-            //    // Save and call the event
-            //    Save();
-            //    MatchChangeEvent?.Invoke(this, new EventArgs());
-            //}
         }
 
         /// <summary>
-        /// Closes all the given matches
+        /// Closes all the given matches asynchronously.
         /// </summary>
         /// <param name="matchesToClose">The list of matches to close</param>
-        public async Task CloseMatches(List<Match> matchesToClose)
+        public async Task CloseMatchesAsync(List<Match> matchesToClose)
         {
+            List<Task> tasks = new List<Task>();
             foreach (Match match in matchesToClose)
             {
-                CloseMatch(match.MatchId);
+                tasks.Add(Task.Run(() => CloseMatch(match.MatchId)));
             }
 
+            // Wait for the processes to complete.
+            await Task.WhenAll(tasks);
             // Save since close match won't do that anymore.
             Save();
-            await Task.Delay(0);
+            MatchChangeEvent?.Invoke(this, matchesToClose.ToArray());
         }
 
         /// <summary>
-        /// Closes all open matches with resolution of eliminated.
+        /// Closes all open matches, eliminating the students participating in them.
         /// </summary>
-        public async Task CloseAllMatches()
+        public async Task CloseAllMatchesAsync()
         {
             List<Match> matchesToClose = GetOpenMatchesList();
             Task[] tasks = new Task[matchesToClose.Count];
@@ -709,7 +701,7 @@ namespace Reindeer_Hunter.Hunt
             // Save, since CloseMatch won't do it for us now.
             Save();
             await Task.WhenAll(tasks);
-            MatchChangeEvent?.Invoke(this, new EventArgs());
+            MatchChangeEvent?.Invoke(this, matchesToClose.ToArray());
         }
 
         /// <summary>
@@ -1119,7 +1111,7 @@ namespace Reindeer_Hunter.Hunt
         /// <param name="matchesToAdd"></param>
         public async Task AddEditedMatches(List<Match> matchesToAdd)
         {
-            AddMatches(matchesToAdd, true, false);
+            await Task.Run(() => AddMatches(matchesToAdd, true, false));
 
             // Loop around and make sure that all the students that should be in are in.
             foreach (Match match in matchesToAdd)
@@ -1144,13 +1136,8 @@ namespace Reindeer_Hunter.Hunt
 
             Save();
 
-            // Just call the event for multi-thread, don't save.
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                MatchChangeEvent.Invoke(this, new EventArgs());
-            });
-
-            await Task.Delay(0);
+            // Just call the event for multi-thread
+            MatchChangeEvent.Invoke(this, matchesToAdd.ToArray());
         }
 
         /// <summary>
@@ -1528,8 +1515,9 @@ namespace Reindeer_Hunter.Hunt
 
             // Update the student in the master student directory
             student_directory[updated_student.Id] = updated_student;
-            
+
             // Update the matches that they're in.
+            List<Match> affectedMatches = new List<Match>();
             foreach (string matchId in updated_student.MatchesParticipated)
             {
                 Match match = match_directory[matchId];
@@ -1549,10 +1537,11 @@ namespace Reindeer_Hunter.Hunt
                     match.Home2 = updated_student.Homeroom;
                     match.Grade2 = updated_student.Grade;
                 }
+                affectedMatches.Add(match);
             }
 
             // Call the matches changed event
-            MatchChangeEvent?.Invoke(this, new EventArgs());
+            MatchChangeEvent?.Invoke(this, affectedMatches.ToArray());
 
             // Save changes
             Save();
