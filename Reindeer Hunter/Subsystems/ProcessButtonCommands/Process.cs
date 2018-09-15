@@ -25,12 +25,12 @@ namespace Reindeer_Hunter.Subsystems.ProcessButtonCommands
         /// <param name="parameter"></param>
         public void Execute(object parameter)
         {
-            int status = int.Parse(parameter.ToString());
+            ProcessButtonSubsystem.Status status = (ProcessButtonSubsystem.Status)parameter;
 
             // Determine what action to take using the status.
 
             // Matchmake
-            if (status == ProcessButtonSubsystem.MATCHMAKING)
+            if (status == ProcessButtonSubsystem.Status.MatchMaking)
             {
                 // Create matchmaker class.
                 MatchMakeHandler matcher = new MatchMakeHandler(
@@ -39,7 +39,7 @@ namespace Reindeer_Hunter.Subsystems.ProcessButtonCommands
             }
 
             // Go to the FFA page
-            else if (status == ProcessButtonSubsystem.FFA)
+            else if (status == ProcessButtonSubsystem.Status.FFA)
             {
                 ProcessButtonSubsystem.GoToFFA();
             }

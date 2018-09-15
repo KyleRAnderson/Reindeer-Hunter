@@ -155,7 +155,7 @@ namespace Reindeer_Hunter
             {
                 /* The first value is null when the student has not yet participated in any matches later. 
                  * This is a problem later. */
-                if (student.MatchesParticipated[0] == null) student.MatchesParticipated.RemoveAt(0);
+                if (student.MatchesParticipated.Count > 0 && student.MatchesParticipated[0] == null) student.MatchesParticipated.RemoveAt(0);
             }
 
             CreateStudentDirs();
@@ -962,7 +962,7 @@ namespace Reindeer_Hunter
         /// <param name="students">The list of students to add.</param>
         /// <param name="inThread">True if this is being called frorm a thread
         /// other than the main one. </param>
-        public bool AddStudents(List<Student> students, Boolean inThread = false)
+        public bool AddStudents(Student[] students)
         {
             // So that we can rollback any changes.
             Dictionary<int, Student> safeStudent_directory = new Dictionary<int, Student>(student_directory);
@@ -1033,9 +1033,11 @@ namespace Reindeer_Hunter
             ReplaceOldStuDicWithNewOne(safeStudent_directory, safeHomeroom_directory, safeStudentName_directory);
             Save();
 
-            // Don't want to do this from a sub-thread.
-            if (!inThread)
+            // Invoke students added event
+            Application.Current.Dispatcher.Invoke(() =>
+            {
                 StudentsImported?.Invoke(this, new EventArgs());
+            });
 
             return true;
         }

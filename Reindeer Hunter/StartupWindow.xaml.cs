@@ -4,6 +4,7 @@ using System;
 using Microsoft.Win32;
 using Reindeer_Hunter.ThreadMonitors;
 using System.Diagnostics;
+using System.IO;
 
 namespace Reindeer_Hunter
 {
@@ -111,7 +112,7 @@ namespace Reindeer_Hunter
             {
 
                 // Open the file dialog to the user's directory
-                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                InitialDirectory = DataFileIO.InitialDirectory,
 
                 // Filter only for comma-seperated value files. 
                 Filter = "csv files (*.csv)|*.csv",
@@ -131,7 +132,7 @@ namespace Reindeer_Hunter
 
             ImportHandler importer = new ImportHandler(_School, csvopenDialog.FileNames, GoToHome);
 
-            return;
+            DataFileIO.LastOpenedDirectory = Path.GetDirectoryName(csvopenDialog.FileNames[0]);
         }
     }
 }
