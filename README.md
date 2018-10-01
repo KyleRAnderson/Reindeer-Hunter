@@ -22,3 +22,9 @@ Development should be done with Windows 10 with the lastest .NET framework insta
     1. Newtonsoft.Json by James Newton-King (V11.0.2)
     1. ZkWeb.System.Drawing by ZKWeb.System (V4.0.1)
 1. You're good to go!
+
+## Development Conventions
+Git branch names should be one of the following:
+- cleanup
+- fixes/*
+- features/*

@@ -94,7 +94,7 @@ namespace Reindeer_Hunter.Subsystems
             {
 
                 // Open the file dialog to the user's directory
-                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                InitialDirectory = DataFileIO.InitialDirectory,
 
                 // Filter only for comma-seperated value files. 
                 Filter = "csv files (*.csv)|*.csv",
@@ -110,10 +110,14 @@ namespace Reindeer_Hunter.Subsystems
              * Check if the filepath isn't empty, which it won't if the user cancels.
              * If it is empty, return.
              */
-            if (path == "") return;
+            if (!string.IsNullOrEmpty(path))
+            {
+                // Make the object that will handle all else.
+                new ExportStudents(studentsToExport, school, path);
 
-            // Make the object that will handle all else.
-            new ExportStudents(studentsToExport, school, path);
+                // Set the last opened directory to this directory.
+                DataFileIO.LastOpenedDirectory = Path.GetDirectoryName(path);
+            }
         }
 
         /// <summary>
@@ -161,7 +165,7 @@ namespace Reindeer_Hunter.Subsystems
             {
                 OpenFileDialog csvFileDialog = new OpenFileDialog
                 {
-                    InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                    InitialDirectory = DataFileIO.InitialDirectory,
                     Filter = "csv files (*.csv)|*.csv",
                     FilterIndex = 2,
                     RestoreDirectory = true,
@@ -172,7 +176,9 @@ namespace Reindeer_Hunter.Subsystems
 
 
                 inputtedResults = CSVHandler.Import(CSVHandler.IMPORT_MATCH_RESULTS, 
-                    filePath: csvFileDialog.FileName).ElementAt<object[]>(0);
+                    filePath: csvFileDialog.FileName).ElementAt(0);
+
+                DataFileIO.LastOpenedDirectory = Path.GetDirectoryName(csvFileDialog.FileName);
             }
             catch (ArgumentNullException)
             {

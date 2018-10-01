@@ -966,9 +966,7 @@ namespace Reindeer_Hunter.Hunt
         /// Adds students to the master student dictionary
         /// </summary>
         /// <param name="students">The list of students to add.</param>
-        /// <param name="inThread">True if this is being called frorm a thread
-        /// other than the main one. </param>
-        public bool AddStudents(List<Student> students, bool inThread = false)  // TODO fix this up so that it's async.
+        public bool AddStudents(Student[] students)
         {
             // So that we can rollback any changes.
             Dictionary<int, Student> safeStudent_directory = new Dictionary<int, Student>(student_directory);
@@ -1039,9 +1037,11 @@ namespace Reindeer_Hunter.Hunt
             ReplaceOldStuDicWithNewOne(safeStudent_directory, safeHomeroom_directory, safeStudentName_directory);
             Save();
 
-            // Don't want to do this from a sub-thread.
-            if (!inThread)
+            // Invoke students added event
+            Application.Current.Dispatcher.Invoke(() =>
+            {
                 StudentsImported?.Invoke(this, new EventArgs());
+            });
 
             return true;
         }

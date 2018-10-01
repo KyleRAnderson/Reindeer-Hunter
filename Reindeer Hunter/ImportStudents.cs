@@ -67,7 +67,7 @@ namespace Reindeer_Hunter
             }
 
             // Add the students.
-            bool importedProperly = _School.AddStudents(students_to_add, true);
+            bool importedProperly = _School.AddStudents(students_to_add.ToArray());
 
             Finish(importedProperly);
         }

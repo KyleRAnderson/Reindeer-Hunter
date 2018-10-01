@@ -21,6 +21,16 @@ namespace Reindeer_Hunter
         public string DataLocation { get; private set; } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Reindeer Hunter Data");
         public static readonly string ProgramLocation = Environment.CurrentDirectory;
 
+        public static string LastOpenedDirectory { get; set; } = "";
+
+        public static string InitialDirectory
+        {
+            get
+            {
+                return (Directory.Exists(LastOpenedDirectory)) ? LastOpenedDirectory : Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            }
+        }
+
         // The master location of the data file
         protected readonly string dataFileLocation;
 
@@ -307,7 +317,7 @@ namespace Reindeer_Hunter
         }
 
         /// <summary>
-        /// Function for exporting the data file, includign a checksum
+        /// Function for exporting the data file, including a checksum
         /// </summary>
         public void Export()
         {
@@ -322,7 +332,7 @@ namespace Reindeer_Hunter
             {
 
                 // Open the file dialog to the user's directory
-                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                InitialDirectory = InitialDirectory,
 
                 // Filter only for comma-seperated value files. 
                 Filter = "json files (*.json)|*.json",
@@ -334,22 +344,25 @@ namespace Reindeer_Hunter
 
             string copyLoc = askLoc.FileName;
             // In case they cancel.
-            if (copyLoc == null || copyLoc == "") return;
+            if (!(copyLoc == null || copyLoc == ""))
+            {
+                // If the file exists already, delete it, else we get errors.
+                if (File.Exists(copyLoc)) File.Delete(copyLoc);
 
-            // If the file exists already, delete it, else we get errors.
-            if (File.Exists(copyLoc)) File.Delete(copyLoc);
+                // Copy the data file over
+                File.Copy(dataFileLocation, copyLoc);
 
-            // Copy the data file over
-            File.Copy(dataFileLocation, copyLoc);
+                // Open the file and add the checksum.
+                stream = new FileStream(copyLoc, FileMode.Append, FileAccess.Write);
+                var bw = new BinaryWriter(stream);
+                bw.Write(checkSum);
 
-            // Open the file and add the checksum.
-            stream = new FileStream(copyLoc, FileMode.Append, FileAccess.Write);
-            var bw = new BinaryWriter(stream);
-            bw.Write(checkSum);
+                // Close all streams
+                bw.Close();
+                stream.Close();
 
-            // Close all streams
-            bw.Close();
-            stream.Close();
+                LastOpenedDirectory = Path.GetDirectoryName(copyLoc);
+            }
         }
 
         /// <summary>
@@ -393,7 +406,7 @@ namespace Reindeer_Hunter
             {
 
                 // Open the file dialog to the user's directory
-                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                InitialDirectory = InitialDirectory,
 
                 // Filter only for comma-seperated value files. 
                 Filter = "pdf files (*.pdf)|*.pdf",
@@ -402,15 +415,18 @@ namespace Reindeer_Hunter
             };
 
             templateOpenDialog.ShowDialog();
+            string newTemplateLocation = templateOpenDialog.FileName;
 
-            if (templateOpenDialog.FileName == "" || templateOpenDialog.FileName == null)
+            if (string.IsNullOrEmpty(newTemplateLocation))
             {
                 throw new IOException("User Cancelled");
             }
 
             // Delete the old one and replace it with the new one. 
             if (TemplatePDFExists) File.Delete(TemplatePDFLoc);
-            File.Copy(templateOpenDialog.FileName, TemplatePDFLoc);
+            File.Copy(newTemplateLocation, TemplatePDFLoc);
+
+            LastOpenedDirectory = Path.GetDirectoryName(newTemplateLocation);
         }
 
         public string TemplatePDFLoc
