@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
-using System.Windows.Input;
 
 namespace Reindeer_Hunter.Subsystems
 {
@@ -76,7 +70,7 @@ namespace Reindeer_Hunter.Subsystems
         /// the state of the buttons.
         /// Those events are: when matches are saved, when match results are added or removed, when matches are created.
         /// </summary>
-        public void WhenButtonsNeedUpdating(object sender = null, EventArgs e = null)
+        public void WhenButtonsNeedUpdating(object sender = null, object e = null)
         {
             SaveCommand.RaiseCanExecuteChanged();
             DiscardCommand.RaiseCanExecuteChanged();

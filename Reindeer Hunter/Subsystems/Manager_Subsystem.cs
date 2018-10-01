@@ -1,5 +1,6 @@
 ﻿using Microsoft.Win32;
 using Reindeer_Hunter.Data_Classes;
+using Reindeer_Hunter.Hunt;
 using Reindeer_Hunter.Subsystems.Student_Manager;
 using System;
 using System.Collections.Generic;
@@ -46,7 +47,7 @@ namespace Reindeer_Hunter.Subsystems
 
             #region Subscribing to events
             // Subscribe to events that will merit refresh
-            school.MatchChangeEvent += Refresh;
+            school.MatchChangeEvent += (a, b) => Refresh();
             school.RoundIncreased += Refresh;
             Manager._ProcessButtonSubsystem.WentToFFA += Refresh;
             #endregion

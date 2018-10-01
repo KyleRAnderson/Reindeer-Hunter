@@ -1,12 +1,10 @@
-﻿using Reindeer_Hunter.Subsystems;
+﻿using Reindeer_Hunter.Hunt;
+using Reindeer_Hunter.Subsystems;
 using Reindeer_Hunter.Subsystems.ProcessButtonCommands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Input;
 using System.Windows.Media;
 
 namespace Reindeer_Hunter.ThreadMonitors
@@ -18,7 +16,7 @@ namespace Reindeer_Hunter.ThreadMonitors
         private readonly object Key = new object();
 
         private Queue<Message> comms;
-        private School school;
+        private School _School;
         private Thread matchMakeThread;
         private Matcher matcher;
         private ProcessButtonSubsystem subsystem;
@@ -43,7 +41,7 @@ namespace Reindeer_Hunter.ThreadMonitors
             comms = new Queue<Message>();
 
             // Instantiate school object for simplicity
-            this.school = school;
+            this._School = school;
 
             // Create the matchmaker and then assign the thread target to it
             // +1 to current round because we want next round's matches.
@@ -98,7 +96,7 @@ namespace Reindeer_Hunter.ThreadMonitors
                     //  Terminate the thread
                     matchMakeThread.Join();
 
-                    subsystem.GenerationInfo = new Tuple<long, List<Data_Classes.Match>, string>
+                    subsystem.GenerationInfo = new Tuple<long, List<Match>, string>
                         (returnValue.Matches[returnValue.Matches.Count - 1].MatchNumber, returnValue.Matches, returnValue.EndDate);
 
 

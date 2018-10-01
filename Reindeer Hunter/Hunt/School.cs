@@ -8,7 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace Reindeer_Hunter
+namespace Reindeer_Hunter.Hunt
 {
     /// <summary>
     /// This class will be in charge of evereything. Holds the lists of students and other information.
@@ -25,7 +25,7 @@ namespace Reindeer_Hunter
 
 
         // Event raised when something about matches is changed/updated
-        public event EventHandler MatchChangeEvent;
+        public event EventHandler<Match[]> MatchChangeEvent;
 
         // Called when the round number is increased.
         public event EventHandler RoundIncreased;
@@ -477,23 +477,29 @@ namespace Reindeer_Hunter
         {
             List<Match> matchList = new List<Match>(match_directory.Values);
             List<Match> newMatchList = new List<Match>();
-            foreach (Match match in matchList) newMatchList.Add(match.Clone());
+            foreach (Match match in matchList) newMatchList.Add(match);
 
             return newMatchList;
         }
 
-        public void AddMatchResults(List<MatchGuiResult> matcheResults)
+        /// <summary>
+        /// Add results to matches and calculate the new matches left and students still in the hunt.
+        /// </summary>
+        /// <param name="matchResults">The match results to be processed, in the form of MatchGuiResult objects.</param>
+        public void AddMatchResults(List<PassingStudent> matchResults)
         {
+            List<Match> affectedMatches = new List<Match>();
             // Update match and student data
-            foreach (MatchGuiResult matchResult in matcheResults)
+            foreach (PassingStudent matchResult in matchResults)
             {
-                Match match = match_directory[matchResult.MatchID];
+                Match match = matchResult.AffectedMatch;
+                affectedMatches.Add(match);
 
                 // Seems not needed, but in case two people are passed then it's needed.
-                student_directory[matchResult.StuID].In = true;
+                matchResult.AffectedStudent.In = true;
 
-                // if the victor is student 1, mark student 2 as not in and pass student 1
-                if (matchResult.StuID == match.Id1)
+                // If the victor is student 1, mark student 2 as not in and pass student 1
+                if (match.IsStudent1(matchResult.AffectedStudent))
                 {
                     // If this match has already been closed, then the other student must have been passed too.
                     if (!match.Closed) student_directory[match.Id2].In = false;
@@ -512,93 +518,7 @@ namespace Reindeer_Hunter
 
             Save();
 
-            MatchChangeEvent(this, new EventArgs());
-        }
-
-        /// <summary>
-        /// Function for reopening the given match. Make sure that the match isn't a pass match!
-        /// </summary>
-        /// <param name="matchId">The id of the match to reopen.</param>
-        public void ReopenMatch(string matchId)
-        {
-            // Reset required match and student parameters
-            Match match = match_directory[matchId];
-            match.Closed = false;
-            match.Pass1 = false;
-            match.Pass2 = false;
-
-            // Bring the students back in.
-            student_directory[match.Id1].In = true;
-            student_directory[match.Id2].In = true;
-
-            // Save and call match change event.
-            Save();
-            MatchChangeEvent?.Invoke(this, new EventArgs());
-        }
-
-        /// <summary>
-        /// Function to close the given match and eliminate both students in it.
-        /// </summary>
-        /// <param name="matchId">The id of the match to close.</param>
-        public void CloseMatch(string matchId, bool multiThread = false)
-        {
-            // Get the match object, and make sure it has the right values
-            Match match = match_directory[matchId];
-            // If the match is closed already, don't touch it.
-            if (match.Closed) return;
-            match.Closed = true;
-            match.Pass1 = false;
-            match.Pass2 = false;
-
-            // Put both students out.
-            student_directory[match.Id1].In = false;
-            if (!IsPassMatch(match)) student_directory[match.Id2].In = false;
-
-            if (multiThread)
-            {
-                // Just call the event for multi-thread, don't save.
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    MatchChangeEvent.Invoke(this, new EventArgs());
-                });
-            }
-            else
-            {
-                // Save and call the event
-                Save();
-                MatchChangeEvent?.Invoke(this, new EventArgs());
-            }
-        }
-
-        /// <summary>
-        /// Closes all the given matches
-        /// </summary>
-        /// <param name="matchesToClose">The list of matches to close</param>
-        public async Task CloseMatches(List<Match> matchesToClose)
-        {
-            foreach (Match match in matchesToClose)
-            {
-                CloseMatch(match.MatchId, multiThread: true);
-            }
-
-            // Save since close match won't do that anymore.
-            Save();
-            await Task.Delay(0);
-        }
-
-        /// <summary>
-        /// Closes all open matches.
-        /// </summary>
-        public async Task CloseAllMatches()
-        {
-            List<Match> matchesToClose = GetOpenMatchesList();
-            foreach (Match match in matchesToClose)
-            {
-                CloseMatch(match.MatchId, multiThread: true);
-            }
-            // Save, since CloseMatch won't do it for us now.
-            Save();
-            await Task.Delay(0);
+            MatchChangeEvent(this, affectedMatches.ToArray());
         }
 
         /// <summary>
@@ -609,11 +529,12 @@ namespace Reindeer_Hunter
         {
             // List of result students with supplied id
             List<int> idStudents = new List<int>();
+            
 
             // True as soon as there is a problem.
             bool error = false;
 
-            MatchResultImportLogger logger = 
+            MatchResultImportLogger logger =
                 new MatchResultImportLogger(DataFile, GetCurrRoundNo());
 
             // Start with looking for the student numbers, since that's faster
@@ -635,7 +556,6 @@ namespace Reindeer_Hunter
 
                 // Add the now known id to the list
                 if (student.Id != 0) idStudents.Add(student.Id);
-
             }
 
             // Validate all the student ids now that we have them
@@ -652,7 +572,9 @@ namespace Reindeer_Hunter
                         stuNo.ToString() + " is already out of the hunt.");
                 }
             }
-            
+
+            List<Match> affectedMatches = new List<Match>(); // Matches affected by this function.
+
             if (error)
             {
                 logger.SaveAndClose();
@@ -661,41 +583,125 @@ namespace Reindeer_Hunter
 
                 // Open up the file explorer to the log.
                 Process.Start(logger.LogLocation);
-
-                return;
             }
-
-            // Now that all data is valid, proceed with closing of matches.
-            Dictionary<int, Match> relevantMatches = GetOpenMatchesWithStudentIds(idStudents);
-
-            // Update match and student data
-            foreach (KeyValuePair<int, Match> keyValue in relevantMatches)
+            else
             {
-                Match match = match_directory[keyValue.Value.MatchId];
+                // Now that all data is valid, proceed with closing of matches.
+                Dictionary<int, Match> relevantMatches = GetOpenMatchesWithStudentIds(idStudents);
 
-                // Seems not needed, but in case two people are passed then it's needed.
-                student_directory[keyValue.Key].In = true;
-
-                // if the victor is student 1, mark student 2 as not in and pass student 1
-                if (keyValue.Key == match.Id1)
+                // Update match and student data
+                foreach (KeyValuePair<int, Match> keyValue in relevantMatches)
                 {
-                    // If this match has already been closed, then the other student must have been passed too.
-                    if (!match.Closed) student_directory[match.Id2].In = false;
-                    match.Pass1 = true;
-                }
-                // Otherwise, mark student 1 as out and pass student 2
-                else
-                {
-                    // If this match has already been closed, then the other student must have been passed too
-                    if (!match.Closed) student_directory[match.Id1].In = false;
-                    match.Pass2 = true;
+                    Match match = match_directory[keyValue.Value.MatchId];
+
+                    // Seems not needed, but in case two people are passed then it's needed.
+                    student_directory[keyValue.Key].In = true;
+
+                    // if the victor is student 1, mark student 2 as not in and pass student 1
+                    if (keyValue.Key == match.Id1)
+                    {
+                        // If this match has already been closed, then the other student must have been passed too.
+                        if (!match.Closed) student_directory[match.Id2].In = false;
+                        match.Pass1 = true;
+                    }
+                    // Otherwise, mark student 1 as out and pass student 2
+                    else
+                    {
+                        // If this match has already been closed, then the other student must have been passed too
+                        if (!match.Closed) student_directory[match.Id1].In = false;
+                        match.Pass2 = true;
+                    }
+
+                    match.Closed = true;
+                    affectedMatches.Add(match);
                 }
 
-                match.Closed = true;
+                Save();
+                MatchChangeEvent?.Invoke(this, affectedMatches.ToArray());
+            }
+        }
+
+        private void ResolveMatches()
+        {
+            // TODO fill in
+        }
+
+        /// <summary>
+        /// Function for reopening the given match. Make sure that the match isn't a pass match!
+        /// </summary>
+        /// <param name="matchId">The id of the match to reopen.</param>
+        public void ReopenMatch(string matchId)
+        {
+            // Reset required match and student parameters
+            Match match = match_directory[matchId];
+            match.Closed = false;
+            match.Pass1 = false;
+            match.Pass2 = false;
+
+            // Bring the students back in.
+            student_directory[match.Id1].In = true;
+            student_directory[match.Id2].In = true;
+
+            // Save and call match change event.
+            Save();
+            MatchChangeEvent?.Invoke(this, new Match[] { match } );
+        }
+
+        /// <summary>
+        /// Function to close the given match and eliminate both students in it.
+        /// </summary>
+        /// <param name="matchId">The id of the match to close.</param>
+        /// <param name="resolution">The manner in which the match is to be closed.</param>
+        public void CloseMatch(string matchId)
+        {
+            // Get the match object, and make sure it has the right values
+            Match match = match_directory[matchId];
+            // If the match is closed already, don't touch it.
+            if (match.Closed) return;
+            match.Closed = true;
+            match.Pass1 = false;
+            match.Pass2 = false;
+
+            // Put both students out.
+            student_directory[match.Id1].In = false;
+            if (!IsPassMatch(match)) student_directory[match.Id2].In = false;
+        }
+
+        /// <summary>
+        /// Closes all the given matches asynchronously.
+        /// </summary>
+        /// <param name="matchesToClose">The list of matches to close</param>
+        public async Task CloseMatchesAsync(List<Match> matchesToClose)
+        {
+            List<Task> tasks = new List<Task>();
+            foreach (Match match in matchesToClose)
+            {
+                tasks.Add(Task.Run(() => CloseMatch(match.MatchId)));
             }
 
+            // Wait for the processes to complete.
+            await Task.WhenAll(tasks);
+            // Save since close match won't do that anymore.
             Save();
-            MatchChangeEvent(this, new EventArgs());
+            MatchChangeEvent?.Invoke(this, matchesToClose.ToArray());
+        }
+
+        /// <summary>
+        /// Closes all open matches, eliminating the students participating in them.
+        /// </summary>
+        public async Task CloseAllMatchesAsync()
+        {
+            List<Match> matchesToClose = GetOpenMatchesList();
+            Task[] tasks = new Task[matchesToClose.Count];
+            for (int i = 0; i < matchesToClose.Count; i++)
+            {
+                Match match = matchesToClose[i];
+                tasks[i] = Task.Run(() => CloseMatch(match.MatchId));
+            }
+            // Save, since CloseMatch won't do it for us now.
+            Save();
+            await Task.WhenAll(tasks);
+            MatchChangeEvent?.Invoke(this, matchesToClose.ToArray());
         }
 
         /// <summary>
@@ -960,8 +966,6 @@ namespace Reindeer_Hunter
         /// Adds students to the master student dictionary
         /// </summary>
         /// <param name="students">The list of students to add.</param>
-        /// <param name="inThread">True if this is being called frorm a thread
-        /// other than the main one. </param>
         public bool AddStudents(Student[] students)
         {
             // So that we can rollback any changes.
@@ -1107,7 +1111,7 @@ namespace Reindeer_Hunter
         /// <param name="matchesToAdd"></param>
         public async Task AddEditedMatches(List<Match> matchesToAdd)
         {
-            AddMatches(matchesToAdd, true, false);
+            await Task.Run(() => AddMatches(matchesToAdd, true, false));
 
             // Loop around and make sure that all the students that should be in are in.
             foreach (Match match in matchesToAdd)
@@ -1132,13 +1136,8 @@ namespace Reindeer_Hunter
 
             Save();
 
-            // Just call the event for multi-thread, don't save.
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                MatchChangeEvent.Invoke(this, new EventArgs());
-            });
-
-            await Task.Delay(0);
+            // Just call the event for multi-thread
+            MatchChangeEvent.Invoke(this, matchesToAdd.ToArray());
         }
 
         /// <summary>
@@ -1147,15 +1146,22 @@ namespace Reindeer_Hunter
         /// <param name="studentsToEliminate">The students to eliminate.</param>
         public async Task EliminateStudents(List<Student> studentsToEliminate)
         {
-            foreach (Student student in studentsToEliminate)
+            Task[] tasks = new Task[studentsToEliminate.Count];  // TODO make sure this runs async.
+            for (int i = 0; i < studentsToEliminate.Count; i++)
             {
-                EliminateStudent(student);
+
+                Student student = studentsToEliminate.ElementAt(i);
+                tasks[i] = Task.Run(() => EliminateStudent(student));
             }
 
+            await Task.WhenAll(tasks);
             Save();
-            await Task.Delay(0);
         }
 
+        /// <summary>
+        /// Eliminates the provided students from the hunt.
+        /// </summary>
+        /// <param name="studentToEliminate">The students to eliminate.</param>
         public void EliminateStudent(Student studentToEliminate)
         {
             // Make sure the student exists.
@@ -1307,7 +1313,7 @@ namespace Reindeer_Hunter
 
                 for (int a = 0; a < studentKV.Value.Count; a++)
                 {
-                    homeroom.Add(studentKV.Value[a].Clone());
+                    homeroom.Add(studentKV.Value[a]);
                 }
 
                 // Add it to the list
@@ -1420,8 +1426,8 @@ namespace Reindeer_Hunter
         {
             List<Student> returnable = new List<Student>();
 
-            if (student_directory.ContainsKey(match.Id1)) returnable.Add(student_directory[match.Id1].Clone());
-            if (student_directory.ContainsKey(match.Id2)) returnable.Add(student_directory[match.Id2].Clone());
+            if (student_directory.ContainsKey(match.Id1)) returnable.Add(student_directory[match.Id1]);
+            if (student_directory.ContainsKey(match.Id2)) returnable.Add(student_directory[match.Id2]);
 
             return returnable;
         }
@@ -1436,11 +1442,11 @@ namespace Reindeer_Hunter
             int id;
             if (studentId == 0 && student == null)
             {
-                throw new Exception("StudentId and student parameters cannot be ignored");
+                throw new ArgumentException("StudentId and student parameters cannot be ignored");
             }
             else if (GetCurrRoundNo() != 0)
             {
-                throw new Exception("Cannot delete students past round 0.");
+                throw new ArgumentException("Cannot delete students past round 0.");
             }
 
             // If just the studentId is null, 
@@ -1509,8 +1515,9 @@ namespace Reindeer_Hunter
 
             // Update the student in the master student directory
             student_directory[updated_student.Id] = updated_student;
-            
+
             // Update the matches that they're in.
+            List<Match> affectedMatches = new List<Match>();
             foreach (string matchId in updated_student.MatchesParticipated)
             {
                 Match match = match_directory[matchId];
@@ -1530,10 +1537,11 @@ namespace Reindeer_Hunter
                     match.Home2 = updated_student.Homeroom;
                     match.Grade2 = updated_student.Grade;
                 }
+                affectedMatches.Add(match);
             }
 
             // Call the matches changed event
-            MatchChangeEvent?.Invoke(this, new EventArgs());
+            MatchChangeEvent?.Invoke(this, affectedMatches.ToArray());
 
             // Save changes
             Save();

@@ -36,15 +36,5 @@ namespace Reindeer_Hunter
         {
             MasterWindow.ImportStudents();
         }
-
-        /// <summary>
-        /// Function called whenever the help menu button is clicked
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void HelpMenuButton_Click(object sender, RoutedEventArgs e)
-        {
-            System.Diagnostics.Process.Start("https://github.com/eAUE/Reindeer-Hunter/wiki");
-        }
     }
 }

@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FileHelpers;
+﻿using FileHelpers;
+using Reindeer_Hunter.Hunt;
 
 namespace Reindeer_Hunter.Data_Classes
 {

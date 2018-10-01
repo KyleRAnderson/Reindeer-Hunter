@@ -9,6 +9,7 @@ using System.Windows;
 using System.Security.Cryptography;
 using System.Diagnostics;
 using Microsoft.Win32;
+using Reindeer_Hunter.Hunt;
 
 namespace Reindeer_Hunter
 {

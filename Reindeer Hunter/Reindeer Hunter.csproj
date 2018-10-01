@@ -116,6 +116,7 @@
     <Compile Include="CommandManager.cs" />
     <Compile Include="Data Classes\DataRow.cs" />
     <Compile Include="Data Classes\License.cs" />
+    <Compile Include="Data Classes\PassingStudent.cs" />
     <Compile Include="Data Classes\NewMatches_EventArgs.cs" />
     <Compile Include="Data Classes\Victor.cs" />
     <Compile Include="DataCards\MatchCard.xaml.cs">
@@ -145,6 +146,7 @@
     <Compile Include="Subsystems\Manager_Subsystem.cs" />
     <Compile Include="Subsystems\Manager\MatchResultImportLogger.cs" />
     <Compile Include="Subsystems\PasserSubsystem.cs" />
+    <Compile Include="Subsystems\Passer\PasserButton.cs" />
     <Compile Include="Subsystems\ToolsCommands\Editor\Editor.cs" />
     <Compile Include="Subsystems\ToolsCommands\Editor\EditStudent.cs" />
     <Compile Include="Subsystems\ToolsCommands\MatchButton.cs" />
@@ -209,19 +211,18 @@
     <Compile Include="Data Classes\Filter.cs" />
     <Compile Include="Data Classes\RawStudent.cs" />
     <Compile Include="Data Classes\SearchQuery.cs" />
-    <Compile Include="Data Classes\Student.cs" />
+    <Compile Include="Hunt\Student.cs" />
     <Compile Include="DataFileIO.cs" />
     <Compile Include="HomePage.xaml.cs">
       <DependentUpon>HomePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="InstantPrinter.cs" />
-    <Compile Include="Data Classes\Match.cs" />
+    <Compile Include="Hunt\Match.cs" />
     <Compile Include="Matcher.cs" />
-    <Compile Include="Data Classes\MatchGuiResult.cs" />
     <Compile Include="Data Classes\PrintMessage.cs" />
     <Compile Include="CSVHandler.cs" />
     <Compile Include="Data Classes\ResultStudent.cs" />
-    <Compile Include="School.cs" />
+    <Compile Include="Hunt\School.cs" />
     <Compile Include="Subsystems\Filters and Search\ClearFiltersAndSearch.cs" />
     <Compile Include="SetupPage.xaml.cs">
       <DependentUpon>SetupPage.xaml</DependentUpon>

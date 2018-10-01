@@ -1,9 +1,9 @@
 ﻿using System.Windows;
 using Reindeer_Hunter.FFA;
-using System;
 using Microsoft.Win32;
 using Reindeer_Hunter.ThreadMonitors;
 using System.Diagnostics;
+using Reindeer_Hunter.Hunt;
 using System.IO;
 
 namespace Reindeer_Hunter

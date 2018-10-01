@@ -4,6 +4,7 @@ using System.Linq;
 using Reindeer_Hunter.Subsystems.ProcessButtonCommands;
 using System.Windows.Controls;
 using Reindeer_Hunter.Data_Classes;
+using Reindeer_Hunter.Hunt;
 
 namespace Reindeer_Hunter.Subsystems
 {
@@ -117,9 +118,9 @@ namespace Reindeer_Hunter.Subsystems
             UpdateStatus();
 
             // Subscribe to match change event and round increased event and save/discard events.
-            school.MatchChangeEvent += OnMatchesChanged;
-            school.RoundIncreased += OnMatchesChanged;
-            school.StudentsImported += OnMatchesChanged;
+            school.MatchChangeEvent += (a, b) => OnMatchesChanged();
+            school.RoundIncreased += (a, b) => OnMatchesChanged();
+            school.StudentsImported += (a, b) => OnMatchesChanged();
             Manager._SaveDiscard.Save += OnSave;
             Manager._SaveDiscard.Discard += OnDiscard;
 
@@ -127,7 +128,7 @@ namespace Reindeer_Hunter.Subsystems
             GoToFFAOverrideCommand.FunctionToExecute = (object parameter) => GoToFFA();
             GoToFFAOverrideCommand.CanExecuteDeterminer = () => school.NumInStudents > 0;
             // Make sure that the GoToFFAOverrideCommand updates when number of students change.
-            school.MatchChangeEvent += (object EventSender, EventArgs a) => GoToFFAOverrideCommand.RaiseCanExecuteChanged();
+            school.MatchChangeEvent += (object EventSender, Match[] a) => GoToFFAOverrideCommand.RaiseCanExecuteChanged();
         }
 
         /// <summary>
@@ -144,9 +145,7 @@ namespace Reindeer_Hunter.Subsystems
         /// Function called when something about matches is changed and stuff
         /// will need updating.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void OnMatchesChanged(object sender, EventArgs e)
+        private void OnMatchesChanged()
         {
             // Update the round and status.
             CurrRoundNo = school.GetCurrRoundNo();
@@ -192,7 +191,7 @@ namespace Reindeer_Hunter.Subsystems
         /// <summary>
         /// Event that fires when new matches are saved.
         /// </summary>
-        public event EventHandler MatchesRegistered;
+        public event EventHandler<Match[]> MatchesRegistered;
 
         /// <summary>
         /// Function called by the Save event. 
@@ -214,7 +213,7 @@ namespace Reindeer_Hunter.Subsystems
 
                 NewMatches.Clear();
                 // Fire the event.
-                MatchesRegistered(this, new EventArgs());
+                MatchesRegistered(this, NewMatches.ToArray());
             }
         }
 

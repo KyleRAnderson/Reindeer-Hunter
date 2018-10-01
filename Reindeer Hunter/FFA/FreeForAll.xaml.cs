@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using Reindeer_Hunter.Hunt;
+using System.Windows.Controls;
 
 namespace Reindeer_Hunter.FFA
 {

@@ -1,4 +1,5 @@
 ﻿using Reindeer_Hunter.Data_Classes;
+using Reindeer_Hunter.Hunt;
 using Reindeer_Hunter.Subsystems.ToolsCommands.Editor;
 using Reindeer_Hunter.ThreadMonitors;
 using System;
@@ -52,7 +53,7 @@ namespace Reindeer_Hunter.Subsystems
             #region Subscribing to the right events
             Manager._Passer.MatchAdded += Refresh;
             Manager._Passer.MatchRemoved += Refresh;
-            school.MatchChangeEvent += Refresh;
+            school.MatchChangeEvent += (a, b) => Refresh();
             #endregion
         }
 
@@ -73,7 +74,7 @@ namespace Reindeer_Hunter.Subsystems
         /// <returns></returns>
         private bool MatchEditQueueHasMatches()
         {
-            return Manager._Passer.Status == PasserSubsystem.HANDLING_MATCHES;
+            return Manager._Passer.Status == PasserSubsystem.PasserStatus.Handling_Matches;
         }
 
         /// <summary>
@@ -107,7 +108,7 @@ namespace Reindeer_Hunter.Subsystems
             List<Match> matchesToClose = Manager._Passer.EditQueue;
 
             // Close them.
-            await Task.Run(() => school.CloseMatches(matchesToClose));
+            await Task.Run(() => school.CloseMatchesAsync(matchesToClose));
 
             SelectedMatchesClosed?.Invoke(this, new EventArgs());
         }
@@ -119,7 +120,7 @@ namespace Reindeer_Hunter.Subsystems
 
         private async void CloseAllMatches(object sender)
         {
-            await Task.Run(school.CloseAllMatches);
+            await Task.Run(school.CloseAllMatchesAsync);
         }
     }
 }

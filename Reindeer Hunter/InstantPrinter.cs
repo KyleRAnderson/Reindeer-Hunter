@@ -6,6 +6,7 @@ using iTextSharp.text.pdf;
 using System.IO;
 using System.Diagnostics;
 using Reindeer_Hunter.Data_Classes;
+using Reindeer_Hunter.Hunt;
 
 namespace Reindeer_Hunter
 {

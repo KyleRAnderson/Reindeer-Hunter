@@ -1,4 +1,4 @@
-﻿using System;
+﻿using Reindeer_Hunter.Hunt;
 
 namespace Reindeer_Hunter.Data_Classes
 {

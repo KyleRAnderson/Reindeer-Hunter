@@ -1,4 +1,4 @@
-﻿using Reindeer_Hunter.Data_Classes;
+﻿using Reindeer_Hunter.Hunt;
 using Reindeer_Hunter.ThreadMonitors;
 using System;
 using System.Collections.Generic;
@@ -182,7 +182,7 @@ namespace Reindeer_Hunter.Subsystems.ToolsCommands.Editor
         #region Randomize Stuff
         private async void Randomize(object parameter)
         {
-            await Task.Run(RandomizeThread);
+            await RandomizeStudentsAsync();
 
             StudentMoved?.Invoke(this, new EventArgs());
         }
@@ -191,13 +191,13 @@ namespace Reindeer_Hunter.Subsystems.ToolsCommands.Editor
         /// Performs the necessary operations for randomize in an async thread.
         /// </summary>
         /// <returns></returns>
-        private async Task RandomizeThread()
+        private async Task RandomizeStudentsAsync()
         {
             List<Student> studentsToRandomize = StudentsToRandomize
                 .Select(student => student._Student)
                 .ToList();
 
-            List<Match> matchesToAdd = await Matcher.MakeMatches(studentsToRandomize, topMatchNo, round);
+            List<Match> matchesToAdd = await Task.Run(() => Matcher.MakeMatches(studentsToRandomize, topMatchNo, round));
 
             // Add new matches to the matches table
             MatchesMade.AddRange(matchesToAdd);
@@ -326,10 +326,10 @@ namespace Reindeer_Hunter.Subsystems.ToolsCommands.Editor
                 .Select(student => student._Student)
                 .ToList();
 
-            await Task.Run(() => _School.EliminateStudents(studentsToEliminate));
+            await _School.EliminateStudents(studentsToEliminate);
 
             // Add the generated matches
-            await Task.Run(() => _School.AddEditedMatches(MatchesMade));
+            await _School.AddEditedMatches(MatchesMade);
         }
 
         private bool CanSave()

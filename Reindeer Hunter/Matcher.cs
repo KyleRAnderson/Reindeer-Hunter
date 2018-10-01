@@ -1,4 +1,5 @@
 ﻿using Reindeer_Hunter.Data_Classes;
+using Reindeer_Hunter.Hunt;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -519,7 +520,7 @@ namespace Reindeer_Hunter
         /// <param name="topMatchNo">The current highest match number.</param>
         /// <param name="round">The round number.</param>
         /// <returns>A lit of the newly generated matches.</returns>
-        public static async Task<List<Match>> MakeMatches(List<Student> students, long topMatchNo, long round)
+        public static List<Match> MakeMatches(List<Student> students, long topMatchNo, long round)
         {
             List<Match> matchesCreated = new List<Match>();
             List<Student> student_list = new List<Student>(students);
@@ -544,7 +545,7 @@ namespace Reindeer_Hunter
                 student_list.Remove(lucky_guy);
 
                 // Pass the student and add the passmatch to the match list
-                matchesCreated.Add(Matcher.PassStudent(lucky_guy, topMatchNo, round));
+                matchesCreated.Add(PassStudent(lucky_guy, topMatchNo, round));
             }
             // Begin the selection 
             while (student_list.Count() > 0)
@@ -566,10 +567,9 @@ namespace Reindeer_Hunter
                 topMatchNo += 1;
 
                 // Generate and add the new match to the list
-                matchesCreated.Add(Matcher.GenerateMatch(student1, student2, topMatchNo, round));
+                matchesCreated.Add(GenerateMatch(student1, student2, topMatchNo, round));
             }
 
-            await Task.Delay(0);
             return matchesCreated;
         }
     }
