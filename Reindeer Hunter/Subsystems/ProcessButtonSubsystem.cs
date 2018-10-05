@@ -5,10 +5,11 @@ using Reindeer_Hunter.Subsystems.ProcessButtonCommands;
 using System.Windows.Controls;
 using Reindeer_Hunter.Data_Classes;
 using Reindeer_Hunter.Hunt;
+using System.ComponentModel;
 
 namespace Reindeer_Hunter.Subsystems
 {
-    public class ProcessButtonSubsystem : Subsystem
+    public class ProcessButtonSubsystem : Subsystem, INotifyPropertyChanged
     {
         public static ProcessButtonSubsystem CurrentInstance = null;
 
@@ -42,6 +43,7 @@ namespace Reindeer_Hunter.Subsystems
             {
                 status = value;
                 StatusChanged(this, new EventArgs());
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CurrentStatus"));
             }
         }
 
@@ -192,6 +194,7 @@ namespace Reindeer_Hunter.Subsystems
         /// Event that fires when new matches are saved.
         /// </summary>
         public event EventHandler<Match[]> MatchesRegistered;
+        public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
         /// Function called by the Save event. 

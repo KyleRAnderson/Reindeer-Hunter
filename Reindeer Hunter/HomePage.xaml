@@ -39,7 +39,7 @@
                 <RowDefinition Height="39*"/>
                 <RowDefinition Height="56*"/>
             </Grid.RowDefinitions>
-            <Button x:Name="process_button" Content="Matchmake" Margin="5,0,5,10" Background="Black" Foreground="White" Grid.Column="6" Grid.Row="9" Grid.ColumnSpan="2" HorizontalContentAlignment="Center" Command="{Binding _ProcessButtonSubsystem.ProcessCommand, Mode=OneWay}" CommandParameter="{Binding _ProcessButtonSubsystem.Status}" ToolTip="Spacebar"/>
+            <Button x:Name="process_button" Content="Matchmake" Margin="5,0,5,10" Background="Black" Foreground="White" Grid.Column="6" Grid.Row="9" Grid.ColumnSpan="2" HorizontalContentAlignment="Center" Command="{Binding _ProcessButtonSubsystem.ProcessCommand, Mode=OneWay}" CommandParameter="{Binding _ProcessButtonSubsystem.CurrentStatus}" ToolTip="Spacebar"/>
             <Button x:Name="search_button" Content="Search" Margin="0" BorderThickness="1" Grid.Column="5" VerticalContentAlignment="Center" Grid.Row="2" FontSize="16" Command="{Binding _FiltersAndSearch.Searcher}" CommandParameter="{Binding Text, ElementName=search_box}" ToolTip="Tab"/>
             <TextBox x:Name="search_box" Margin="10,0,0,0" TextWrapping="Wrap" AutomationProperties.HelpText="Search for students or matches..." Text="Search &quot;S + [Student Id]&quot;, &quot;[Homeroom]&quot;, &quot;[Match Number]&quot;" VerticalContentAlignment="Center" Grid.ColumnSpan="5" Grid.Row="2" CharacterCasing="Upper" ToolTip="Search &quot;S + [Student Id]&quot;, &quot;[Homeroom]&quot;, &quot;[Match Number]&quot;">
             </TextBox>

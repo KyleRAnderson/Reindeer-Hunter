@@ -7,6 +7,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reindeer Hunter", "Reindeer
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Hunt_Setup", "Hunt_Setup\Hunt_Setup.vdproj", "{00E0A332-8EFE-4153-B03D-15A7ACECBE0A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Template PDFs", "Template PDFs", "{6F40EA55-8CF3-448A-A8C5-9CAE326725F1}"
+	ProjectSection(SolutionItems) = preProject
+		Template PDFs\Archive.zip = Template PDFs\Archive.zip
+		Template PDFs\TemplatePDF.pdf = Template PDFs\TemplatePDF.pdf
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

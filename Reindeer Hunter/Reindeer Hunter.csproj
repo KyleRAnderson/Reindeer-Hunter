@@ -63,11 +63,10 @@
     <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>725D2A9696FF2CB48D345FEFB40C4C8547DC1B8C</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>FA3689AD37D972787E17F4BD9073B39F971C295F</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>
-    </ManifestKeyFile>
+    <ManifestKeyFile>Reindeer Hunter_1_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <SignManifests>true</SignManifests>
@@ -272,6 +271,7 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <None Include="Reindeer Hunter_1_TemporaryKey.pfx" />
     <None Include="Reindeer Hunter_TemporaryKey.pfx" />
     <None Include="Resources\User_Manual.pdf" />
   </ItemGroup>
