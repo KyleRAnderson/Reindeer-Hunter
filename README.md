@@ -16,7 +16,8 @@ Development should be done with Windows 10 with the lastest .NET framework insta
 1. Launch Visual Studio, Go To Tools -> Extensions and Updates and download and download the [*Microsoft Visual Studio 2017 installer projects extension*](https://marketplace.visualstudio.com/items?itemName=VisualStudioClient.MicrosoftVisualStudio2017InstallerProjects). 
    1. Quit Visual Studio to let the installation complete.
 1. Download/Clone the repository, open the .sln file.
-1. Make sure that all Nuget packages install properly. If they aren't installed automatically, these are the required packages.
+1. Make sure that all Nuget packages install properly. If they aren't installed automatically, go to `Tools -> Nuget Package Manager -> Manage Nuget Packages for solution` and it should prompt you to restore the packages. 
+Below are the packages and their versions required for the program to function properly.
     1. FileHelpers by Marcos Meli and Contributors (V3.3.0)
     1. iTextSharp by Bruno Lowagie, Paulo Soares, et al. (V5.5.13)
     1. Newtonsoft.Json by James Newton-King (V11.0.2)
