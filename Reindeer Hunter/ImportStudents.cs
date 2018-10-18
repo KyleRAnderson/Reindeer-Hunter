@@ -11,7 +11,7 @@ namespace Reindeer_Hunter
         private string[] FileLocation;
         private Queue<bool> Comms;
 
-        public ImportStudents(String[] fileLocation, School school, Queue<bool> comms)
+        public ImportStudents(string[] fileLocation, School school, Queue<bool> comms)
         {
             Comms = comms;
             FileLocation = fileLocation;

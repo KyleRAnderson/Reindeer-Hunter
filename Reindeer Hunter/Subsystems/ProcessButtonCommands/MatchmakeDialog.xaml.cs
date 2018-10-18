@@ -8,14 +8,11 @@ namespace Reindeer_Hunter.Subsystems.ProcessButtonCommands
     /// </summary>
     public partial class MatchmakeDialog : Window
     {
-        // The possible statuses.
-        public static readonly int HOMEROOMS = 0;
-        public static readonly int GRADES = 1;
-        public static readonly int STUDENTS = 2;
-        public static readonly int CANCELLED = 3;
+
+        public enum MatchmakeStatus { Homerooms, Grades, Students, Cancelled };
 
         /// <summary>
-        /// True when the submit button is pressed, false otherwise.
+        /// True after the submit button has been pressed, false otherwise.
         /// </summary>
         bool Submitted = false;
 
@@ -55,13 +52,13 @@ namespace Reindeer_Hunter.Subsystems.ProcessButtonCommands
             Close();
         }
 
-        public int GetResult()
+        public MatchmakeStatus GetResult()
         {
-            if (!Submitted) return CANCELLED;
-            else if (Homerooms.IsChecked == true) return HOMEROOMS;
-            else if (Grades.IsChecked == true) return GRADES;
-            else if (Students.IsChecked == true) return STUDENTS;
-            else return CANCELLED;
+            if (!Submitted) return MatchmakeStatus.Cancelled;
+            else if (Homerooms.IsChecked == true) return MatchmakeStatus.Homerooms;
+            else if (Grades.IsChecked == true) return MatchmakeStatus.Grades;
+            else if (Students.IsChecked == true) return MatchmakeStatus.Students;
+            else return MatchmakeStatus.Cancelled;
         }
 
         /// <summary>

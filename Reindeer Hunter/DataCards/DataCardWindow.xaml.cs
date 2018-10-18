@@ -10,11 +10,10 @@ namespace Reindeer_Hunter.DataCards
     /// </summary>
     public partial class DataCardWindow : Window
     {
-        // A possible close status
-        public static readonly int STUDENT_DELETED = 1;
+        public enum CloseStatus { StudentDeleted, UserClosed };
 
         // Reason why the window closed, 0 being because the user closed it.
-        public int CloseStatus { get; private set; } = 0;
+        public CloseStatus CloseReason { get; private set; } = CloseStatus.UserClosed;
 
         public School _School { get; private set; }
         private MatchCard _MatchCard;
@@ -149,7 +148,7 @@ namespace Reindeer_Hunter.DataCards
 
         private void OnStudentDeletion(object sender, EventArgs e)
         {
-            CloseStatus = STUDENT_DELETED;
+            CloseReason = CloseStatus.StudentDeleted;
             Close();
         }
     }

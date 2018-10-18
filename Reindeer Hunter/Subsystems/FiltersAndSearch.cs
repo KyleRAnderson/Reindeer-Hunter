@@ -407,7 +407,7 @@ namespace Reindeer_Hunter.Subsystems
             window.ShowDialog();
 
             // If a student is deleted, clear the filters
-            if (window.CloseStatus == DataCardWindow.STUDENT_DELETED) ResetFilters();
+            if (window.CloseReason == DataCardWindow.CloseStatus.StudentDeleted) ResetFilters();
         }
 
         /// <summary>
