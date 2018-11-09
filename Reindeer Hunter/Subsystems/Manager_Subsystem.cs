@@ -175,7 +175,7 @@ namespace Reindeer_Hunter.Subsystems
                 csvFileDialog.ShowDialog();
 
 
-                inputtedResults = CSVHandler.Import(CSVHandler.IMPORT_MATCH_RESULTS, 
+                inputtedResults = CSVHandler.Import(CSVHandler.ImportType.MatchResults, 
                     filePath: csvFileDialog.FileName).ElementAt(0);
 
                 DataFileIO.LastOpenedDirectory = Path.GetDirectoryName(csvFileDialog.FileName);

@@ -28,12 +28,12 @@ namespace Reindeer_Hunter.ThreadMonitors
             MatchmakeDialog selectionDialog = new MatchmakeDialog();
             selectionDialog.ShowDialog();
 
-            int result = selectionDialog.GetResult();
+            MatchmakeDialog.MatchmakeStatus result = selectionDialog.GetResult();
 
             // Get the end date inputted by the user.
             string endDate = selectionDialog.EndDate;
 
-            if (result == MatchmakeDialog.CANCELLED) return;
+            if (result == MatchmakeDialog.MatchmakeStatus.Cancelled) return;
 
             subsystem = subsystemInCharge;
 
@@ -45,12 +45,12 @@ namespace Reindeer_Hunter.ThreadMonitors
 
             // Create the matchmaker and then assign the thread target to it
             // +1 to current round because we want next round's matches.
-            if (result == MatchmakeDialog.GRADES)
+            if (result == MatchmakeDialog.MatchmakeStatus.Grades)
             {
                 matcher = new Matcher(school.GetCurrRoundNo() + 1, school.CurrMatchNo, Key, endDate,
                     comms, studentsDic: school.GetStudentsByGrade());
             }
-            else if (result == MatchmakeDialog.STUDENTS)
+            else if (result == MatchmakeDialog.MatchmakeStatus.Students)
             {
                 matcher = new Matcher(school.GetCurrRoundNo() + 1, school.CurrMatchNo, Key, endDate,
                     comms, studentList: school.GetAllParticipatingStudents());

@@ -12,18 +12,17 @@ namespace Reindeer_Hunter
     public static class CSVHandler
     {
         // ID for importing students
-        public static int IMPORT_STUDENTS = 0;
-        public static int IMPORT_MATCH_RESULTS = 1;
+        public enum ImportType { Students, MatchResults }
 
         /// <summary>
         /// Used to import data from a .csv file
         /// </summary>
         /// <param name="id">ID0 = Student, ID1 = ResultStudent</param>
         /// <returns>object list containing the objects made, or null when error occurred.</returns>
-        public static List<object[]> Import(int id, String filePath = null, String[] pathsList = null)
+        public static List<object[]> Import(ImportType id, String filePath = null, String[] pathsList = null)
         {
             // If importing students
-            if (id == IMPORT_STUDENTS)
+            if (id == ImportType.Students)
             {
                 List<object[]> returnList = new List<object[]>();
 
@@ -72,7 +71,7 @@ namespace Reindeer_Hunter
             }
 
             // If importing match results
-            else if (id == IMPORT_MATCH_RESULTS)
+            else if (id == ImportType.MatchResults)
             {
                 if (filePath == "") return null;
                 FileHelperEngine<ResultStudent> engine = new FileHelperEngine<ResultStudent>

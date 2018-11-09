@@ -23,7 +23,7 @@ namespace Reindeer_Hunter
         /// </summary>
         public void Import()
         {
-            List<object[]> resultsList = CSVHandler.Import(CSVHandler.IMPORT_STUDENTS, pathsList: FileLocation);
+            List<object[]> resultsList = CSVHandler.Import(CSVHandler.ImportType.Students, pathsList: FileLocation);
             List<Student> students_to_add = new List<Student>();
 
             // In case of problems.
