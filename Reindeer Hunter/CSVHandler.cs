@@ -19,7 +19,7 @@ namespace Reindeer_Hunter
         /// </summary>
         /// <param name="id">ID0 = Student, ID1 = ResultStudent</param>
         /// <returns>object list containing the objects made, or null when error occurred.</returns>
-        public static List<object[]> Import(ImportType id, String filePath = null, String[] pathsList = null)
+        public static List<object[]> Import(ImportType id, string filePath = null, string[] pathsList = null)
         {
             // If importing students
             if (id == ImportType.Students)
