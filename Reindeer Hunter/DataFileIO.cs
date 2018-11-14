@@ -160,12 +160,13 @@ namespace Reindeer_Hunter
                 StreamReader dataFileRead = new StreamReader(dataFileLocation);
 
                 // Get the serialized json dictionary. Close the dataFile.
-                readData = dataFileRead.ReadLine();
+                readData = dataFileRead.ReadToEnd();
+                readData = readData.Replace(Environment.NewLine, string.Empty);
                 dataFileRead.Close();
             }
                 // Deserialize and return the json dictionary
                 Hashtable data_hashtable =
-                    (Hashtable)JsonConvert.DeserializeObject<Hashtable>(readData);
+                    JsonConvert.DeserializeObject<Hashtable>(readData);
 
                 /* 
                  * Begin the reconstruction process of the data Hashtable
