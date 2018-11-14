@@ -398,7 +398,7 @@ namespace Reindeer_Hunter.Subsystems
             else if (currentColumnIndex == Full2ColumnIndex)
             {
                 // In case it is a pass student or a fake match
-                if (match.Id2 == 0) return;
+                if (string.IsNullOrEmpty(match.Id2)) return;
                 window = new DataCardWindow(masterWindow._School, studentId: match.Id2);
             }
             else return;

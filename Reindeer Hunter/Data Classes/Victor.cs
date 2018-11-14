@@ -12,7 +12,7 @@ namespace Reindeer_Hunter.Data_Classes
         /// List of student numbers representing the students that this victor
         /// has pinned.
         /// </summary>
-        public List<int> Kills { get; set; }
+        public List<string> Kills { get; set; }
 
         /// <summary>
         /// Total number of kills this person has done
@@ -39,7 +39,7 @@ namespace Reindeer_Hunter.Data_Classes
             In = student.In;
 
             NumKills = 0;
-            Kills = new List<int>();
+            Kills = new List<string>();
         }
 
         /// <summary>

@@ -28,6 +28,6 @@ namespace Reindeer_Hunter.Data_Classes
 
         [FieldOptional]
         [FieldNullValue(0)]
-        public int Id;
+        public string Id;
     }
 }

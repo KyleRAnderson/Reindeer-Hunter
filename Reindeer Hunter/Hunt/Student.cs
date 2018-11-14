@@ -12,7 +12,7 @@ namespace Reindeer_Hunter.Hunt
 
         public string Last { get; set; }
 
-        public int Id { get; set; }
+        public string Id { get; set; }
 
         public int Grade { get; set; }
 
@@ -79,7 +79,7 @@ namespace Reindeer_Hunter.Hunt
         {
             get
             {
-                return First + " " + Last;
+                return string.Format("{0} {1}", First, Last);
             }
         }
     }

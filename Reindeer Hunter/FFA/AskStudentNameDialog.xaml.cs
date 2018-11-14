@@ -14,7 +14,7 @@ namespace Reindeer_Hunter.FFA
     {
 
         public List<Victor> DisplayVictors;
-        public int KilledStudentId { get; private set; }
+        public string KilledStudentId { get; private set; }
         private List<MenuItem> Selections;
 
         public AskStudentNameDialog(List<Victor> victors, Victor killedStudent, 
@@ -27,7 +27,7 @@ namespace Reindeer_Hunter.FFA
             SubmitButton.Command = submitCommand;
 
             // Update the title with the pinned student's name.
-            Title = String.Format("Who pinned {0}?", killedStudent.FullName);
+            Title = string.Format("Who pinned {0}?", killedStudent.FullName);
             DisplayVictors = victors;
 
             KilledStudentId = killedStudent.Id;
@@ -62,7 +62,7 @@ namespace Reindeer_Hunter.FFA
             Title = questionToAsk;
             DisplayVictors = victors;
 
-            KilledStudentId = 0;
+            KilledStudentId = "";
 
             // Construct the list of menuitems
             Selections = new List<MenuItem>();
@@ -83,7 +83,7 @@ namespace Reindeer_Hunter.FFA
         /// </summary>
         /// <param name="index">The index of the student in the list.</param>
         /// <returns>An integer that is the student's Id.</returns>
-        public int GetVictorIdByIndex(int index)
+        public string GetVictorIdByIndex(int index)
         {
             return DisplayVictors[index].Id;
         }

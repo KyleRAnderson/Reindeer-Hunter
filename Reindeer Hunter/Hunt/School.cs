@@ -35,7 +35,7 @@ namespace Reindeer_Hunter.Hunt
 
         // This dictionary will contain all data for the program
         protected Hashtable data;
-        protected Dictionary<int, Student> student_directory;
+        protected Dictionary<string, Student> student_directory;
 
         // Students with keys of "Firstname + " " + Lastname"
         protected Hashtable studentName_directory;
@@ -118,7 +118,7 @@ namespace Reindeer_Hunter.Hunt
 
         public DataFileIO DataFile { get; set; }
 
-        private string StudentKey = "students";
+        private readonly string STUDENTKEY = "students";
 
         /// <summary>
         /// Determines if we're ready to go to the next round
@@ -148,7 +148,21 @@ namespace Reindeer_Hunter.Hunt
             }
 
             // Declare these for simplicity and ease of use.
-            student_directory = (Dictionary<int, Student>)data[StudentKey];
+            try
+            {
+                student_directory = (Dictionary<string, Student>)data[STUDENTKEY];
+            }
+            // If we're unable to cast this to string properly, we're going to need to convert.
+            catch (InvalidCastException)
+            {
+                // This happens because of compatibility issues.
+                Dictionary<int, Student> oldFormat = (Dictionary<int, Student>)data[STUDENTKEY];
+                student_directory = new Dictionary<string, Student>();
+                foreach (KeyValuePair<int, Student> pair in oldFormat)
+                {
+                    student_directory.Add(pair.Key.ToString(), pair.Value);
+                }
+            }
 
             // Fix any problems that occurred during save.
             foreach (Student student in student_directory.Values)
@@ -191,7 +205,7 @@ namespace Reindeer_Hunter.Hunt
         {
             bool changed = false;
 
-            // If the version numbers match, return.
+            // If the version of the program data file is the same as the current version, no upgrades necessary.
             if (misc.ContainsKey(VersionKey) && ((string)misc[VersionKey]).Equals(StartupWindow.ApplicationVersionNumber)) return;
 
             if (!misc.ContainsKey(VersionKey))
@@ -346,7 +360,7 @@ namespace Reindeer_Hunter.Hunt
             }
 
             // A student id was provided. Return null when it cannot be found
-            else if (query.StudentNo != 0)
+            else if (!string.IsNullOrEmpty(query.StudentNo))
             {
                 if (!student_directory.ContainsKey(query.StudentNo)) return null;
                 Student student = student_directory[query.StudentNo];
@@ -410,7 +424,7 @@ namespace Reindeer_Hunter.Hunt
                 Grade1 = student.Grade,
                 MatchId = "",
                 Round = student.LastRoundParticipated,
-                Id2 = 0,
+                Id2 = string.Empty,
             };
         }
 
@@ -528,7 +542,7 @@ namespace Reindeer_Hunter.Hunt
         public void AddMatchResults(List<ResultStudent> resultsStudents)
         {
             // List of result students with supplied id
-            List<int> idStudents = new List<int>();
+            List<string> idStudents = new List<string>();
             
 
             // True as soon as there is a problem.
@@ -541,12 +555,12 @@ namespace Reindeer_Hunter.Hunt
             foreach (ResultStudent student in resultsStudents)
             {
                 // 0 is the null value for result student ids.
-                if (student.Id == 0)
+                if (string.IsNullOrEmpty(student.Id))
                 {
                     student.Id = GetStudentId(student.First, student.Last, student.Homeroom);
 
-                    // If couldn't find student, id would be 0.
-                    if (student.Id == 0)
+                    // If couldn't find student, id would be empty string.
+                    if (string.IsNullOrEmpty(student.Id))
                     {
                         logger.AddLine("Could not find student with name "
                             + student.First + " " + student.Last);
@@ -555,11 +569,11 @@ namespace Reindeer_Hunter.Hunt
                 }
 
                 // Add the now known id to the list
-                if (student.Id != 0) idStudents.Add(student.Id);
+                if (string.IsNullOrEmpty(student.Id)) idStudents.Add(student.Id);
             }
 
             // Validate all the student ids now that we have them
-            foreach (int stuNo in idStudents)
+            foreach (string stuNo in idStudents)
             {
                 if (!student_directory.ContainsKey(stuNo))
                 {
@@ -587,10 +601,10 @@ namespace Reindeer_Hunter.Hunt
             else
             {
                 // Now that all data is valid, proceed with closing of matches.
-                Dictionary<int, Match> relevantMatches = GetOpenMatchesWithStudentIds(idStudents);
+                Dictionary<string, Match> relevantMatches = GetOpenMatchesWithStudentIds(idStudents);
 
                 // Update match and student data
-                foreach (KeyValuePair<int, Match> keyValue in relevantMatches)
+                foreach (KeyValuePair<string, Match> keyValue in relevantMatches)
                 {
                     Match match = match_directory[keyValue.Value.MatchId];
 
@@ -709,10 +723,10 @@ namespace Reindeer_Hunter.Hunt
         /// </summary>
         /// <param name="studentIds"></param>
         /// <returns></returns>
-        private Dictionary<int, Match> GetOpenMatchesWithStudentIds(List<int> studentIds)
+        private Dictionary<string, Match> GetOpenMatchesWithStudentIds(List<string> studentIds)
         {
             List<Match> openMatches = GetOpenMatchesList();
-            Dictionary<int, Match> relevantMatches = new Dictionary<int, Match>();
+            Dictionary<string, Match> relevantMatches = new Dictionary<string, Match>();
             foreach (Match match in openMatches)
             {
                 // If student 1 passes, add him/her
@@ -756,7 +770,7 @@ namespace Reindeer_Hunter.Hunt
             return returnList;
         }
 
-        public Student GetStudent(int id)
+        public Student GetStudent(string id)
         {
             if (student_directory.ContainsKey(id)) return student_directory[id].Clone();
             else return null;
@@ -767,12 +781,12 @@ namespace Reindeer_Hunter.Hunt
             return match_directory[id].Clone();
         }
 
-        private int GetStudentId(string first, string last, int homeroom)
+        private string GetStudentId(string first, string last, int homeroom)
         {
             var nameEntry = studentName_directory[first + " " + last];
 
             // If a student with that name doesn't exist.
-            if (nameEntry == null) return 0;
+            if (nameEntry == null) return string.Empty;
             // If there is only one entry for that name
             else if (!(nameEntry is List<Student>)) return ((Student)nameEntry).Id;
 
@@ -785,7 +799,7 @@ namespace Reindeer_Hunter.Hunt
                 }
 
                 // In case we can't find one with those specifications
-                return 0;
+                return string.Empty;
             }
         }
 
@@ -884,7 +898,7 @@ namespace Reindeer_Hunter.Hunt
             misc["RoundNo"] = (long)misc["RoundNo"] + 1;
             long round = GetCurrRoundNo();
 
-            foreach (KeyValuePair<int, Student> studentKeyValue in student_directory)
+            foreach (KeyValuePair<string, Student> studentKeyValue in student_directory)
             {
                 Student student = studentKeyValue.Value;
                 if (student.In)
@@ -908,7 +922,7 @@ namespace Reindeer_Hunter.Hunt
         {
             Dictionary<int, List<Student>> studentDic = new Dictionary<int, List<Student>>();
 
-            foreach (KeyValuePair<int, Student> studentKeyValue in student_directory)
+            foreach (KeyValuePair<string, Student> studentKeyValue in student_directory)
             {
                 // If the grade doesn't exist in the dictionary, add it.
                 if (!studentDic.ContainsKey(studentKeyValue.Value.Grade)) studentDic.Add(studentKeyValue.Value.Grade, new List<Student>());
@@ -969,12 +983,12 @@ namespace Reindeer_Hunter.Hunt
         public bool AddStudents(Student[] students)
         {
             // So that we can rollback any changes.
-            Dictionary<int, Student> safeStudent_directory = new Dictionary<int, Student>(student_directory);
+            Dictionary<string, Student> safeStudent_directory = new Dictionary<string, Student>(student_directory);
             Hashtable safeStudentName_directory = new Hashtable(studentName_directory);
             Dictionary<int, List<Student>> safeHomeroom_directory = new Dictionary<int, List<Student>>(homeroom_directory);
 
             // Used in case of an error message to communicate which student ID exists already
-            int id = 0;
+            string id = string.Empty;
             try
             {
                 // Add the students to the student list
@@ -1051,11 +1065,11 @@ namespace Reindeer_Hunter.Hunt
         /// backup onto the master.
         /// </summary>
         /// <param name="newStudentDic">The backup that was made.</param>
-        private void ReplaceOldStuDicWithNewOne(Dictionary<int, Student> newStudentDic,
+        private void ReplaceOldStuDicWithNewOne(Dictionary<string, Student> newStudentDic,
             Dictionary<int, List<Student>> newStudentHmrmDic, Hashtable newStudentNameDic)
         {
-            data[StudentKey] = new Dictionary<int, Student>(newStudentDic);
-            student_directory = (Dictionary<int, Student>)data[StudentKey];
+            data[STUDENTKEY] = new Dictionary<string, Student>(newStudentDic);
+            student_directory = (Dictionary<string, Student>)data[STUDENTKEY];
             studentName_directory = newStudentNameDic;
             homeroom_directory = newStudentHmrmDic;
         }
@@ -1082,7 +1096,7 @@ namespace Reindeer_Hunter.Hunt
 
                 /* Because there will be no student with id = 0, this is the id of a "pass" student
                  * We don't want to try to find a nonexistent "pass" student, so do this */
-                if (match.Id2 != 0)
+                if (!string.IsNullOrEmpty(match.Id2))
                 {
                     student_directory[match.Id2].CurrMatchID = match.MatchId;
                 }
@@ -1403,7 +1417,7 @@ namespace Reindeer_Hunter.Hunt
         /// <returns>True if it is a pass match, false otherwise.</returns>
         public static bool IsPassMatch(Match match)
         {
-            return (match.Id2 == 0 && match.First2 == "Pass" && match.Last2 == "Pass" && match.Home2 == 0);
+            return (string.IsNullOrEmpty(match.Id2) && match.First2 == "Pass" && match.Last2 == "Pass" && match.Home2 == 0);
         }
 
         /// <summary>
@@ -1437,10 +1451,10 @@ namespace Reindeer_Hunter.Hunt
         /// </summary>
         /// <param name="studentId"></param>
         /// <param name="student"></param>
-        public void DeleteStudent(int studentId = 0, Student student = null)
+        public void DeleteStudent(string studentId = "", Student student = null)
         {
-            int id;
-            if (studentId == 0 && student == null)
+            string id;
+            if (string.IsNullOrEmpty(studentId) && student == null)
             {
                 throw new ArgumentException("StudentId and student parameters cannot be ignored");
             }
@@ -1450,7 +1464,7 @@ namespace Reindeer_Hunter.Hunt
             }
 
             // If just the studentId is null, 
-            else if (studentId == 0)
+            else if (string.IsNullOrEmpty(studentId))
             {
                 id = student.Id;
             }
