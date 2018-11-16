@@ -18,11 +18,11 @@ namespace Reindeer_Hunter.Hunt
         public bool Pass1 { get; set; } = false;
         public string First1 { get; set; }
         public string Last1 { get; set; }
-        public int Id1 { get; set; }
+        public string Id1 { get; set; }
         public int Grade1 { get; set; }
         public string First2 { get; set; }
         public string Last2 { get; set; }
-        public int Id2 { get; set; }
+        public string Id2 { get; set; }
         public bool Pass2 { get; set; } = false;
         public int Grade2 { get; set; }
 

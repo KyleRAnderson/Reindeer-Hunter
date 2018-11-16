@@ -6,7 +6,10 @@ namespace Reindeer_Hunter.Data_Classes
     {
         public string First1 { get; private set; } = "";
         public string Last1 { get; private set; } = "";
-        public int Id1 { get; private set; }
+        /// <summary>
+        /// Id of the the student in the license.
+        /// </summary>
+        public string Id1 { get; private set; }
         private string First2 { get; set; } = "";
         private string Last2 { get; set; } = "";
         public int Homeroom1 { get; set; } = 0;

@@ -24,7 +24,7 @@ namespace Reindeer_Hunter.Subsystems.ToolsCommands.Editor
         private DataGrid Display2;
         private DataGrid Display3;
 
-        private Dictionary<int, EditStudent> student_directory;
+        private Dictionary<string, EditStudent> student_directory;
 
         /// <summary>
         /// School object used for various operations.
@@ -50,7 +50,7 @@ namespace Reindeer_Hunter.Subsystems.ToolsCommands.Editor
         /// <summary>
         /// A dictionary of all the students in matches currently, so we know who's been dealt with.
         /// </summary>
-        private Dictionary<int, EditStudent> studentsInMatches = new Dictionary<int, EditStudent>();
+        private Dictionary<string, EditStudent> studentsInMatches = new Dictionary<string, EditStudent>();
 
         #region RelayCommands
         public RelayCommand RandomizeCommand { get; } = new RelayCommand();
@@ -90,7 +90,7 @@ namespace Reindeer_Hunter.Subsystems.ToolsCommands.Editor
         /// <param name="student"></param>
         private void MoveToMatch(object sender, EditStudent student)
         {
-            if (MatchesMade.Count >= 1 && MatchesMade[MatchesMade.Count - 1].Id2 == 0)
+            if (MatchesMade.Count >= 1 && string.IsNullOrEmpty(MatchesMade[MatchesMade.Count - 1].Id2))
             {
                 int index = MatchesMade.Count - 1;
                 EditStudent student1 = student_directory[MatchesMade[index].Id1];
@@ -155,7 +155,7 @@ namespace Reindeer_Hunter.Subsystems.ToolsCommands.Editor
                 studentsInMatches.Remove(student1._Student.Id);
 
                 // Move the second student back, if they are real.
-                if (matchToDelete.Id2 != 0)
+                if (!string.IsNullOrEmpty(matchToDelete.Id2))
                 {
                     EditStudent student2 = studentsInMatches[matchToDelete.Id2];
                     MoveToStudentTable(student2, false);
@@ -282,7 +282,7 @@ namespace Reindeer_Hunter.Subsystems.ToolsCommands.Editor
 
         private async Task<List<EditStudent>> GetStudentsFromMatches(List<Match> matches)
         {
-            Dictionary<int, EditStudent> returnable = new Dictionary<int, EditStudent>();
+            Dictionary<string, EditStudent> returnable = new Dictionary<string, EditStudent>();
             foreach (Match match in matches)
             {
                 List<Student> students = _School.GetStudentsInMatch(match);

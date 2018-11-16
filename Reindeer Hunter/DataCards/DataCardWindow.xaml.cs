@@ -43,7 +43,7 @@ namespace Reindeer_Hunter.DataCards
         /// <param name="school">The school object to be worked with</param>
         /// <param name="studentId">The ID of the student we're displaying, else if it's a match leave blank</param>
         /// <param name="matchId">The match id of the match we're displaying, else if it's a student leave blank.</param>
-        public DataCardWindow(School school, int studentId = 0, string matchId = "")
+        public DataCardWindow(School school, string studentId = "", string matchId = "")
         {
             InitializeComponent();
 
@@ -53,9 +53,9 @@ namespace Reindeer_Hunter.DataCards
             Display(studentId, matchId);
         }
 
-        public void Display(int studentId = 0, string matchId = "")
+        public void Display(string studentId = "", string matchId = "")
         { 
-            if (studentId != 0)
+            if (!string.IsNullOrEmpty(studentId))
             {
                 SetPage(StudentPage);
                 SetStudentContent(_School.GetStudent(studentId));
@@ -141,7 +141,7 @@ namespace Reindeer_Hunter.DataCards
             Display(matchId: matchId);
         }
 
-        public void DeleteStudent(int studentId)
+        public void DeleteStudent(string studentId)
         {
             _School.DeleteStudent(studentId: studentId);
         }

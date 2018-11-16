@@ -61,7 +61,7 @@ namespace Reindeer_Hunter.FFA
 
         private Hashtable Data { get; set; }
 
-        public Dictionary<int, Victor> Victors { get; private set; }
+        public Dictionary<string, Victor> Victors { get; private set; }
 
         private int NumStudentsLeft
         {
@@ -145,7 +145,7 @@ namespace Reindeer_Hunter.FFA
                 {
                     { victorDataLoc, new Dictionary<int, Victor>() }
                 };
-                Victors = (Dictionary<int, Victor>)Data[victorDataLoc];
+                Victors = (Dictionary<string, Victor>)Data[victorDataLoc];
 
                 // Loop around, converting students to victors
                 List<Student> studentsList = _School.GetAllParticipatingStudents();
@@ -160,13 +160,13 @@ namespace Reindeer_Hunter.FFA
             else if (!Data.ContainsKey(winnerDataLoc))
             {
                 // Set the Victors
-                Victors = (Dictionary<int, Victor>)Data[victorDataLoc];
+                Victors = (Dictionary<string, Victor>)Data[victorDataLoc];
             }
             // Figure out if someone has won already
             else
             {
                 // Set the Victors
-                Victors = (Dictionary<int, Victor>)Data[victorDataLoc];
+                Victors = (Dictionary<string, Victor>)Data[victorDataLoc];
 
                 /* If there is only one person, they won. If there are
                  * more than one, then it's time to prompt the user 
@@ -297,15 +297,15 @@ namespace Reindeer_Hunter.FFA
             /* Get the Student id of whatever victor did something 
              * (either won coin toss or pinned someone else) */
             int selectionindex = (int)parameter;
-            int studentId = dialog.GetVictorIdByIndex(selectionindex);
+            string studentId = dialog.GetVictorIdByIndex(selectionindex);
             Victor actingVictor = Victors[studentId];
 
             // It's zero if we're asking for who won the coin toss.
-            if (dialog.KilledStudentId != 0)
+            if (!string.IsNullOrEmpty(dialog.KilledStudentId))
             {
                 // Add to their kills and to the list of people whom they've killed.
                 actingVictor.NumKills += 1;
-                if (actingVictor.Kills == null) actingVictor.Kills = new List<int>();
+                if (actingVictor.Kills == null) actingVictor.Kills = new List<string>();
                 actingVictor.Kills.Add(dialog.KilledStudentId);
 
                 // Toggle the status of the pinned victor
@@ -355,7 +355,7 @@ namespace Reindeer_Hunter.FFA
             // It is null when it is empty
             if (selection.Kills != null)
             {
-                foreach (int stuNo in selection.Kills)
+                foreach (string stuNo in selection.Kills)
                 {
                     victorsKills.Add(Victors[stuNo].FullName);
                 }
