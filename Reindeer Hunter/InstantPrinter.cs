@@ -278,7 +278,7 @@ namespace Reindeer_Hunter
             return new PdfReader(memoryStream.ToArray());
         }
 
-        private Image GenerateQRCode(string student1first, string student1last, int student1_homeroom, int student1id, 
+        private Image GenerateQRCode(string student1first, string student1last, int student1_homeroom, string student1id, 
             float posx, float posy, int width, int height)
         {
             // If the form url is empty, do not proceed.

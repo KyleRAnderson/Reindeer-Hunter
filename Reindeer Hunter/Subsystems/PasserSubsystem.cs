@@ -55,7 +55,7 @@ namespace Reindeer_Hunter.Subsystems
         public RelayCommand ClearQueueCommand { get; } = new RelayCommand();
 
         // List of MatchGuiResults containing the students that are currently set to pass.
-        private Dictionary<int, PassingStudent> PassingStudents = new Dictionary<int, PassingStudent>();
+        private Dictionary<string, PassingStudent> PassingStudents = new Dictionary<string, PassingStudent>();
 
         // List of Matches To Edit
         private Dictionary<string, MatchButton> MatchEditQueue { get; set; } = new Dictionary<string, MatchButton>();
@@ -178,7 +178,7 @@ namespace Reindeer_Hunter.Subsystems
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
             // Pass matches or any other match to be ignored will have id2 of 0
-            else if (selectedMatch.Id2 == 0)
+            else if (string.IsNullOrEmpty(selectedMatch.Id2))
             {
                 MessageBox.Show("Cannot edit status of that match, " +
                     "it is a special match.", "Match Status error",
@@ -194,7 +194,7 @@ namespace Reindeer_Hunter.Subsystems
             // If matches haven't just been made by the matchmaker, proceed.
             else if (!Manager._ProcessButtonSubsystem.AreMatchesMade)
             {
-                int studentId = 0;
+                string studentId = "";
                 string name = "";
                 // Actually update the match checkbox display
                 if (changedStudent.Id == selectedMatch.Id1)
@@ -228,7 +228,7 @@ namespace Reindeer_Hunter.Subsystems
                 Manager._FiltersAndSearch.RefreshDisplay();
 
                 // Make sure we only do this for proper matches.
-                if (name != "" && studentId != 0)
+                if (name != "" && !string.IsNullOrEmpty(studentId))
                 {
                     PassingStudent matchResult = new PassingStudent
                     {
@@ -274,7 +274,7 @@ namespace Reindeer_Hunter.Subsystems
         /// lists given the student ID associated with the result.
         /// </summary>
         /// <param name="studentId"></param>
-        private void RemoveResult(int studentId)
+        private void RemoveResult(string studentId)
         {
             RemoveResult(PassingStudents[studentId], new EventArgs());
         }

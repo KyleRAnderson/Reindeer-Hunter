@@ -64,7 +64,7 @@ namespace Reindeer_Hunter.Subsystems.SearchAndFilters
             // Create parameters to fill in later.
             string matchId = "";
             string studentName = "";
-            int studentNo = 0;
+            string studentNo = "";
             int homeroomNo = 0;
 
             // If it's empty, it's garbage
@@ -74,7 +74,9 @@ namespace Reindeer_Hunter.Subsystems.SearchAndFilters
             else if (UserInput.Length > 2 && UserInput.Substring(0, 3) == "MAR" && int.TryParse(UserInput.Substring(3, 1), out int roundNo)) matchId = UserInput;
 
             // Check for student number
-            else if (UserInput.Substring(0, 1) == "S" && int.TryParse(UserInput.Substring(1, UserInput.Length - 1), out studentNo)) { }
+            else if (UserInput.Substring(0, 1) == "S") {
+                studentNo = UserInput.Substring(1, UserInput.Length - 1);
+            }
 
             // Check for homeroom number
             else if (int.TryParse(UserInput, out homeroomNo)) { }

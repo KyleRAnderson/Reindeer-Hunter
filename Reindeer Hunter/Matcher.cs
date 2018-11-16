@@ -489,7 +489,7 @@ namespace Reindeer_Hunter
                 Id1 = lucky_guy.Id,
                 First2 = "Pass",
                 Last2 = "Pass",
-                Id2 = 0,
+                Id2 = "",
                 Round = round,
                 Closed = true,
                 Home1 = lucky_guy.Homeroom,

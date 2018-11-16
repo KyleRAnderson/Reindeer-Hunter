@@ -35,15 +35,15 @@ namespace Reindeer_Hunter.DataCards
         // The public properties where they can be set by external objects
 
             // Student 1
-            public int Id1
+            public string Id1
             {
                 get
                 {
-                    return int.Parse(D_Id1.Value);
+                    return D_Id1.Value;
                 }
                 set
                 {
-                    D_Id1.Value = value.ToString();
+                    D_Id1.Value = value;
                 }
             }
             public string First1
@@ -129,11 +129,11 @@ namespace Reindeer_Hunter.DataCards
             }
 
             // Student 2
-            public int Id2
+            public string Id2
             {
                 get
                 {
-                    return int.Parse(D_Id2.Value);
+                    return D_Id2.Value;
                 }
                 set
                 {
@@ -199,7 +199,7 @@ namespace Reindeer_Hunter.DataCards
                 CurrRound = value;
                 // Make sure that the match is of the current round, is closed and is not a pass
                 // match before reopening.
-                Reopen_Button.IsEnabled = (Round == CurrRound && Closed && Id2 != 0);
+                Reopen_Button.IsEnabled = (Round == CurrRound && Closed && !string.IsNullOrEmpty(Id2));
 
                 // You can only close a match if it's now already closed and it's of the current round.
                 CloseMatchButton.IsEnabled = (Round == CurrRound && !Closed);
