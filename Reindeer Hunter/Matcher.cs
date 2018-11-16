@@ -28,12 +28,9 @@ namespace Reindeer_Hunter
          * Constant integers for the type of 
          * operation that is going on currently
          */
-        // For when everything is being prepared.
-        private readonly int SETUP = 0;
-        // For while the matches are being created
-        private readonly int CREATING_MATCHES = 1;
-        // For anything after the matches have been created.
-        private readonly int COMPLETED = 2;
+        private enum Operation { Setup, CreatingMatches, Completed };
+
+        private static readonly Random RAND = new Random();
 
         private readonly object Key;
 
@@ -88,7 +85,7 @@ namespace Reindeer_Hunter
         /// <param name="operation"> The integer operation that is under way.
         /// See "OPERATIONS"</param>
         /// <param name="matchList"> The list of matches to be sent back to the main thread.</param>
-        private void SendUpdateMessage(int operation, int matchesDone = -1, int matchesToProcess = -1,
+        private void SendUpdateMessage(Operation operation, int matchesDone = -1, int matchesToProcess = -1,
             List<Match> matchList = null)
         {
             // The update message to be sent and the percent.
@@ -96,8 +93,8 @@ namespace Reindeer_Hunter
             double decimalPercent = 0;
             string endDate = "";
 
-            if (operation == SETUP) updateMessage += "Pre-operations setup.";
-            else if (operation == CREATING_MATCHES)
+            if (operation == Operation.Setup) updateMessage += "Pre-operations setup.";
+            else if (operation == Operation.CreatingMatches)
             {
                 // Make sure the coder doesn't forget to update the progress once the status
                 // is creating matches.
@@ -150,7 +147,7 @@ namespace Reindeer_Hunter
             stopwatch = new Stopwatch();
             stopwatch.Start();
 
-            SendUpdateMessage(SETUP);
+            SendUpdateMessage(Operation.Setup);
 
             // Create a new list for the matches created
             List<Match> matchesCreated = new List<Match>();
@@ -184,7 +181,7 @@ namespace Reindeer_Hunter
 
 
 
-            // ### MATCHING BETWEEN GRADES ###
+            // ### MATCHING BETWEEN ALL STUDENTS ###
             // Or, we're mixing people from different grades
             else if (students_list != null)
             {
@@ -225,35 +222,7 @@ namespace Reindeer_Hunter
             }
 
 
-            SendUpdateMessage(operation: COMPLETED, matchList: matchesCreated);
-        }
-
-        /// <summary>
-        /// Makes matches between all the students in the given list.
-        /// </summary>
-        /// <param name="students">The students to make matches between.</param>
-        /// <param name="currentMatchNumber">The current match number where to start indexing the matches.</param>
-        /// <param name="round">The current round.</param>
-        /// <returns>List of the matches created by the students.</returns>
-        public static List<Match> MatchAllStudents(List<Student> students, long currentMatchNumber, int round)
-        {
-            Random rand = new Random();
-            // Keep going until there are no students left. Greater than 1 since the last person will need to be passed.
-            while (students.Count > 1)
-            {
-                Student student1 = students[rand.Next(students.Count)];
-                students.Remove(student1);
-                Student student2 = students[rand.Next(students.Count)];
-                students.Remove(student2);
-
-                yield return GenerateMatch(student1, student2, currentMatchNumber, round);
-                currentMatchNumber++;
-            }
-
-            if (students.Count > 0)
-            {
-                yield return PassStudent(students[0], currentMatchNumber, round);
-            }
+            SendUpdateMessage(operation: Operation.Completed, matchList: matchesCreated);
         }
 
         /// <summary>
@@ -289,7 +258,7 @@ namespace Reindeer_Hunter
             // Begin the selection 
             while (student_list.Count() > 0)
             {
-                SendUpdateMessage(CREATING_MATCHES, matchesToProcess: numMatchesToCreate, matchesDone: numMatchesCreated);
+                SendUpdateMessage(Operation.CreatingMatches, matchesToProcess: numMatchesToCreate, matchesDone: numMatchesCreated);
 
                 Student student1 = student_list[rndm.Next(0, student_list.Count())];
                 Student student2 = student_list[rndm.Next(0, student_list.Count())];
@@ -351,7 +320,7 @@ namespace Reindeer_Hunter
                 // Loop around, matching all students in the two homerooms
                 do
                 {
-                    SendUpdateMessage(CREATING_MATCHES, matchesDone: numMatchesCreated, matchesToProcess: numMatchesToCreate);
+                    SendUpdateMessage(Operation.CreatingMatches, matchesDone: numMatchesCreated, matchesToProcess: numMatchesToCreate);
 
                     // Get student 1
                     Student student1 = homeroom1[rndm.Next(0, homeroom1.Count)];
