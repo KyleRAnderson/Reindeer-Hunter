@@ -1,10 +1,8 @@
-﻿using Reindeer_Hunter.Data_Classes;
-using Reindeer_Hunter.Hunt;
+﻿using Reindeer_Hunter.Hunt;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Reindeer_Hunter
 {
@@ -160,6 +158,7 @@ namespace Reindeer_Hunter
             // Make the random class
             rndm = new Random();
 
+            // ### MATCHING BY GRADE ###
             // If the student grade directory isn't null, we're doing it by grade
             if (students_grade_dic != null)
             {
@@ -169,7 +168,7 @@ namespace Reindeer_Hunter
                 // Determine how many matches we will create
                 for (int a = 0; a < grades.Count; a++)
                 {
-                    numMatchesToCreate += (int)Math.Round(((double)grades[a].Count() / 2));
+                    numMatchesToCreate += (int)Math.Round((double)grades[a].Count() / 2);
                 }
 
                 // Do this for all grades in the grades dictionary
@@ -185,7 +184,7 @@ namespace Reindeer_Hunter
 
 
 
-
+            // ### MATCHING BETWEEN GRADES ###
             // Or, we're mixing people from different grades
             else if (students_list != null)
             {
@@ -198,7 +197,7 @@ namespace Reindeer_Hunter
 
 
 
-
+            // ### MATCHING BETWEEN HOMEROOMS ###
             // Otherwise, we're mixing students between homerooms
             else
             {
@@ -227,6 +226,34 @@ namespace Reindeer_Hunter
 
 
             SendUpdateMessage(operation: COMPLETED, matchList: matchesCreated);
+        }
+
+        /// <summary>
+        /// Makes matches between all the students in the given list.
+        /// </summary>
+        /// <param name="students">The students to make matches between.</param>
+        /// <param name="currentMatchNumber">The current match number where to start indexing the matches.</param>
+        /// <param name="round">The current round.</param>
+        /// <returns>List of the matches created by the students.</returns>
+        public static List<Match> MatchAllStudents(List<Student> students, long currentMatchNumber, int round)
+        {
+            Random rand = new Random();
+            // Keep going until there are no students left. Greater than 1 since the last person will need to be passed.
+            while (students.Count > 1)
+            {
+                Student student1 = students[rand.Next(students.Count)];
+                students.Remove(student1);
+                Student student2 = students[rand.Next(students.Count)];
+                students.Remove(student2);
+
+                yield return GenerateMatch(student1, student2, currentMatchNumber, round);
+                currentMatchNumber++;
+            }
+
+            if (students.Count > 0)
+            {
+                yield return PassStudent(students[0], currentMatchNumber, round);
+            }
         }
 
         /// <summary>
