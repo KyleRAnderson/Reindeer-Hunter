@@ -7,3 +7,4 @@
 packages/*
 !packages/repositories.config
 !packages/build/
+*.user
