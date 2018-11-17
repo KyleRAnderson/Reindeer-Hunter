@@ -281,7 +281,7 @@ namespace Reindeer_Hunter
         public void Import (string openLoc)
         {
             // The appropriate length of the checksum in bytes.
-            int lengthOfChecksum = 16;
+            const int lengthOfChecksum = 16;
 
             MD5 md5 = MD5.Create();
             FileStream stream = File.OpenRead(openLoc);
@@ -306,14 +306,13 @@ namespace Reindeer_Hunter
             {
                 MessageBox.Show("Error - File has been edited externally and cannot be used with this program. " +
                     "Nothing has been imported.", "Import Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
             }
             // If they are equal, proceed.
             else
             {
                 // Move the selected file to import.
                 File.Delete(dataFileLocation);
-                File.Copy(openLoc, dataFileLocation);
+                File.WriteAllBytes(dataFileLocation, dataBytes);
 
                 // Restart the application.
                 RestartApplication();
