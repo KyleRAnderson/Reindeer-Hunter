@@ -1398,19 +1398,6 @@ namespace Reindeer_Hunter.Hunt
         }
 
         /// <summary>
-        /// Checks whether the given student's values are valid
-        /// </summary>
-        /// <param name="student">The student object who's values to check</param>
-        /// <returns>True or false, depending on if the student is valid</returns>
-        public static bool IsvalidStudent(Student student)
-        {
-            // Student number must be under 6 characters,
-            if (student.Id.ToString().Length > 6) return false;
-
-            return true;
-        }
-
-        /// <summary>
         /// Determines whether the given match is a pass match
         /// </summary>
         /// <param name="match">The match to check.</param>

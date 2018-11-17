@@ -14,7 +14,7 @@ namespace Reindeer_Hunter.Data_Classes
         public string First;
         [FieldNotEmpty]
         public string Last;
-        [FieldNotEmpty]
+        
         public string Id;
         [FieldNotEmpty]
         public int Grade;
