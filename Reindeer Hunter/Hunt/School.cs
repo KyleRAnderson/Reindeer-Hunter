@@ -1266,7 +1266,7 @@ namespace Reindeer_Hunter.Hunt
         protected void FirstTimeSetup()
         {
             // Create the students dictionary
-            Dictionary<int, Student> student_Dic = new Dictionary<int, Student>();
+            Dictionary<string, Student> student_Dic = new Dictionary<string, Student>();
 
             // Create new matches list
             Dictionary<string, Match> matches = new Dictionary<string, Match>();
