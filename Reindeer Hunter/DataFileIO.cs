@@ -10,6 +10,8 @@ using System.Security.Cryptography;
 using System.Diagnostics;
 using Microsoft.Win32;
 using Reindeer_Hunter.Hunt;
+using Newtonsoft.Json.Linq;
+using System.Runtime.Serialization;
 
 namespace Reindeer_Hunter
 {
@@ -134,7 +136,8 @@ namespace Reindeer_Hunter
 
                 // Serialize the dictionary with Json and then write it
                 string writable = JsonConvert.SerializeObject(data_to_write);
-                dataFileWrite.WriteLine(writable);
+                string pretty = JToken.Parse(writable).ToString(Formatting.Indented);
+                dataFileWrite.WriteLine(pretty);
 
                 // Close the data file
                 dataFileWrite.Close();
@@ -168,25 +171,25 @@ namespace Reindeer_Hunter
                 Hashtable data_hashtable =
                     JsonConvert.DeserializeObject<Hashtable>(readData);
 
-                /* 
-                 * Begin the reconstruction process of the data Hashtable
-                 */
+            /* 
+             * Begin the reconstruction process of the data Hashtable
+             */
 
-                // Load up the sub-collectives as JObjects
-                Newtonsoft.Json.Linq.JObject studentsJarray =
-                    (Newtonsoft.Json.Linq.JObject)data_hashtable[StudentDataLoc];
+            // Load up the sub-collectives as JObjects
+            JObject studentsJarray =
+                    (JObject)data_hashtable[StudentDataLoc];
 
-                Newtonsoft.Json.Linq.JObject matchesJarray =
-                    (Newtonsoft.Json.Linq.JObject)data_hashtable[MatchDataLoc];
+            JObject matchesJarray =
+                    (JObject)data_hashtable[MatchDataLoc];
 
-                Newtonsoft.Json.Linq.JObject variousJarray =
-                    (Newtonsoft.Json.Linq.JObject)data_hashtable[MiscDataLoc];
+            JObject variousJarray =
+                    (JObject)data_hashtable[MiscDataLoc];
 
-                Newtonsoft.Json.Linq.JObject victorsJarray = null;
+            JObject victorsJarray = null;
                 // Only do this if the victors key exists
                 if (data_hashtable.ContainsKey(FFADataLoc)) {
                         victorsJarray =
-                            (Newtonsoft.Json.Linq.JObject)data_hashtable[FFADataLoc];
+                            (JObject)data_hashtable[FFADataLoc];
                 }   
 
             // Convert them to their proper type
@@ -259,8 +262,8 @@ namespace Reindeer_Hunter
 
             if (data.ContainsKey(winnerDataLoc))
             {
-                Newtonsoft.Json.Linq.JArray winnersJarray =
-                    (Newtonsoft.Json.Linq.JArray)data[winnerDataLoc];
+                JArray winnersJarray =
+                    (JArray)data[winnerDataLoc];
 
                 List<Victor> winner =
                   winnersJarray.ToObject<List<Victor>>();
@@ -278,7 +281,7 @@ namespace Reindeer_Hunter
         public void Import (string openLoc)
         {
             // The appropriate length of the checksum in bytes.
-            int lengthOfChecksum = 16;
+            const int lengthOfChecksum = 16;
 
             MD5 md5 = MD5.Create();
             FileStream stream = File.OpenRead(openLoc);
@@ -303,14 +306,13 @@ namespace Reindeer_Hunter
             {
                 MessageBox.Show("Error - File has been edited externally and cannot be used with this program. " +
                     "Nothing has been imported.", "Import Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
             }
             // If they are equal, proceed.
             else
             {
                 // Move the selected file to import.
                 File.Delete(dataFileLocation);
-                File.Copy(openLoc, dataFileLocation);
+                File.WriteAllBytes(dataFileLocation, dataBytes);
 
                 // Restart the application.
                 RestartApplication();
@@ -354,13 +356,13 @@ namespace Reindeer_Hunter
                 File.Copy(dataFileLocation, copyLoc);
 
                 // Open the file and add the checksum.
-                stream = new FileStream(copyLoc, FileMode.Append, FileAccess.Write);
-                var bw = new BinaryWriter(stream);
+                FileStream stream2 = new FileStream(copyLoc, FileMode.Append, FileAccess.Write);
+                var bw = new BinaryWriter(stream2);
                 bw.Write(checkSum);
 
                 // Close all streams
                 bw.Close();
-                stream.Close();
+                stream2.Close();
 
                 LastOpenedDirectory = Path.GetDirectoryName(copyLoc);
             }
@@ -457,5 +459,38 @@ namespace Reindeer_Hunter
     /// </summary>
     class ProgramNotSetup : Exception
     {
+        public override string Message => base.Message;
+
+        public override IDictionary Data => base.Data;
+
+        public override string StackTrace => base.StackTrace;
+
+        public override string HelpLink { get => base.HelpLink; set => base.HelpLink = value; }
+        public override string Source { get => base.Source; set => base.Source = value; }
+
+        public override bool Equals(object obj)
+        {
+            return base.Equals(obj);
+        }
+
+        public override Exception GetBaseException()
+        {
+            return base.GetBaseException();
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            base.GetObjectData(info, context);
+        }
+
+        public override string ToString()
+        {
+            return base.ToString();
+        }
     }
 }
