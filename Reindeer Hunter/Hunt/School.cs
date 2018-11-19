@@ -1266,7 +1266,7 @@ namespace Reindeer_Hunter.Hunt
         protected void FirstTimeSetup()
         {
             // Create the students dictionary
-            Dictionary<int, Student> student_Dic = new Dictionary<int, Student>();
+            Dictionary<string, Student> student_Dic = new Dictionary<string, Student>();
 
             // Create new matches list
             Dictionary<string, Match> matches = new Dictionary<string, Match>();
@@ -1395,19 +1395,6 @@ namespace Reindeer_Hunter.Hunt
                 misc["IsFFA"] = value;
                 Save(true);
             }
-        }
-
-        /// <summary>
-        /// Checks whether the given student's values are valid
-        /// </summary>
-        /// <param name="student">The student object who's values to check</param>
-        /// <returns>True or false, depending on if the student is valid</returns>
-        public static bool IsvalidStudent(Student student)
-        {
-            // Student number must be under 6 characters,
-            if (student.Id.ToString().Length > 6) return false;
-
-            return true;
         }
 
         /// <summary>

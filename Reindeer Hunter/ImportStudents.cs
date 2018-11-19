@@ -1,7 +1,7 @@
 ﻿using Reindeer_Hunter.Data_Classes;
 using Reindeer_Hunter.Hunt;
-using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Reindeer_Hunter
 {
@@ -39,30 +39,27 @@ namespace Reindeer_Hunter
                     Finish(false);
                     return;
                 }
-
-                foreach (RawStudent importedStudent in result)
+                // Otherwise we can proceed.
+                else
                 {
-                    // Make new student, set the student's round number and add them to the new list
-                    Student student = new Student
+                    foreach (RawStudent importedStudent in result)
                     {
-                        First = importedStudent.First,
-                        Last = importedStudent.Last,
-                        Id = importedStudent.Id,
-                        Grade = importedStudent.Grade,
-                        Homeroom = importedStudent.Homeroom,
-                        LastRoundParticipated = round,
-                        In = true,
-                        MatchesParticipated = new List<string>()
-                    };
+                        string studentId = (string.IsNullOrEmpty(importedStudent.Id)) ? string.Format("Gen{0}", Stopwatch.GetTimestamp().ToString()) : importedStudent.Id;
+                        // Make new student, set the student's round number and add them to the new list
+                        Student student = new Student
+                        {
+                            First = importedStudent.First,
+                            Last = importedStudent.Last,
+                            Id = studentId,
+                            Grade = importedStudent.Grade,
+                            Homeroom = importedStudent.Homeroom,
+                            LastRoundParticipated = round,
+                            In = true,
+                            MatchesParticipated = new List<string>()
+                        };
 
-                    // Check to make sure the student is valid.
-                    if (!School.IsvalidStudent(student))
-                    {
-                        Finish(false);
-                        return;
-                    }
-
-                    students_to_add.Add(student);
+                        students_to_add.Add(student);
+                    } 
                 }
             }
 

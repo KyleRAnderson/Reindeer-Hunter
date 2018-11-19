@@ -29,7 +29,7 @@ namespace Reindeer_Hunter
                 foreach (string path in pathsList)
                 {
                     // In case the user presses the cancel button
-                    if (path == "") return null;
+                    if (string.IsNullOrEmpty(path)) return null;
 
                     // Begin processing the data
                     FileHelperEngine<RawStudent> engine = new FileHelperEngine<RawStudent>

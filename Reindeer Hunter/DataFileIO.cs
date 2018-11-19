@@ -190,8 +190,8 @@ namespace Reindeer_Hunter
                 }   
 
             // Convert them to their proper type
-                Dictionary<int, Student> students =
-                   studentsJarray.ToObject<Dictionary<int, Student>>();
+                Dictionary<string, Student> students =
+                   studentsJarray.ToObject<Dictionary<string, Student>>();
 
                 Dictionary<string, Match> matches =
                    matchesJarray.ToObject<Dictionary<string, Match>>();
