@@ -16,6 +16,7 @@ namespace Reindeer_Hunter.Subsystems.Passer
             FontSize = 10;
             Background = Brushes.Black;
             Foreground = Brushes.White;
+            MatchResult = result;
         }
     }
 }
