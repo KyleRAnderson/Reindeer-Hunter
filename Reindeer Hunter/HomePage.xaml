@@ -126,6 +126,7 @@
                         <MenuItem x:Name="Close_Selected" Header="Close Matches Selected" ToolTip="Close the matches in the Match Edit queue" Command="{Binding _Tools.CloseSelected, Mode=OneWay}"/>
                         <Separator/>
                         <MenuItem x:Name="Print_Selected" Header="Instant Print Selected" ToolTip="Instant print the matches in the Match Edit queue" Command="{Binding _Tools.PrintSelected, Mode=OneWay}"/>
+                        <MenuItem x:Name="Export_Matches" Header="Export Current Matches" ToolTip="Exports the Matches currently displayed to a CSV file." Command="{Binding _Tools.ExportMatches, Mode=OneWay}"/>
                     </MenuItem>
                     <MenuItem Header="Manage">
                         <MenuItem x:Name="Import_Students_Button" Header="Import Students" Command="{Binding _Importer.ImportStudents, Mode=OneWay}" ToolTip="Import more students Into the application">

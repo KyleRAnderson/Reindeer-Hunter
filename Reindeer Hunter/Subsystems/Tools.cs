@@ -24,6 +24,10 @@ namespace Reindeer_Hunter.Subsystems
         public RelayCommand CloseSelected { get; } = new RelayCommand();
         public RelayCommand EditMatchesCommand { get; } = new RelayCommand();
         public RelayCommand PrintSelected { get; } = new RelayCommand();
+        public RelayCommand ExportMatchesCommand { get; } = new RelayCommand
+        {
+            CanExecuteDeterminer = () => true
+        };
 
         protected override void OnHomePageSet(object sender, EventArgs e)
         {
@@ -45,6 +49,9 @@ namespace Reindeer_Hunter.Subsystems
             // EditMatches relaycommand
             EditMatchesCommand.FunctionToExecute = EditMatches;
             EditMatchesCommand.CanExecuteDeterminer = MatchEditQueueHasMatches;
+
+            // Export Current Matches
+            ExportMatchesCommand.FunctionToExecute = ExportcurrentMatches;
             #endregion
 
             // Refresh and update the commands' statuses
@@ -55,6 +62,24 @@ namespace Reindeer_Hunter.Subsystems
             Manager._Passer.MatchRemoved += Refresh;
             school.MatchChangeEvent += (a, b) => Refresh();
             #endregion
+        }
+
+        /// <summary>
+        /// Exports the matches currently displayed on screen.
+        /// </summary>
+        /// <param name="obj"></param>
+        private void ExportcurrentMatches(object obj)
+        {
+            ExportMatches(Manager._FiltersAndSearch.MainDisplay_Display_List);
+        }
+
+        /// <summary>
+        /// Exports the matches in the list to a CSV file.
+        /// </summary>
+        /// <param name="matches">Exports the matches to file.</param>
+        private static void ExportMatches(List<Match> matches)
+        {
+
         }
 
         private void EditMatches(object parameter)
