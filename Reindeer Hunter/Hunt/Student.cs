@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 
 namespace Reindeer_Hunter.Hunt
@@ -75,6 +76,7 @@ namespace Reindeer_Hunter.Hunt
             }
         }
 
+        [JsonIgnore]
         public string FullName
         {
             get
