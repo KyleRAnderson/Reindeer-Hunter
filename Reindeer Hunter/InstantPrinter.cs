@@ -281,15 +281,17 @@ namespace Reindeer_Hunter
         private Image GenerateQRCode(string student1first, string student1last, int student1_homeroom, string student1id, 
             float posx, float posy, int width, int height)
         {
-            // If the form url is empty, do not proceed.
-            if (formURL == "") return null;
+            Image qr = null;
 
-            // Generate the proper url. TODO make URL easy to change.
-            string url = string.Format(formURL, student1first, student1last, student1_homeroom, student1id);
+            if (!string.IsNullOrEmpty(formURL))
+            {
+                // Generate the proper url. TODO make URL easy to change.
+                string url = string.Format(formURL, student1first, student1last, student1_homeroom, student1id);
 
-            BarcodeQRCode qRCode = new BarcodeQRCode(url, width, height, null);
-            Image qr = qRCode.GetImage();
-            qr.SetAbsolutePosition(posx, posy);
+                BarcodeQRCode qRCode = new BarcodeQRCode(url, width, height, null);
+                qr = qRCode.GetImage();
+                qr.SetAbsolutePosition(posx, posy); 
+            }
 
             return qr;
         }
