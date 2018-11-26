@@ -29,7 +29,7 @@ namespace Reindeer_Hunter
         {
             get
             {
-                return (Directory.Exists(LastOpenedDirectory)) ? LastOpenedDirectory : Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                return Directory.Exists(LastOpenedDirectory) ? LastOpenedDirectory : Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
             }
         }
 

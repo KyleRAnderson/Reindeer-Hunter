@@ -33,13 +33,25 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_3EE8D49954082191DF86ED86EC8A32D7"
+        "MsmKey" = "8:_290399A5E5D1C8D34E8FA495DF836DA8"
         "OwnerKey" = "8:_C75AC0EAD6924FA1B0FA1FD7AA105174"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_3EE8D49954082191DF86ED86EC8A32D7"
+        "MsmKey" = "8:_290399A5E5D1C8D34E8FA495DF836DA8"
+        "OwnerKey" = "8:_D17EE9D028C746FC944DEA895C488E0B"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_5E90758E41546536471311E9430BA5DF"
+        "OwnerKey" = "8:_C75AC0EAD6924FA1B0FA1FD7AA105174"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_5E90758E41546536471311E9430BA5DF"
         "OwnerKey" = "8:_D17EE9D028C746FC944DEA895C488E0B"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -57,44 +69,8 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_BE5EAFA3B5B358CF32A130DF93D344CA"
-        "OwnerKey" = "8:_C75AC0EAD6924FA1B0FA1FD7AA105174"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_BE5EAFA3B5B358CF32A130DF93D344CA"
-        "OwnerKey" = "8:_D17EE9D028C746FC944DEA895C488E0B"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_C75AC0EAD6924FA1B0FA1FD7AA105174"
         "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_CB70B654E7D2B08CB2E1D01BAB9CEF22"
-        "OwnerKey" = "8:_C75AC0EAD6924FA1B0FA1FD7AA105174"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_CB70B654E7D2B08CB2E1D01BAB9CEF22"
-        "OwnerKey" = "8:_D17EE9D028C746FC944DEA895C488E0B"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_CE0B9398D84A94519D1E557F02681E10"
-        "OwnerKey" = "8:_C75AC0EAD6924FA1B0FA1FD7AA105174"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_CE0B9398D84A94519D1E557F02681E10"
-        "OwnerKey" = "8:_D17EE9D028C746FC944DEA895C488E0B"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -105,6 +81,30 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_DD534C10E7B3CE3A83D71C558BE9591A"
+        "OwnerKey" = "8:_C75AC0EAD6924FA1B0FA1FD7AA105174"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_DD534C10E7B3CE3A83D71C558BE9591A"
+        "OwnerKey" = "8:_D17EE9D028C746FC944DEA895C488E0B"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_F5ADAC602E03033C64FD36C6A4D3600F"
+        "OwnerKey" = "8:_C75AC0EAD6924FA1B0FA1FD7AA105174"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_F5ADAC602E03033C64FD36C6A4D3600F"
+        "OwnerKey" = "8:_D17EE9D028C746FC944DEA895C488E0B"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_C75AC0EAD6924FA1B0FA1FD7AA105174"
         "MsmSig" = "8:_UNDEFINED"
@@ -118,25 +118,25 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_3EE8D49954082191DF86ED86EC8A32D7"
+        "OwnerKey" = "8:_DD534C10E7B3CE3A83D71C558BE9591A"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_BE5EAFA3B5B358CF32A130DF93D344CA"
+        "OwnerKey" = "8:_F5ADAC602E03033C64FD36C6A4D3600F"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_CB70B654E7D2B08CB2E1D01BAB9CEF22"
+        "OwnerKey" = "8:_5E90758E41546536471311E9430BA5DF"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_CE0B9398D84A94519D1E557F02681E10"
+        "OwnerKey" = "8:_290399A5E5D1C8D34E8FA495DF836DA8"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -291,23 +291,54 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_3EE8D49954082191DF86ED86EC8A32D7"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_290399A5E5D1C8D34E8FA495DF836DA8"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:ZKWeb.System.Drawing, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:FileHelpers, Version=3.1.5.0, Culture=neutral, PublicKeyToken=3e0c08d59cc3d657, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_3EE8D49954082191DF86ED86EC8A32D7"
+                    "_290399A5E5D1C8D34E8FA495DF836DA8"
                     {
-                    "Name" = "8:ZKWeb.System.Drawing.dll"
+                    "Name" = "8:FileHelpers.dll"
                     "Attributes" = "3:512"
                     }
                 }
-            "SourcePath" = "8:ZKWeb.System.Drawing.dll"
+            "SourcePath" = "8:FileHelpers.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
-            "Folder" = "8:_328F4250AA4C488D8BF54E5D1DA5FEB1"
+            "Folder" = "8:_91A300081BE04D1F88C6BA7F7D7B8D87"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_5E90758E41546536471311E9430BA5DF"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:itextsharp, Version=5.5.12.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_5E90758E41546536471311E9430BA5DF"
+                    {
+                    "Name" = "8:itextsharp.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:itextsharp.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_91A300081BE04D1F88C6BA7F7D7B8D87"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -362,82 +393,51 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_BE5EAFA3B5B358CF32A130DF93D344CA"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_DD534C10E7B3CE3A83D71C558BE9591A"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:ZKWeb.System.Drawing, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_DD534C10E7B3CE3A83D71C558BE9591A"
+                    {
+                    "Name" = "8:ZKWeb.System.Drawing.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:ZKWeb.System.Drawing.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_328F4250AA4C488D8BF54E5D1DA5FEB1"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_F5ADAC602E03033C64FD36C6A4D3600F"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
             "AssemblyAsmDisplayName" = "8:Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_BE5EAFA3B5B358CF32A130DF93D344CA"
+                    "_F5ADAC602E03033C64FD36C6A4D3600F"
                     {
                     "Name" = "8:Newtonsoft.Json.dll"
                     "Attributes" = "3:512"
                     }
                 }
             "SourcePath" = "8:Newtonsoft.Json.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_91A300081BE04D1F88C6BA7F7D7B8D87"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_CB70B654E7D2B08CB2E1D01BAB9CEF22"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:itextsharp, Version=5.5.12.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_CB70B654E7D2B08CB2E1D01BAB9CEF22"
-                    {
-                    "Name" = "8:itextsharp.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:itextsharp.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_91A300081BE04D1F88C6BA7F7D7B8D87"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_CE0B9398D84A94519D1E557F02681E10"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:FileHelpers, Version=3.1.5.0, Culture=neutral, PublicKeyToken=3e0c08d59cc3d657, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_CE0B9398D84A94519D1E557F02681E10"
-                    {
-                    "Name" = "8:FileHelpers.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:FileHelpers.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_91A300081BE04D1F88C6BA7F7D7B8D87"
@@ -554,20 +554,20 @@
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
-        "ProductName" = "8:Reindeer Hunter"
-        "ProductCode" = "8:{20530A28-0978-44AC-9618-A1DB1A790170}"
-        "PackageCode" = "8:{1CC5BA38-8F9C-45E4-8E41-1DC93B58A921}"
+        "ProductName" = "8:Reindeer Hunt Manager"
+        "ProductCode" = "8:{8395C56E-95B8-4E36-98AE-6A4618F16649}"
+        "PackageCode" = "8:{9B2F4230-18BB-4FA3-A145-6380EAA2275D}"
         "UpgradeCode" = "8:{DD08C5B6-48FE-4D8F-BA93-8780CCC7804A}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.2.51"
+        "ProductVersion" = "8:2.0.100"
         "Manufacturer" = "8:Kyle Anderson"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
-        "Title" = "8:Reindeer Hunter"
+        "Title" = "8:Reindeer Hunt Manager"
         "Subject" = "8:"
         "ARPCONTACT" = "8:Kyle Anderson"
         "Keywords" = "8:"
