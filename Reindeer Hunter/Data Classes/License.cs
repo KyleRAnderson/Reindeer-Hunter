@@ -55,7 +55,7 @@ namespace Reindeer_Hunter.Data_Classes
 
             License[] returnable = new License[numLicensesTomake];
 
-            returnable.SetValue(new License
+            returnable[0] = new License
             {
                 First1 = match.First1,
                 First2 = first2,
@@ -67,23 +67,24 @@ namespace Reindeer_Hunter.Data_Classes
                 Date = date,
                 Grade = match.Grade1,
                 Id1 = match.Id1
-            }, 0);
+            };
 
             // Don't do student 2 if it is a pass match, since student2 is the passer.
             if (numLicensesTomake == 2)
             {
-                returnable.SetValue(new License
+                returnable[1] = new License
                 {
                     First1 = match.First2,
                     First2 = match.First1,
                     Last1 = match.Last2,
                     Last2 = match.Last1,
+                    Id1 = match.Id2,
                     Homeroom1 = match.Home2,
                     Homeroom2 = match.Home1,
                     Round = match.Round,
                     Grade = match.Grade2,
                     Date = date
-                }, 1);
+                };
             }
 
             return returnable;

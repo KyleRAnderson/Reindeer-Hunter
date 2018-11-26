@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 
 namespace Reindeer_Hunter.Hunt
 {
@@ -26,6 +27,7 @@ namespace Reindeer_Hunter.Hunt
         public bool Pass2 { get; set; } = false;
         public int Grade2 { get; set; }
 
+        [JsonIgnore]
         public string FullName1
         {
             get
@@ -34,6 +36,7 @@ namespace Reindeer_Hunter.Hunt
             }
         }
 
+        [JsonIgnore]
         public string FullName2
         {
             get
