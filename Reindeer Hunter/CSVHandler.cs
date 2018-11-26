@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using Reindeer_Hunter.Data_Classes;
 using System.Text;
 using System.IO;
+using Reindeer_Hunter.Hunt;
 
 namespace Reindeer_Hunter
 {
@@ -144,6 +145,19 @@ namespace Reindeer_Hunter
             engine.HeaderText = engine.GetFileHeader();
 
             engine.WriteFile(exportLocation, students);
+        }
+
+        public static void ExportMatches(List<Match> matches, string exportLocation)
+        {
+            FileHelperEngine<ExportableMatch> engine = new FileHelperEngine<ExportableMatch> {
+                Encoding = Encoding.UTF8
+            };
+
+            // Convert to list of exportable matches.
+            List<ExportableMatch> exportable = matches.Select(match => ExportableMatch.FromMatch(match)).ToList();
+
+            engine.HeaderText = engine.GetFileHeader();
+            engine.WriteFile(exportLocation, exportable);
         }
     }
 }

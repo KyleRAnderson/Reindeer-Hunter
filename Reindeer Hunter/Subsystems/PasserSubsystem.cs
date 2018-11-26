@@ -91,7 +91,7 @@ namespace Reindeer_Hunter.Subsystems
         {
             get
             {
-                return PassingStudents.Count() > 0;
+                return PassingStudents.Count > 0;
             }
         }
 

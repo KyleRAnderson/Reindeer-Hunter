@@ -143,7 +143,8 @@
                                 <Image Source="Resources/student.ico"/>
                             </MenuItem.Icon>
                         </MenuItem>
-                        <Separator/>
+                                <MenuItem x:Name="Export_Matches" Header="Export Current Matches" ToolTip="Exports the Matches currently displayed to a CSV file." Command="{Binding _Importer.ExportMatchesCommand, Mode=OneWay}"/>
+                                <Separator/>
                         <MenuItem x:Name="PushFFA" Header="Go To FFA" ToolTip="Put the program into the free-for-all round mode." Command="{Binding _ProcessButtonSubsystem.GoToFFAOverrideCommand, Mode=OneWay}"/>
                     </MenuItem>
                     <MenuItem x:Name="Search_Menu" Header ="Search">

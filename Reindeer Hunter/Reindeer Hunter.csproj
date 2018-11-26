@@ -115,6 +115,7 @@
     </ApplicationDefinition>
     <Compile Include="CommandManager.cs" />
     <Compile Include="Data Classes\DataRow.cs" />
+    <Compile Include="Data Classes\ExportableMatch.cs" />
     <Compile Include="Data Classes\License.cs" />
     <Compile Include="Data Classes\PassingStudent.cs" />
     <Compile Include="Data Classes\NewMatches_EventArgs.cs" />

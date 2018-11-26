@@ -20,7 +20,11 @@ namespace Reindeer_Hunter.Subsystems
         public RelayCommand ExportStudents { get; } = new RelayCommand();
         public RelayCommand ImportPDF { get; } = new RelayCommand
         {
-            CanExecuteDeterminer = (() => true)
+            CanExecuteDeterminer = () => true
+        };
+        public RelayCommand ExportMatchesCommand { get; } = new RelayCommand()
+        {
+            CanExecuteDeterminer = () => true
         };
 
         private StartupWindow MasterWindow;
@@ -43,6 +47,9 @@ namespace Reindeer_Hunter.Subsystems
             ImportPDF.FunctionToExecute = Import_PDF;
 
             MasterWindow = Manager.Home.MasterWindow;
+
+            // Exporting the current matches command
+            ExportMatchesCommand.FunctionToExecute = (param) => Export_Current_Matches();
             #endregion
 
             #region Subscribing to events
@@ -88,36 +95,89 @@ namespace Reindeer_Hunter.Subsystems
             // Get the matches whose students need exporting. 
             List<Match> studentsToExport = await Task.Run(() => Manager._FiltersAndSearch.GetMatches());
 
-            if (studentsToExport.Count == 0) return;
-
-            SaveFileDialog saveDialog = new SaveFileDialog
+            if (studentsToExport.Count > 0)
             {
+                SaveFileDialog saveDialog = new SaveFileDialog
+                {
 
-                // Open the file dialog to the user's directory
-                InitialDirectory = DataFileIO.InitialDirectory,
+                    // Open the file dialog to the user's directory
+                    InitialDirectory = DataFileIO.InitialDirectory,
 
-                // Filter only for comma-seperated value files. 
-                Filter = "csv files (*.csv)|*.csv",
-                FilterIndex = 2,
-                RestoreDirectory = true
-            };
+                    // Filter only for comma-seperated value files. 
+                    Filter = "csv files (*.csv)|*.csv",
+                    FilterIndex = 2,
+                    RestoreDirectory = true
+                };
 
-            saveDialog.ShowDialog();
+                saveDialog.ShowDialog();
 
-            string path = saveDialog.FileName;
+                string path = saveDialog.FileName;
 
-            /* 
-             * Check if the filepath isn't empty, which it won't if the user cancels.
-             * If it is empty, return.
-             */
-            if (!string.IsNullOrEmpty(path))
-            {
-                // Make the object that will handle all else.
-                new ExportStudents(studentsToExport, school, path);
+                /* 
+                 * Check if the filepath isn't empty, which it won't if the user cancels.
+                 * If it is empty, return.
+                 */
+                if (!string.IsNullOrEmpty(path))
+                {
+                    // Make the object that will handle all else.
+                    new ExportStudents(studentsToExport, school, path);
 
-                // Set the last opened directory to this directory.
-                DataFileIO.LastOpenedDirectory = Path.GetDirectoryName(path);
+                    // Set the last opened directory to this directory.
+                    DataFileIO.LastOpenedDirectory = Path.GetDirectoryName(path);
+                } 
             }
+        }
+
+        /// <summary>
+        /// Exports the matches currently being viewed by the user.
+        /// </summary>
+        private void Export_Current_Matches()
+        {
+            List<Match> matchesToExport = Manager._FiltersAndSearch.MainDisplay_Display_List;
+
+            // Only continue if there are actually matches to be exported.
+            if (matchesToExport.Count > 0)
+            {
+                SaveFileDialog saveDialog = new SaveFileDialog
+                {
+                    // Open the file dialog to the correct directory.
+                    InitialDirectory = DataFileIO.InitialDirectory,
+                    Filter = "csv files (*.csv)|*.csv",
+                    FilterIndex = 2,
+                    RestoreDirectory = true
+                };
+
+                saveDialog.ShowDialog();
+                string path = saveDialog.FileName;
+                if (!string.IsNullOrEmpty(path))
+                {
+                    ExportMatches(matchesToExport, path);
+
+                    DataFileIO.LastOpenedDirectory = Path.GetDirectoryName(path);
+                }
+
+
+            }
+        }
+
+        /// <summary>
+        /// Exports the given matches to the given file path.
+        /// </summary>
+        /// <param name="matchesToExport">The matches to be exported.</param>
+        /// <param name="path">The path of the CSV file to which the mathes should be saved.</param>
+        public static async void ExportMatches(List<Match> matchesToExport, string path)
+        {
+            await ExportMatchesAsync(matchesToExport, path);
+        }
+
+        /// <summary>
+        /// Exports the given matches to the given file path asynchronously.
+        /// </summary>
+        /// <param name="matchesToExport">The matches to be exported.</param>
+        /// <param name="path">The path of the CSV file to which the mathes should be saved.</param>
+        public static async Task ExportMatchesAsync(List<Match> matchesToExport, string path)
+        {
+            await Task.Run(() => CSVHandler.ExportMatches(matchesToExport, path));
         }
 
         /// <summary>

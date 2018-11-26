@@ -11,7 +11,7 @@ namespace Reindeer_Hunter.Subsystems.Student_Manager
     {
         private List<Match> RelevantMatches;
         private School _School;
-        private String ExportLocation;
+        private string ExportLocation;
 
         public ExportStudents(List<Match> relevantMatches, School school, string exportLocation)
         {
