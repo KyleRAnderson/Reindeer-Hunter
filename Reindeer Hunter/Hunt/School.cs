@@ -835,7 +835,7 @@ namespace Reindeer_Hunter.Hunt
             List<Match> roundMatchList = new List<Match>();
 
             roundMatchList = matchList
-                .Where(match => match.Round == currRound && !match.Closed)
+                .Where(match => match.Round == currRound)
                 .ToList();
 
             return roundMatchList;
