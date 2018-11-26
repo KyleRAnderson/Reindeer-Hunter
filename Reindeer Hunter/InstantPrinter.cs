@@ -315,6 +315,17 @@ namespace Reindeer_Hunter
         }
 
         /// <summary>
+        /// Gets the grade of this license.
+        /// </summary>
+        /// <param name="license">The license to get the grade of.</param>
+        /// <returns>The license's grade.</returns>
+        private static int GetGrade(License license)
+        {
+            // TODO this is kinda not good. Shouldn't be determining grade by homeroom number. Could use student's grade but that breaks it so don't (students doing reach-ahead, etc will mess things up if we did).
+            return license.Homeroom1 / 100;
+        }
+
+        /// <summary>
         /// Handles sorting the licenses by grade and adding the fake licenses.
         /// </summary>
         /// <param name="licenses">The list of licenses to sort and format.</param>
@@ -328,10 +339,11 @@ namespace Reindeer_Hunter
 
             List<Tuple<int, int>> indexesToAddFakeLicensesTo = new List<Tuple<int, int>>();
 
-            int lastGrade = sortedLicenses[0].Grade;
+            int lastGrade = GetGrade(sortedLicenses[0]);
             foreach (License license in sortedLicenses)
             {
-                if (license.Grade != lastGrade && license.Grade != 0)
+                int licenseGrade = GetGrade(license);
+                if (licenseGrade != lastGrade && licenseGrade != 0)
                 {
                     // Figure out the index in the list where the grade changed.
                     int insertIndex = sortedLicenses.IndexOf(license);

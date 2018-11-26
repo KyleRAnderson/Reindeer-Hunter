@@ -206,31 +206,29 @@ namespace Reindeer_Hunter.Hunt
             bool changed = false;
 
             // If the version of the program data file is the same as the current version, no upgrades necessary.
-            if (misc.ContainsKey(VersionKey) && ((string)misc[VersionKey]).Equals(StartupWindow.ApplicationVersionNumber)) return;
+            if (misc.ContainsKey(VersionKey) && ((string)misc[VersionKey]).Equals(StartupWindow.APPLICATION_VERSION)) return;
 
+            string rawFileVersion = (string)misc[VersionKey];
             if (!misc.ContainsKey(VersionKey))
             {
-                misc.Add(VersionKey, StartupWindow.ApplicationVersionNumber);
+                misc[VersionKey] = StartupWindow.APPLICATION_VERSION;
                 changed = true;
             }
-            else if (!((string)misc[VersionKey]).Equals(StartupWindow.ApplicationVersionNumber))
+            else if (!((string)misc[VersionKey]).Equals(StartupWindow.APPLICATION_VERSION))
             {
-                misc[VersionKey] = StartupWindow.ApplicationVersionNumber;
+                misc[VersionKey] = StartupWindow.APPLICATION_VERSION;
                 changed = true;
             }
 
-            string[] fileVersion = ((string)misc[VersionKey]).Split('.');
+            string[] fileVersion = StartupWindow.ParseBuildInformation(rawFileVersion);
             int fileBuildNo = int.Parse(fileVersion[fileVersion.Length - 1]);
 
-            string[] currVersion = StartupWindow.ApplicationVersionNumber.Split('.');
-            int currBuildNo = int.Parse(currVersion[currVersion.Length - 1]);
-
             // Make sure that the file isn't for an even more recent build.
-            if (fileBuildNo >  currBuildNo)
+            if (fileBuildNo >  StartupWindow.BUILD_VERSION)
             {
                 // Show error message.
                 MessageBox.Show(string.Format("The data file in use is for a more recent version of the application." +
-                    "\nDataFile version: {0}\nApplication Version: {1}", string.Join(".", fileVersion), string.Join(".", currVersion)), 
+                    "\nDataFile version: {0}\nApplication Version: {1}", rawFileVersion, StartupWindow.APPLICATION_VERSION), 
                     "Error - Incompatible DataFile",
                     MessageBoxButton.OK, MessageBoxImage.Error);
 
@@ -1290,7 +1288,7 @@ namespace Reindeer_Hunter.Hunt
                 {FormKey, "" },
 
                 // The current version number of the application
-                {VersionKey, StartupWindow.ApplicationVersionNumber }
+                {VersionKey, StartupWindow.APPLICATION_VERSION }
             };
 
             Dictionary<int, Victor> victorList = new Dictionary<int, Victor>();

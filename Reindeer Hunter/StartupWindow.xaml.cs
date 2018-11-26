@@ -25,6 +25,14 @@ namespace Reindeer_Hunter
         }
 
         public School _School { get; set; }
+
+        #region Application Version information
+        private const string NOTE_SEPARATOR = " - ";
+        public const int MAJOR_VERSION = 2, MINOR_VERSION = 0, BUILD_VERSION = 100;
+        public const string NOTE_VERSION = "RC1";
+        public static readonly string APPLICATION_VERSION = string.Format("{0}.{1}.{2}{3}{4}", MAJOR_VERSION, MINOR_VERSION, BUILD_VERSION, NOTE_SEPARATOR, NOTE_VERSION);
+        #endregion
+
         private HomePage home;
         public HomePage Home
         {
@@ -32,17 +40,6 @@ namespace Reindeer_Hunter
             {
                 if (home == null) home = new HomePage(this);
                 return home;
-            }
-        }
-
-        /// <summary>
-        /// The current application version number.
-        /// </summary>
-        public static string ApplicationVersionNumber
-        {
-            get
-            {
-                return "1.2.51";
             }
         }
 
@@ -63,7 +60,7 @@ namespace Reindeer_Hunter
             _School = new School();
 
             // Add the version to the title.
-            Title = Title + " " + ApplicationVersionNumber;
+            Title = string.Format("{0} {1}", Title, APPLICATION_VERSION);
 
             if (_School.IsData() && !_School.IsFFARound)
             {
@@ -133,6 +130,33 @@ namespace Reindeer_Hunter
             ImportHandler importer = new ImportHandler(_School, csvopenDialog.FileNames, GoToHome);
 
             DataFileIO.LastOpenedDirectory = Path.GetDirectoryName(csvopenDialog.FileNames[0]);
+        }
+
+        /// <summary>
+        /// Gets the build information for the given string containing the total application version.
+        /// </summary>
+        /// <param name="fromString">The application version total string.</param>
+        /// <returns>A string array of the build information such that index 0 is MAJOR_VERSION, 1 is MINOR_VERSION,
+        /// 2 is BUILD_VERSION and 3 is NOTE_VERSION</returns>
+        public static string[] ParseBuildInformation(string fromString)
+        {
+            string note = string.Empty;
+            if (fromString.Contains(NOTE_SEPARATOR))
+            {
+                int index = fromString.LastIndexOf(NOTE_SEPARATOR) + NOTE_SEPARATOR.Length;
+                note = fromString.Substring(index, fromString.Length - index);
+                fromString = fromString.Substring(0, fromString.Length + 1 - (index - NOTE_SEPARATOR.Length));
+            }
+
+            string[] versions = fromString.Split('.');
+            string[] returnable = {
+                versions[0],
+                versions[1],
+                versions[2],
+                note
+            };
+
+            return versions;
         }
     }
 }
