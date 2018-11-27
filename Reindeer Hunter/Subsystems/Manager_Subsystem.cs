@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace Reindeer_Hunter.Subsystems
 {
@@ -168,6 +169,8 @@ namespace Reindeer_Hunter.Subsystems
         public static async void ExportMatches(List<Match> matchesToExport, string path)
         {
             await ExportMatchesAsync(matchesToExport, path);
+            // Once the stuff has been completed, notify the user.
+            MessageBox.Show("Completed Operation.", "Completed", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         /// <summary>
