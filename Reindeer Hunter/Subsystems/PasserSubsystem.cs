@@ -239,7 +239,7 @@ namespace Reindeer_Hunter.Subsystems
                         AffectedStudent = changedStudent
                     };
                     PasserButton button = new PasserButton(matchResult);
-                    button.Click += RemoveResult;
+                    button.Click += (param, e) => RemoveResult(matchResult, button);
 
                     // Add match result to the list
                     PassingStudents.Add(matchResult.AffectedStudent.Id, matchResult);
@@ -255,21 +255,14 @@ namespace Reindeer_Hunter.Subsystems
             }
         }
 
-        /// <summary>
-        /// Function to remove the given result from the Passing Students
-        /// lists given the MatchGuiResult object
-        /// </summary>
-        /// <param name="source"></param>
-        /// <param name="e"></param>
-        private void RemoveResult(object sender, EventArgs e)
+        private void RemoveResult(PassingStudent matchResult, PasserButton button)
         {
-            DisplayButtons.Remove(((PasserButton)sender));
-            PassingStudents.Remove(((PasserButton)sender).MatchResult.AffectedStudent.Id);
+            DisplayButtons.Remove(button);
+            PassingStudents.Remove(matchResult.AffectedStudent.Id);
 
-            // Refresh the items.
             Refresh();
 
-            ResultRemoved(this, ((PasserButton)sender).MatchResult);
+            ResultRemoved(this, matchResult);
         }
 
         /// <summary>
@@ -281,7 +274,7 @@ namespace Reindeer_Hunter.Subsystems
         {
             PasserButton buttonToRemove = (PasserButton)DisplayButtons.Single(button => ((PasserButton)button).MatchResult.AffectedStudent.Id == studentId);
 
-            RemoveResult(buttonToRemove, new EventArgs());
+            RemoveResult(buttonToRemove.MatchResult, buttonToRemove);
         }
 
         /// <summary>
@@ -356,11 +349,6 @@ namespace Reindeer_Hunter.Subsystems
         {
             // Just clear and refresh
             MatchEditQueue.Clear();
-
-            while (DisplayButtons.Count > 0)
-            {
-                RemoveResult(DisplayButtons[0], null);
-            }
 
             DisplayButtons.Clear();
 
