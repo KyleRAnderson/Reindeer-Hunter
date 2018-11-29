@@ -377,7 +377,7 @@ namespace Reindeer_Hunter
                 // Add to the adder so that next time, the index is increased properly.
                 adder += numLicensesToMake;
 
-                // Create fake licenses and add them to the sorted licenses at the proper index (info.Item1)
+                // Create fake licenses and add them to the sorted licenses at the proper index
                 sortedLicenses.InsertRange(index, Create_Fake_Licenses(numLicensesToMake));
             }
             
