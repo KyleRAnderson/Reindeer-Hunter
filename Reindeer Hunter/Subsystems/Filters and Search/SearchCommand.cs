@@ -82,7 +82,7 @@ namespace Reindeer_Hunter.Subsystems.SearchAndFilters
             else if (int.TryParse(UserInput, out homeroomNo)) { }
 
             // If nothing else is caught, try a student name.
-            else studentName = UserInput;
+            studentName = UserInput;
 
             return new SearchQuery
             {

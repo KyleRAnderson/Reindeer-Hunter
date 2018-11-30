@@ -360,26 +360,30 @@ namespace Reindeer_Hunter.Hunt
             // A student id was provided. Return null when it cannot be found
             else if (!string.IsNullOrEmpty(query.StudentNo))
             {
-                if (!student_directory.ContainsKey(query.StudentNo)) return null;
-                Student student = student_directory[query.StudentNo];
-
-                if (student.MatchesParticipated.Count == 0 || student.MatchesParticipated[0] == null)
+                if (!student_directory.ContainsKey(query.StudentNo)) resultsList = null;
+                else
                 {
-                    resultsList.Add(CreateFakeMatch(student));
+                    Student student = student_directory[query.StudentNo];
+
+                    if (student.MatchesParticipated.Count == 0 || student.MatchesParticipated[0] == null)
+                    {
+                        resultsList.Add(CreateFakeMatch(student));
+                    }
+
+                    resultsList.AddRange(GetMatchesFromStudentWithFilters(student, filter));
+
+                    // Call the event.
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        StudentNameFoundThroughSearch?.Invoke(this, student.FullName);
+                    }); 
                 }
-
-                resultsList.AddRange(GetMatchesFromStudentWithFilters(student, filter));
-
-                // Call the event.
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    StudentNameFoundThroughSearch?.Invoke(this, student.FullName);
-                });
             }
 
             // The only remaining possibility is that a name was inputted. Find it, else error.
-            else
+            if (!string.IsNullOrEmpty(query.StudentName))
             {
+                if (resultsList == null) resultsList = new List<Match>();
                 List<string> relevantKeys = new List<string>();
 
                 // Find all substrings that match the inputted name.
