@@ -557,7 +557,7 @@ namespace Reindeer_Hunter.Hunt
             foreach (ResultStudent student in resultsStudents)
             {
                 // 0 is the null value for result student ids.
-                if (string.IsNullOrEmpty(student.Id))
+                if (string.IsNullOrWhiteSpace(student.Id))
                 {
                     student.Id = GetStudentId(student.First, student.Last, student.Homeroom);
 
@@ -571,7 +571,7 @@ namespace Reindeer_Hunter.Hunt
                 }
 
                 // Add the now known id to the list
-                if (string.IsNullOrEmpty(student.Id)) idStudents.Add(student.Id);
+                if (!string.IsNullOrWhiteSpace(student.Id)) idStudents.Add(student.Id);
             }
 
             // Validate all the student ids now that we have them

@@ -168,9 +168,17 @@ namespace Reindeer_Hunter.Subsystems
         /// <param name="path">The path of the CSV file to which the mathes should be saved.</param>
         public static async void ExportMatches(List<Match> matchesToExport, string path)
         {
-            await ExportMatchesAsync(matchesToExport, path);
-            // Once the stuff has been completed, notify the user.
-            MessageBox.Show("Completed Operation.", "Completed", MessageBoxButton.OK, MessageBoxImage.Information);
+            try
+            {
+                await ExportMatchesAsync(matchesToExport, path);
+                // Once the stuff has been completed, notify the user.
+                MessageBox.Show("Completed Operation.", "Completed", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (IOException)
+            {
+                MessageBox.Show("Failed to access file.", "Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+           
         }
 
         /// <summary>
