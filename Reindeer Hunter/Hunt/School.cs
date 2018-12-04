@@ -699,7 +699,10 @@ namespace Reindeer_Hunter.Hunt
             await Task.WhenAll(tasks);
             // Save since close match won't do that anymore.
             Save();
-            MatchChangeEvent?.Invoke(this, matchesToClose.ToArray());
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                MatchChangeEvent?.Invoke(this, matchesToClose.ToArray());
+            });
         }
 
         /// <summary>
@@ -717,7 +720,10 @@ namespace Reindeer_Hunter.Hunt
             // Save, since CloseMatch won't do it for us now.
             Save();
             await Task.WhenAll(tasks);
-            MatchChangeEvent?.Invoke(this, matchesToClose.ToArray());
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                MatchChangeEvent?.Invoke(this, matchesToClose.ToArray());
+            });
         }
 
         /// <summary>
