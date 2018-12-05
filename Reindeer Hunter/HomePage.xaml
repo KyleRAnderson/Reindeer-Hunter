@@ -151,7 +151,7 @@
                         <MenuItem Header="Filters">
                             <CheckBox x:Name="Open_Filter" Content="Open" IsChecked="{Binding _FiltersAndSearch.CurrentFilters.Open, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                             <CheckBox x:Name="Closed_Filter" Content="Closed" IsChecked="{Binding _FiltersAndSearch.CurrentFilters.Closed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                            <MenuItem x:Name="Round_Filter" Header="Round" ItemsSource="{Binding _FiltersAndSearch.CurrentFilters.Round, Converter={StaticResource RoundToCheckbox}}"/>
+                            <MenuItem x:Name="Round_Filter" Header="Round" ItemsSource="{Binding _FiltersAndSearch.CurrentFilters.Round, Converter={StaticResource RoundToCheckbox}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                         </MenuItem>
                         <MenuItem x:Name="Clear_Filters_Button" Header="Clear" HorizontalContentAlignment="Stretch" Command="{Binding _FiltersAndSearch.ClearFiltersCommand, Mode=OneWay}" ToolTip="Clear the current search and filters"/>
                         <MenuItem x:Name="Clear_Search_Only" Header="Clear Search Only" HorizontalAlignment="Stretch" ToolTip="Clear just the typed in search." Command="{Binding _FiltersAndSearch.ClearSearchOnly, Mode=OneWay}"/>
