@@ -332,7 +332,7 @@ namespace Reindeer_Hunter.Hunt
             List<Match> resultsList = new List<Match>();
 
             // If match id is provided, get that match's info if it exists, else error.
-            if (query.MatchId != "")
+            if (!string.IsNullOrWhiteSpace(query.MatchId))
             {
                 if (match_directory.ContainsKey(query.MatchId)
                     && CompliesWithFilters(match_directory[query.MatchId], filter))
@@ -392,17 +392,18 @@ namespace Reindeer_Hunter.Hunt
                     if (key.Contains(query.StudentName)) relevantKeys.Add(key);
                 }
 
-                if (relevantKeys.Count == 0) return null;
-
-                foreach (string key in relevantKeys)
+                if (relevantKeys.Count > 0)
                 {
-                    // If there are more than one students at that key, add them all
-                    if (studentName_directory[key] is List<Student>)
-                        foreach (Student student in (List<Student>)studentName_directory[key])
-                            resultsList.AddRange(GetMatchesFromStudentWithFilters(student, filter));
+                    foreach (string key in relevantKeys)
+                    {
+                        // If there are more than one students at that key, add them all
+                        if (studentName_directory[key] is List<Student>)
+                            foreach (Student student in (List<Student>)studentName_directory[key])
+                                resultsList.AddRange(GetMatchesFromStudentWithFilters(student, filter));
 
-                    // If it's just one student, add them.
-                    else resultsList.AddRange(GetMatchesFromStudentWithFilters((Student)studentName_directory[key], filter));
+                        // If it's just one student, add them.
+                        else resultsList.AddRange(GetMatchesFromStudentWithFilters((Student)studentName_directory[key], filter));
+                    } 
                 }
 
             }
