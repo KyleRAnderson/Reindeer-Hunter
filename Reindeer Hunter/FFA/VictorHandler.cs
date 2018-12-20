@@ -143,7 +143,7 @@ namespace Reindeer_Hunter.FFA
             {
                 Data = new Hashtable
                 {
-                    { victorDataLoc, new Dictionary<int, Victor>() }
+                    { victorDataLoc, new Dictionary<string, Victor>() }
                 };
                 Victors = (Dictionary<string, Victor>)Data[victorDataLoc];
 
