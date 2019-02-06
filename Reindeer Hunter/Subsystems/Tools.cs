@@ -121,6 +121,7 @@ namespace Reindeer_Hunter.Subsystems
         private async void CloseAllMatches(object sender)
         {
             await Task.Run(school.CloseAllMatchesAsync);
+
         }
     }
 }

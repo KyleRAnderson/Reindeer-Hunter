@@ -18,7 +18,6 @@ namespace Reindeer_Hunter.Subsystems.SearchAndFilters
 
         public School _School { get; set; }
         private string UserInput { get; set; }
-        private SearchQuery Query;
 
         public event EventHandler CanExecuteChanged;
 
@@ -27,10 +26,7 @@ namespace Reindeer_Hunter.Subsystems.SearchAndFilters
             Filters_Subsystem = subsystem;
         }
 
-        public SearchQuery CurrentQuery
-        {
-            get { return Query; }
-        }
+        public SearchQuery CurrentQuery { get; private set; }
 
         /// <summary>
         /// Function for displaying error message when no results found.
@@ -82,7 +78,7 @@ namespace Reindeer_Hunter.Subsystems.SearchAndFilters
             else if (int.TryParse(UserInput, out homeroomNo)) { }
 
             // If nothing else is caught, try a student name.
-            else studentName = UserInput;
+            studentName = UserInput;
 
             return new SearchQuery
             {
@@ -105,13 +101,13 @@ namespace Reindeer_Hunter.Subsystems.SearchAndFilters
             }
 
             UserInput = UserInput.Trim();
-            Query = DecryptString();
-            if (Query == null)
+            CurrentQuery = DecryptString();
+            if (CurrentQuery == null)
             {
                 NotFound();
             }
 
-            returnMatchList = _School.GetMatches(Query, filter);
+            returnMatchList = _School.GetMatches(CurrentQuery, filter);
             if (returnMatchList == null || returnMatchList.Count == 0)
             {
                 NotFound();
@@ -127,7 +123,7 @@ namespace Reindeer_Hunter.Subsystems.SearchAndFilters
         /// </summary>
         public void ClearSearch()
         {
-            Query = null;
+            CurrentQuery = null;
         }
 
         public bool CanExecute(object parameter)

@@ -9,6 +9,7 @@ using System.Windows;
 using Reindeer_Hunter.DataCards;
 using System.Threading.Tasks;
 using Reindeer_Hunter.Hunt;
+using System.Windows.Data;
 
 namespace Reindeer_Hunter.Subsystems
 {
@@ -23,11 +24,11 @@ namespace Reindeer_Hunter.Subsystems
         /// </summary>
         public event EventHandler<Match> MatchAddedToQueue;
 
-        public static readonly int Pass1ColumnIndex = 0;
-        public static readonly int Full1ColumnIndex = 1;
-        public static readonly int MatchIdColumnIndex = 2;
-        public static readonly int Full2ColumnIndex = 3;
-        public static readonly int Pass2ColumnIndex = 4;
+        public const int Pass1ColumnIndex = 0;
+        public const int Full1ColumnIndex = 1;
+        public const int MatchIdColumnIndex = 2;
+        public const int Full2ColumnIndex = 3;
+        public const int Pass2ColumnIndex = 4;
 
         public event EventHandler<Tuple<Student, Match>> StudentAddedToPassQueue;
 
@@ -107,14 +108,14 @@ namespace Reindeer_Hunter.Subsystems
 
             // Define our checkboxes and menu items
             Filter_Menu = Manager.Home.Search_Menu;
-            Filter_Menu.SubmenuClosed += LoadContent;
+            Filter_Menu.SubmenuClosed += (obj, args) => LoadContent();
             OpenCheckbox = Manager.Home.Open_Filter;
             ClosedCheckbox = Manager.Home.Closed_Filter;
             RoundFilter = Manager.Home.Round_Filter;
             SearchBox = Manager.Home.search_box;
             // Subscribe to their events
-            OpenCheckbox.Click += LoadContent;
-            ClosedCheckbox.Click += LoadContent;
+            OpenCheckbox.Click += (obj, args) => LoadContent();
+            ClosedCheckbox.Click += (obj, args) => LoadContent();
             SearchBox.GotFocus += Search_Box_Got_Focus;
 
             // Reset the filters
@@ -134,10 +135,10 @@ namespace Reindeer_Hunter.Subsystems
             /* Subscribe to more events that merit re-loading of the itemssource,
              * namely MatchesMade and PassingStudentsSaved.
              */
-            Manager._Passer.PassingStudentsSaved += LoadContent;
+            Manager._Passer.PassingStudentsSaved += (obj, args) => LoadContent();
             Manager._ProcessButtonSubsystem.MatchesRegistered += OnMatchesSaved;
             school.MatchChangeEvent += OnMatchesSaved;
-            Manager._ProcessButtonSubsystem.MatchesDiscarded += LoadContent;
+            Manager._ProcessButtonSubsystem.MatchesDiscarded += (obj, args) => LoadContent();
             Manager._ProcessButtonSubsystem.MatchesMade += ShowNewMatches;
 
             // Subscribe to save and discard events
@@ -256,8 +257,11 @@ namespace Reindeer_Hunter.Subsystems
         /// <summary>
         /// Simple function to load content onto the MainDisplay object.
         /// </summary>
-        private async void LoadContent(object sender = null, EventArgs e = null)
+        private async void LoadContent()
         {
+            BindingExpression be = RoundFilter.GetBindingExpression(ItemsControl.ItemsSourceProperty);
+            be.UpdateSource();
+
             List<Match> matchList = await GetMatchesAsync();
             MainDisplay_Display_List = matchList;
             PropertyChanged(this, new PropertyChangedEventArgs("MainDisplay_Display_List"));

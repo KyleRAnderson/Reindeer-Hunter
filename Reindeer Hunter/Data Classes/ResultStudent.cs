@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FileHelpers;
+﻿using FileHelpers;
 
 namespace Reindeer_Hunter.Data_Classes
 {
@@ -27,7 +22,7 @@ namespace Reindeer_Hunter.Data_Classes
         public int Homeroom;
 
         [FieldOptional]
-        [FieldNullValue(0)]
+        [FieldNullValue(null)]
         public string Id;
     }
 }

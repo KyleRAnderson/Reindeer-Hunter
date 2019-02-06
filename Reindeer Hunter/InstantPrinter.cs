@@ -352,7 +352,7 @@ namespace Reindeer_Hunter
                     indexesToAddFakeLicensesTo.Add(new Tuple<int, int>(insertIndex, lastGrade));
 
                     // Set the new last grade.
-                    lastGrade = license.Grade;
+                    lastGrade = GetGrade(license);
 
                 }
             }
@@ -371,14 +371,18 @@ namespace Reindeer_Hunter
                  */
                 int index = info.Item1 + adder;
 
-                // 8 licenses per page, so the 8 - the remainder is how many we need to make.
-                int numLicensesToMake = (8 - (sortedLicenses.Count(license => license.Grade == grade) % 8)) % 8;
+                /* 8 licenses per page, so the 8 - the remainder is how many we need to make.
+                 * Modulus of 8 again at the end since if the number of students in the grade is a multiple of 8,
+                 * that multiple modulus 8 will be 0 which means 8 - 0 which would mean to print 8 licenses, which isn't 
+                 * what we want, we want 0 licenses.
+                 */
+                int numLicensesToMake = (8 - (sortedLicenses.Count(license => GetGrade(license) == grade) % 8)) % 8;
 
                 // Add to the adder so that next time, the index is increased properly.
                 adder += numLicensesToMake;
 
-                // Create fake licenses and add them to the sorted licenses at the proper index (info.Item1)
-                sortedLicenses.InsertRange(info.Item1, Create_Fake_Licenses(numLicensesToMake));
+                // Create fake licenses and add them to the sorted licenses at the proper index
+                sortedLicenses.InsertRange(index, Create_Fake_Licenses(numLicensesToMake));
             }
             
 

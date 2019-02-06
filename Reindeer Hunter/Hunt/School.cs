@@ -332,7 +332,7 @@ namespace Reindeer_Hunter.Hunt
             List<Match> resultsList = new List<Match>();
 
             // If match id is provided, get that match's info if it exists, else error.
-            if (query.MatchId != "")
+            if (!string.IsNullOrWhiteSpace(query.MatchId))
             {
                 if (match_directory.ContainsKey(query.MatchId)
                     && CompliesWithFilters(match_directory[query.MatchId], filter))
@@ -360,26 +360,30 @@ namespace Reindeer_Hunter.Hunt
             // A student id was provided. Return null when it cannot be found
             else if (!string.IsNullOrEmpty(query.StudentNo))
             {
-                if (!student_directory.ContainsKey(query.StudentNo)) return null;
-                Student student = student_directory[query.StudentNo];
-
-                if (student.MatchesParticipated.Count == 0 || student.MatchesParticipated[0] == null)
+                if (!student_directory.ContainsKey(query.StudentNo)) resultsList = null;
+                else
                 {
-                    resultsList.Add(CreateFakeMatch(student));
+                    Student student = student_directory[query.StudentNo];
+
+                    if (student.MatchesParticipated.Count == 0 || student.MatchesParticipated[0] == null)
+                    {
+                        resultsList.Add(CreateFakeMatch(student));
+                    }
+
+                    resultsList.AddRange(GetMatchesFromStudentWithFilters(student, filter));
+
+                    // Call the event.
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        StudentNameFoundThroughSearch?.Invoke(this, student.FullName);
+                    }); 
                 }
-
-                resultsList.AddRange(GetMatchesFromStudentWithFilters(student, filter));
-
-                // Call the event.
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    StudentNameFoundThroughSearch?.Invoke(this, student.FullName);
-                });
             }
 
             // The only remaining possibility is that a name was inputted. Find it, else error.
-            else
+            if (!string.IsNullOrEmpty(query.StudentName))
             {
+                if (resultsList == null) resultsList = new List<Match>();
                 List<string> relevantKeys = new List<string>();
 
                 // Find all substrings that match the inputted name.
@@ -388,17 +392,18 @@ namespace Reindeer_Hunter.Hunt
                     if (key.Contains(query.StudentName)) relevantKeys.Add(key);
                 }
 
-                if (relevantKeys.Count == 0) return null;
-
-                foreach (string key in relevantKeys)
+                if (relevantKeys.Count > 0)
                 {
-                    // If there are more than one students at that key, add them all
-                    if (studentName_directory[key] is List<Student>)
-                        foreach (Student student in (List<Student>)studentName_directory[key])
-                            resultsList.AddRange(GetMatchesFromStudentWithFilters(student, filter));
+                    foreach (string key in relevantKeys)
+                    {
+                        // If there are more than one students at that key, add them all
+                        if (studentName_directory[key] is List<Student>)
+                            foreach (Student student in (List<Student>)studentName_directory[key])
+                                resultsList.AddRange(GetMatchesFromStudentWithFilters(student, filter));
 
-                    // If it's just one student, add them.
-                    else resultsList.AddRange(GetMatchesFromStudentWithFilters((Student)studentName_directory[key], filter));
+                        // If it's just one student, add them.
+                        else resultsList.AddRange(GetMatchesFromStudentWithFilters((Student)studentName_directory[key], filter));
+                    } 
                 }
 
             }
@@ -553,7 +558,7 @@ namespace Reindeer_Hunter.Hunt
             foreach (ResultStudent student in resultsStudents)
             {
                 // 0 is the null value for result student ids.
-                if (string.IsNullOrEmpty(student.Id))
+                if (string.IsNullOrWhiteSpace(student.Id))
                 {
                     student.Id = GetStudentId(student.First, student.Last, student.Homeroom);
 
@@ -567,7 +572,7 @@ namespace Reindeer_Hunter.Hunt
                 }
 
                 // Add the now known id to the list
-                if (string.IsNullOrEmpty(student.Id)) idStudents.Add(student.Id);
+                if (!string.IsNullOrWhiteSpace(student.Id)) idStudents.Add(student.Id);
             }
 
             // Validate all the student ids now that we have them
@@ -695,7 +700,10 @@ namespace Reindeer_Hunter.Hunt
             await Task.WhenAll(tasks);
             // Save since close match won't do that anymore.
             Save();
-            MatchChangeEvent?.Invoke(this, matchesToClose.ToArray());
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                MatchChangeEvent?.Invoke(this, matchesToClose.ToArray());
+            });
         }
 
         /// <summary>
@@ -713,7 +721,10 @@ namespace Reindeer_Hunter.Hunt
             // Save, since CloseMatch won't do it for us now.
             Save();
             await Task.WhenAll(tasks);
-            MatchChangeEvent?.Invoke(this, matchesToClose.ToArray());
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                MatchChangeEvent?.Invoke(this, matchesToClose.ToArray());
+            });
         }
 
         /// <summary>
@@ -835,7 +846,7 @@ namespace Reindeer_Hunter.Hunt
             List<Match> roundMatchList = new List<Match>();
 
             roundMatchList = matchList
-                .Where(match => match.Round == currRound && !match.Closed)
+                .Where(match => match.Round == currRound)
                 .ToList();
 
             return roundMatchList;

@@ -18,16 +18,20 @@ namespace Reindeer_Hunter.Data_Classes
         public string MatchStatus { get; private set; }
         [FieldOrder(4)]
         public string Student1Name { get; private set; }
-        [FieldOrder(7)]
+        [FieldOrder(8)]
         public string Student2Name { get; private set; }
         [FieldOrder(5)]
         public string Student1Id { get; private set; }
-        [FieldOrder(8)]
-        public string Student2Id { get; private set; }
-        [FieldOrder(6)]
-        public int Student1Grade { get; private set; }
         [FieldOrder(9)]
+        public string Student2Id { get; private set; }
+        [FieldOrder(7)]
+        public int Student1Grade { get; private set; }
+        [FieldOrder(11)]
         public int Student2Grade { get; private set; }
+        [FieldOrder(6)]
+        public int Homeroom1 { get; private set; }
+        [FieldOrder(10)]
+        public int Homeroom2 { get; private set; }
 
 
         /// <summary>
@@ -47,7 +51,9 @@ namespace Reindeer_Hunter.Data_Classes
                 Student1Id = from.Id1,
                 Student2Id = from.Id2,
                 Student1Grade = from.Grade1,
-                Student2Grade = from.Grade2
+                Student2Grade = from.Grade2,
+                Homeroom1 = from.Home1,
+                Homeroom2 = from.Home2
             };
         }
     }
