@@ -2,7 +2,7 @@
 A program that manages the Sacred Heart High School (Ottawa) annual reindeer hunt. 
 Created by Kyle Anderson (eAUE) for the 2017 Reindeer Hunt at Sacred Heart High School.
 
-&copy;2018 Kyle Anderson
+&copy;2019 Kyle Anderson
 
 ## Development Environment
 Development should be done with Windows 10 with the lastest .NET framework installed. It would probably work on older versions of Windows as long as the .NET libraries are up-to-date, however this hasn't been tester.
