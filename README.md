@@ -22,6 +22,7 @@ Below are the packages and their versions required for the program to function p
     1. iTextSharp by Bruno Lowagie, Paulo Soares, et al. (V5.5.13)
     1. Newtonsoft.Json by James Newton-King (V11.0.2)
     1. ZkWeb.System.Drawing by ZKWeb.System (V4.0.1)
+1. After opening the .sln file and assuring updates to Packages/Program (although you likely do not need to update), go to `Project -> Reindeer Hunter Properties`, then go to the "Signing" tab and uncheck the box that says "Sign the ClickOnce manifests". 
 1. You're good to go!
 
 ## Development Conventions
