@@ -28,8 +28,8 @@ namespace Reindeer_Hunter
 
         #region Application Version information
         private const string NOTE_SEPARATOR = " - ";
-        public const int MAJOR_VERSION = 2, MINOR_VERSION = 0, BUILD_VERSION = 100;
-        public const string NOTE_VERSION = "RC1";
+        public const int MAJOR_VERSION = 2, MINOR_VERSION = 0, BUILD_VERSION = 101;
+        public const string NOTE_VERSION = "";
         public static readonly string APPLICATION_VERSION = string.Format("{0}.{1}.{2}{3}{4}", MAJOR_VERSION, MINOR_VERSION, BUILD_VERSION, NOTE_SEPARATOR, NOTE_VERSION);
         #endregion
 
