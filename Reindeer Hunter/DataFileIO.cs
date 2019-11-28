@@ -255,8 +255,8 @@ namespace Reindeer_Hunter
             Newtonsoft.Json.Linq.JObject victorsJarray =
                     (Newtonsoft.Json.Linq.JObject)data[victorDataLoc];
 
-            Dictionary<int, Victor> victors =
-                  victorsJarray.ToObject<Dictionary<int, Victor>>();
+            Dictionary<string, Victor> victors =
+                  victorsJarray.ToObject<Dictionary<string, Victor>>();
 
             returnable.Add(victorDataLoc, victors);
 
